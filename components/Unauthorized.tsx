@@ -1,5 +1,7 @@
-export default function Unauthorized() {
+// import styles from '../styles/App.Module.scss';
+
+export default function unauthorized() {
   return (
-    <div>unauthorized</div>
+    <div className='test'>unauthorized</div>
   )
 }
