@@ -1,0 +1,31 @@
+@keyframes loadingText {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+.page-loader{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: $grey;
+    font-size: 2vw;
+    font-weight: bold;
+    display: block !important;
+
+    &::before{
+        content: attr(data-text);
+        position: absolute;
+        overflow: hidden;
+        width: 0%;
+        color: blue;
+        animation: loadingText 1.5s infinite;
+        display: block !important;
+    }
+}
