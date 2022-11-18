@@ -1,6 +1,4 @@
 @import './variables';
 @import './pages/home';
-
-.test{
-    background-color: $blue;
-}
+@import './components/loaders';
+@import './components/messages';

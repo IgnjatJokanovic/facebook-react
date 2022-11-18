@@ -13,11 +13,6 @@ export default function Register({ setActiveForm }) {
         <div className="form-container register">
             <form onSubmit={e => handleSubmit(e)}>
                 <h1>Create Account</h1>
-                <div className="social-container">
-                    <a href="#" className="social"><i className="fab fa-facebook-f"></i></a>
-                    <a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
-                    <a href="#" className="social"><i className="fab fa-linkedin-in"></i></a>
-                </div>
                 <p>Already have account? <span onClick={() => setActiveForm("login")}>Login</span></p>
                 <input type="text" placeholder="First name" />
                 <input type="text" placeholder="Last name" />
