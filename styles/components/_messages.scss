@@ -1,21 +1,26 @@
 .messages-container{
     position: absolute;
     bottom: 1rem;
-    right: 0;
-    width: 60%;
+    right: 10px;
+    max-width: 60%;
     display: flex;
-    flex-direction: row;
-    align-items: flex-end;
+    // flex-direction: row;
+    // align-items: flex-end;
+    // flex-wrap: wrap;
+    // flex-wrap: wrap-reverse;
     overflow: hidden;
 
     .message-component{
-        min-width: 25%;
+        flex: 1 1 auto;
+        margin: 5px;
         border: 2px solid rgb(63, 63, 63);
         padding: 5px;
+        min-width: 21%;
         border-radius: 5px;
+        background-color: $grey;
 
         .header{
-            // background-color: $grey;
+            
             display: flex;
             flex-direction: row;
            
@@ -26,7 +31,7 @@
 
                 img{
                     border-radius: 50%;
-                    width: 3vw;
+                    width: 25%;
                 }
 
                 p{
@@ -38,11 +43,82 @@
                 }
             }
 
-            .close{
+            .navigation{
                 width: 20%;
-                cursor: pointer;
                 font-weight: bold;
                 text-align: right;
+                margin-left: 5px;
+
+                i{
+                    cursor: pointer;
+                    margin-left: 5px;
+                    font-size: 2vh;
+                }
+            }
+        }
+
+        .body{
+           
+            overflow: hidden;
+            margin: 5px;
+            height: 33vh;
+
+            .messages{
+                overflow-y: scroll;
+                max-height: 25vh;
+                background-color: $white;
+                padding: 5px;
+                border-radius: 5px;
+                .bubble{
+                    padding: 5px;
+                    border-radius: 5px;
+                    background-color: $grey;
+                    text-align: left;
+                    margin: 10px 5px;
+                    &.right{
+                        background-color: $blue;
+                        color: $white;
+                        text-align: right;
+                    }
+                }
+            }
+
+            .form-inputs{
+                margin-top: 10px;
+                background-color: $white;
+                padding: 5px;
+                border-radius: 5px;
+                position: relative;
+
+                .controlls{
+                    position: absolute;
+                    right: 0;
+                    top: 1px;
+                    margin: 2px;
+                    i{
+                        margin-right: 3px;
+                    }
+                }
+                
+                textarea{
+                    background-color: $white;
+                    border: none;
+                    width: 90%;
+                    padding: 5px;
+                    overflow-y: scroll;
+                    resize: none;
+                    // margin: 8px 3px;
+                }
+
+                button{
+                    background-color: $blue;
+                    color: $white;
+                    border-radius: 5px;
+                    outline: none;
+                    border: none;
+                    padding: 5px;
+                    margin: 2px 4px;
+                }
             }
         }
 
@@ -51,32 +127,18 @@
 
     @media only screen and (max-width: 1240px) {
         .message-component{
-            min-width: 50%;
-
-            .header{
-                .user{
-                    img{
-                        width: 5vw;
-                    }
-                }
-            }
+            min-width: 46%;
         }
     }
 
     @media only screen and (max-width: 480px) {
-        .message-component{
-            min-width: 100%;
-            
+      
+        max-width: 80%;
 
-            .header{
-                .user{
-                    img{
-                        width: 7vw;
-                    }
-                }
-            }
-            
+        .message-component{
+            min-width: 93%;
         }
+        
     }
 }
 
