@@ -1,145 +1,158 @@
 .messages-container{
     position: absolute;
     bottom: 1rem;
-    right: 10px;
-    max-width: 60%;
-    display: flex;
-    // flex-direction: row;
-    // align-items: flex-end;
-    // flex-wrap: wrap;
-    // flex-wrap: wrap-reverse;
+    right: 0;
+    left: 0;
+    width: 100%;
+    text-align: right;
+    white-space: nowrap;
     overflow: hidden;
 
     .message-component{
-        flex: 1 1 auto;
-        margin: 5px;
-        border: 2px solid rgb(63, 63, 63);
+
+        // border: 2px solid rgb(63, 63, 63);
         padding: 5px;
-        min-width: 21%;
         border-radius: 5px;
-        background-color: $grey;
+    
+        display: inline-block;
+        width: 24.4%;
 
-        .header{
+        .outline{
+            border: 2px solid rgb(63, 63, 63);
+            border-radius: 5px;
+            background-color: $grey;
+            padding: 1%;
+
+            .header{
             
-            display: flex;
-            flex-direction: row;
-           
-            
-            .user{
-                width: 80%;
                 display: flex;
-
-                img{
-                    border-radius: 50%;
-                    width: 25%;
+                flex-direction: row;
+               
+                
+                .user{
+                    display: flex;
+    
+                    img{
+                        border-radius: 50%;
+                        width: 15%;
+                    }
+    
+                    p{
+                        margin-left: 10px;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        font-size: 2vh;
+                    }
                 }
-
-                p{
-                    margin-left: 10px;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    font-size: 2vh;
-                }
-            }
-
-            .navigation{
-                width: 20%;
-                font-weight: bold;
-                text-align: right;
-                margin-left: 5px;
-
-                i{
-                    cursor: pointer;
+    
+                .navigation{
+                    width: 20%;
+                    font-weight: bold;
+                    text-align: right;
                     margin-left: 5px;
-                    font-size: 2vh;
+    
+                    i{
+                        cursor: pointer;
+                        margin-left: 5px;
+                        font-size: 2vh;
+                    }
                 }
             }
-        }
-
-        .body{
-           
-            overflow: hidden;
-            margin: 5px;
-            height: 33vh;
-
-            .messages{
-                overflow-y: scroll;
-                max-height: 25vh;
-                background-color: $white;
-                padding: 5px;
-                border-radius: 5px;
-                .bubble{
+    
+            .body{
+               
+                overflow: hidden;
+                margin: 5px;
+                max-height: 0;
+                transition: max-height 0.25s ease-out;
+                &.active{
+                    max-height: 33vh;
+                    transition: max-height 0.25s ease-in;
+                }
+    
+                .messages{
+                    overflow-y: scroll;
+                    max-height: 25vh;
+                    background-color: $white;
                     padding: 5px;
                     border-radius: 5px;
-                    background-color: $grey;
-                    text-align: left;
-                    margin: 10px 5px;
-                    &.right{
+                    .bubble{
+                        padding: 5px;
+                        border-radius: 5px;
+                        background-color: $grey;
+                        text-align: left;
+                        margin: 10px 5px;
+                        &.right{
+                            background-color: $blue;
+                            color: $white;
+                            text-align: right;
+                        }
+                    }
+                }
+    
+                .form-inputs{
+                    margin-top: 10px;
+                    background-color: $white;
+                    padding: 5px;
+                    border-radius: 5px;
+                    position: relative;
+    
+                    .message-input{
+                        outline: none;
+                        border: none;
+                        overflow-y: scroll;
+                        width: 70%;
+                        max-height: 2rem;
+                    }
+    
+                    .controlls{
+                        position: absolute;
+                        right: 0;
+                        top: 1px;
+                        margin: 2px;
+                        i{
+                            margin-right: 3px;
+                        }
+                    }
+                    
+                    textarea{
+                        background-color: $white;
+                        border: none;
+                        width: 90%;
+                        padding: 5px;
+                        overflow-y: scroll;
+                        resize: none;
+                        outline: none;
+                        // margin: 8px 3px;
+                    }
+    
+                    button{
                         background-color: $blue;
                         color: $white;
-                        text-align: right;
+                        border-radius: 5px;
+                        outline: none;
+                        border: none;
+                        padding: 5px;
+                        margin: 2px 4px;
                     }
                 }
             }
-
-            .form-inputs{
-                margin-top: 10px;
-                background-color: $white;
-                padding: 5px;
-                border-radius: 5px;
-                position: relative;
-
-                .controlls{
-                    position: absolute;
-                    right: 0;
-                    top: 1px;
-                    margin: 2px;
-                    i{
-                        margin-right: 3px;
-                    }
-                }
-                
-                textarea{
-                    background-color: $white;
-                    border: none;
-                    width: 90%;
-                    padding: 5px;
-                    overflow-y: scroll;
-                    resize: none;
-                    // margin: 8px 3px;
-                }
-
-                button{
-                    background-color: $blue;
-                    color: $white;
-                    border-radius: 5px;
-                    outline: none;
-                    border: none;
-                    padding: 5px;
-                    margin: 2px 4px;
-                }
-            }
         }
 
-       
-    }
-
-    @media only screen and (max-width: 1240px) {
-        .message-component{
-            min-width: 46%;
+        @media only screen and (max-width: 1240px) {
+            width: 49%;
         }
-    }
-
-    @media only screen and (max-width: 480px) {
-      
-        max-width: 80%;
-
-        .message-component{
-            min-width: 93%;
+    
+        @media only screen and (max-width: 480px) {
+          
+            width: 98%;
+            
         }
-        
+    
     }
+
+  
 }
 
 

@@ -8,6 +8,7 @@ export default function MessagesContainer() {
         <MessageComponent />
         <MessageComponent />
         <MessageComponent />
+        <MessageComponent />
         
     </div>
   )
