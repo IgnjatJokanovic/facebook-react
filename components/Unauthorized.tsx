@@ -10,6 +10,6 @@ export default function unauthorized() {
     <div className={'auth-container ' + activeForm}>
       <Login setActiveForm={setActiveForm  } />
       <Register setActiveForm={ setActiveForm } />
-  </div>
+    </div>
   )
 }

@@ -2,3 +2,9 @@
 @import './pages/home';
 @import './components/loaders';
 @import './components/messages';
+@import './components/navbar';
+
+.error{
+    color: $red !important;
+    text-align: left !important;
+}

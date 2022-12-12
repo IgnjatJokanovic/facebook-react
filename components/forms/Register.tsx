@@ -5,9 +5,8 @@ export default function Register({ setActiveForm }) {
     const maxDate = moment();
     const minDate = moment().subtract(100, 'years');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('x');
+    const handleSubmit = data => {
+        console.log(data)
     }
   return (
         <div className="form-container register">

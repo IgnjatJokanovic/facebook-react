@@ -1,0 +1,107 @@
+.navbar-container{
+    margin: auto;
+    display: flex;
+    position: fixed;
+    width: 97%;
+    height: auto;
+    padding: 1rem;
+    background-color: $grey;
+    align-items: center;
+    margin-top: -10px;
+    justify-content: space-between;
+    z-index: 2;
+
+    .logo-container{
+        display: flex;
+        align-self: flex-start;
+        position: relative;
+        img{
+            width: 10vw;
+        }
+        input{
+            background-color: $white;
+            border: none;
+            padding: 12px 15px;
+            margin-left: 10px;
+        }
+        .results{
+            width: 90%;
+            // min-height: 100px;
+            background-color: $darkGrey;
+            position: absolute;
+            top: 2.5rem;
+            right: 0;
+            border-radius: 10px;
+            display: none;
+            padding: 10px;
+            &.active{
+                display: block;
+                z-index: 3;
+            }
+
+            .item{
+                a{
+                    text-decoration: none;
+                    display: flex;
+                    color: $black;
+                    background-color: $white;
+                    border-radius: 10px;
+                    padding: 10px;
+                    margin-bottom: 10px;
+
+                    img{
+                        max-width: 20%;
+                    }
+
+                    span{
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        font-size: 2vh;
+                        align-self: center;
+                        margin-left: 1rem;
+                    }
+                }
+            }
+
+        }
+    }
+
+    .navigation-container{
+        color: $black;
+        display: flex;
+        gap: 2rem;
+        padding: 0.5rem;
+        position: relative;
+        i{
+            font-size: 2.5em;
+            cursor: pointer;
+            position: relative;
+            span{
+                position: absolute;
+                top: -8px;
+                border-radius: 10%;
+                padding: 6px;
+                right: -3px;
+                font-size: 12px;
+                background: $red;
+                color: $white;
+            }
+        }
+
+        .dropdown{
+            position: absolute;
+            background-color: $darkGrey;
+            height: 100px;
+            width: 120%;
+            border-radius: 5px;
+            right: 0;
+        }
+    }
+
+    
+    @media only screen and (max-width: 600px) {
+        flex-direction: column;
+    }
+
+}
