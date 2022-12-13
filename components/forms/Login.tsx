@@ -10,27 +10,31 @@ export default function Login({ setActiveForm }) {
   
   const onSubmit = data => {
     console.log(data)
+
+    axios.post('/login')
+      .then(res => console.log('login called'))
+      .catch(err => console.log(err));
     
-    axios.get('http://localhost/sanctum/csrf-cookie')
-      .then(res => {
-        // console.log(res.config.setC);
-        let csrf = getCookie('XSRF-TOKEN')
-        console.log(csrf);
-        axios.post('http://localhost/login', {
-          // withCredentials: true,
-          headers: {
-            'ContentType': 'application/json',
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-XSRF-TOKEN': csrf
-          }
-        }).then(res =>  console.log('login called'))
-        .catch(err => console.log(err))
-      })
-      .catch(err => {
-        console.log("COOKIE")
-        console.log(err);
-      })
+    // axios.get('http://localhost/sanctum/csrf-cookie')
+    //   .then(res => {
+    //     // console.log(res.config.setC);
+    //     let csrf = getCookie('XSRF-TOKEN')
+    //     console.log(csrf);
+    //     axios.post('http://localhost/login', {
+    //       // withCredentials: true,
+    //       headers: {
+    //         'ContentType': 'application/json',
+    //         'Accept': 'application/json',
+    //         'X-Requested-With': 'XMLHttpRequest',
+    //         'X-XSRF-TOKEN': csrf
+    //       }
+    //     }).then(res =>  console.log('login called'))
+    //     .catch(err => console.log(err))
+    //   })
+    //   .catch(err => {
+    //     console.log("COOKIE")
+    //     console.log(err);
+    //   })
       // axios.post('/login', data)
       //   .then(res => console.log(res))
       //   .catch(err => console.log(err));
