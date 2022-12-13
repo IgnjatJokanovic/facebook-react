@@ -1,4 +1,5 @@
 import React from 'react'
+import FriendItem from './FriendItem';
 
 export default function FriendNotifications() {
     const refOption = React.useRef();
@@ -19,10 +20,11 @@ export default function FriendNotifications() {
         };
     }, []);
   return (
-    <div ref={ refOption} className='friend-notifications-container'>
-          <i className='fas fa-user-friends'></i>
+    <div ref={ refOption} className='item friend-notifications-container'>
+          <i className='fas fa-user-friends' onClick={e => setOpen(!open)}></i>
           <div className={ open ? 'dropdown active' : 'dropdown' }>
-              
+              <FriendItem profile='/test' img='https://dummyimage.com/300.png/09f/fff' name='Ignjat' surname='Jokanovic' id='1' />
+              <FriendItem profile='/test' img='https://dummyimage.com/300.png/09f/fff' name='Ignjat' surname='Jokanovic' id='1'/>
           </div>
     </div>
   )

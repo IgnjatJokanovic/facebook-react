@@ -20,7 +20,7 @@ export default function Settings() {
     }, []);
   return (
     <div ref={ refOption} className='friend-notifications-container'>
-          <i className='fa fa-cogs'></i>
+          <i className='fa fa-cogs' onClick={e => setOpen(!open)}></i>
           <div className={ open ? 'dropdown active' : 'dropdown' }>
               
           </div>
