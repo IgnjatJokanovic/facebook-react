@@ -8,7 +8,6 @@ import Head from 'next/head'
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 
-// Axios config
 axios.defaults.baseURL = 'http://localhost';
 axios.defaults.withCredentials = false;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
