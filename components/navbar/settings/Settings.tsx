@@ -25,7 +25,7 @@ export default function Settings() {
           <div className={ open ? 'dropdown active' : 'dropdown' }>
               <div className="settings">
                     <div className="profile">
-                        <Link href='/test'>
+                        <Link href='/user/1'>
                             <img src="https://dummyimage.com/300.png/09f/fff" alt="" />
                             <span>Ignjat Jokanovic</span>
                         </Link>
@@ -33,12 +33,12 @@ export default function Settings() {
                     </div>
                    
                     <div>
-                        <Link href='/updateInfo'>
+                        <Link href='/updateinfo'>
                             Update basic info
                         </Link>
                     </div>
                     <div>
-                        <Link href='/changePassword'>
+                        <Link href='/changepassword'>
                             Change password
                         </Link>
                     </div>

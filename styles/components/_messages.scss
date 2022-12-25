@@ -1,5 +1,5 @@
 .messages-container{
-    position: absolute;
+    position: fixed;
     bottom: 1rem;
     right: 0;
     left: 0;
@@ -104,6 +104,7 @@
                         overflow-y: scroll;
                         width: 70%;
                         max-height: 2rem;
+                        text-align: left;
                     }
     
                     .controlls{

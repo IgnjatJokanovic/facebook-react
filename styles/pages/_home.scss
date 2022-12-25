@@ -87,3 +87,19 @@
     }
 
 }
+
+.home-container{
+    width: 50%;
+    margin: auto;
+    margin-top: 1rem;
+
+    @media only screen and (max-width: 1240px) {
+        width: 70%;
+    }
+
+    @media only screen and (max-width: 480px) {
+      
+        width: 100%;
+        
+    }
+}

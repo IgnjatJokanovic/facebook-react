@@ -3,6 +3,8 @@
 @import './components/loaders';
 @import './components/messages';
 @import './components/navbar';
+@import './pages/userProfile';
+@import './components/newPost';
 
 .error{
     color: $red !important;
@@ -11,4 +13,15 @@
 
 *{
     box-sizing: content-box;
+}
+
+.page-container{
+    padding-top: 5rem;
+    width: 80%;
+    margin: auto;
+
+    @media only screen and (max-width: 602px) {
+        width: 100%;
+        padding-top: 8rem;
+    }
 }

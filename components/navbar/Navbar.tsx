@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import FriendNotifications from './navbar/friends/FriendNotifications'
-import MessageNotifications from './navbar/messages/MessageNotifications'
-import Notifications from './navbar/notifications/Notifications'
-import Search from './navbar/search/Search'
-import Settings from './navbar/settings/Settings'
+import FriendNotifications from './friends/FriendNotifications'
+import MessageNotifications from './messages/MessageNotifications'
+import Notifications from './notifications/Notifications'
+import Search from './search/Search'
+import Settings from './settings/Settings'
 
 export default function Navbar() {
   return (
