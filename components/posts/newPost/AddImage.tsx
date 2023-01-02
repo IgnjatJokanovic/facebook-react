@@ -1,7 +1,8 @@
 import React from 'react'
+import Context from '../../../context/context';
 
 export default function AddImage({ post, setPost, openFile, refFile, updateImage }) {
-  
+  const ctx = React.useContext(Context);
 
 
   const getBase46 = (file) => {
@@ -25,7 +26,7 @@ export default function AddImage({ post, setPost, openFile, refFile, updateImage
           updateImage(base64);
         } else {
           //handle error
-          console.log('error')
+          ctx.setAlert('Please select a valid image', 'error')
         }
       }
       

@@ -10,6 +10,7 @@ import { getCookie } from 'cookies-next';
 import React from 'react'
 import Context from '../context/context'
 import ImageModal from '../components/ImageModal'
+import Alert from '../components/Alert'
 
 
 axios.defaults.baseURL = 'http://localhost';
@@ -46,15 +47,27 @@ export default function App({ Component, pageProps }: AppProps) {
     open: false
   });
 
+  const [alertObj, setAlertObj] = React.useState({
+    message: null,
+    state: ''
+  });
+
+  const setAlert = (message, state) => {
+    setAlertObj({
+      message: message,
+      state: state
+    });
+
+    setTimeout(() => {
+      setAlertObj({
+        message: null,
+        state: ''
+      });
+    }, 2000);
+};
+
 
   const refImg = React.useRef();
-
-  const toggleModal = e => {
-      if (refImg.current.contains(e.target)) {
-          return;
-      }
-      setImgObj({ ...imgObj, open: false});
-  };
 
   const toggleImage = () => {
       setImgObj({ ...imgObj, open: !imgObj.open});
@@ -66,9 +79,11 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Facebook</title>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" />
       </Head>
-      <Suspense fallback={ <Pageloader /> }>
+      <Suspense fallback={<Pageloader />}>
+        <Alert alertObj={alertObj} />
         <Context.Provider value={{
           setImgObj,
+          setAlert
         }}>
           <Navbar />
           <div className="page-container">
