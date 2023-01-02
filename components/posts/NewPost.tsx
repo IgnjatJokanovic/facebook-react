@@ -1,10 +1,12 @@
 import React from 'react'
+import OpeanbleImage from '../OpenableImage';
 import AddEmotion from './newPost/AddEmotion';
 import AddImage from './newPost/AddImage';
 import TagFriends from './newPost/TagFriends';
 
 export default function NewPost({ article, setArticle }) {
 
+    // Image handle
     const refFile = React.useRef(null);
     const openFile = () => {
         refFile.current.click();
@@ -33,7 +35,7 @@ export default function NewPost({ article, setArticle }) {
                             Delete
                         </span>  
                     </div>
-                    <img src={ article.image } alt="" />      
+                    <OpeanbleImage src={ article.image } alt="" />      
                 </div>      
             ) : "" }
             <div className="insert-options">

@@ -19,13 +19,16 @@ export default function AddImage({ post, setPost, openFile, refFile, updateImage
 
   const handleFileRead = async (e) => {
       const file = e.target.files[0];
-      if (file.type.match('image.*')) {
-        const base64 = await getBase46(file);
-        updateImage(base64);
-      } else {
-        //handle error
-        console.log('error')
+      if (file) {
+        if (file.type.match('image.*')) {
+          const base64 = await getBase46(file);
+          updateImage(base64);
+        } else {
+          //handle error
+          console.log('error')
+        }
       }
+      
       
   };
 

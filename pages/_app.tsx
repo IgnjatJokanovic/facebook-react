@@ -7,6 +7,10 @@ import MessagesContainer from '../components/messages/MessagesContainer'
 import Head from 'next/head'
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
+import React from 'react'
+import Context from '../context/context'
+import ImageModal from '../components/ImageModal'
+
 
 axios.defaults.baseURL = 'http://localhost';
 axios.defaults.withCredentials = false;
@@ -37,6 +41,25 @@ axios.interceptors.request.use(request => {
 
 export default function App({ Component, pageProps }: AppProps) {
 
+  const [imgObj, setImgObj] = React.useState({
+    src: "",
+    open: false
+  });
+
+
+  const refImg = React.useRef();
+
+  const toggleModal = e => {
+      if (refImg.current.contains(e.target)) {
+          return;
+      }
+      setImgObj({ ...imgObj, open: false});
+  };
+
+  const toggleImage = () => {
+      setImgObj({ ...imgObj, open: !imgObj.open});
+  }
+
   return (
     <>
       <Head>
@@ -44,11 +67,16 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" />
       </Head>
       <Suspense fallback={ <Pageloader /> }>
+        <Context.Provider value={{
+          setImgObj,
+        }}>
           <Navbar />
           <div className="page-container">
             <Component {...pageProps} className='main-container' />
           </div>
           <MessagesContainer />
+          <ImageModal open={imgObj.open} src={imgObj.src} togleFun={toggleImage} refImg={refImg}/>
+         </Context.Provider>
       </Suspense>
     </>
   )
