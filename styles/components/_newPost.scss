@@ -4,6 +4,33 @@
     border-radius: 5px;
     padding: 1rem;
     form{
+      .image-container{
+        border: 2px solid $white;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        position: relative;
+        .controlls{
+            position: absolute;
+            right: 0;
+            top: 12px;
+            span{
+                margin-right: 10px;
+                background-color: $darkGrey;
+                color: $white;
+                opacity: 0.75;
+                padding: 5px;
+                border-radius: 5px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+        }
+        // max-height: 3rem;
+        img{
+            width: 100%;
+            height: 9rem;
+
+        }
+      }
       .insert-options{
         display: flex;
         color: $white;
