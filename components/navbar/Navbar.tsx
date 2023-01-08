@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { isAuthenticated } from '../../helpers/helpers'
 import FriendNotifications from './friends/FriendNotifications'
 import MessageNotifications from './messages/MessageNotifications'
 import Notifications from './notifications/Notifications'
@@ -12,14 +13,17 @@ export default function Navbar() {
         <Link href="/">
           <img src="/logo.png" alt="facebook-logo" />
         </Link>
-        <Search />
+        { isAuthenticated() ?  ( <Search />) : null}
       </div>
-      <div className="navigation-container">
-        <FriendNotifications />
-        <MessageNotifications />
-        <Notifications />
-        <Settings />
-      </div>
+      {isAuthenticated() ? (
+        <div className="navigation-container">
+          <FriendNotifications />
+          <MessageNotifications />
+          <Notifications />
+          <Settings />
+        </div>
+      ) : null }
+      
     </div>
   )
 }

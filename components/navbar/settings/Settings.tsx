@@ -1,9 +1,13 @@
 import React from 'react'
 import Link from 'next/link'
+import { logout } from '../../../helpers/helpers';
+import { useRouter } from 'next/router';
 
 export default function Settings() {
     const refOption = React.useRef();
     const [open, setOpen] = React.useState(false);
+
+    const router = useRouter();
 
     const toggleNavOption = e => {
         if (refOption.current.contains(e.target)) {
@@ -11,6 +15,12 @@ export default function Settings() {
         }
         setOpen(false);
     };
+
+    const handleLogout = () => {
+        logout();
+        router.push("/");
+
+    }
 
     React.useEffect(() => {
         document.addEventListener("mousedown", toggleNavOption);
@@ -42,7 +52,7 @@ export default function Settings() {
                             Change password
                         </Link>
                     </div>
-                    <div className='logout'>
+                    <div className='logout' onClick={handleLogout}>
                         Logout
                     </div>
                 </div>

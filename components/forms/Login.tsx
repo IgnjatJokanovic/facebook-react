@@ -2,42 +2,32 @@ import axios from 'axios';
 import Link from 'next/link'
 import React from 'react'
 import { useForm } from "react-hook-form";
-import { getCookie } from 'cookies-next';
+import Context from '../../context/context';
+import { login } from '../../helpers/helpers';
+import { useRouter } from 'next/router';
+
+type LoginRequest = {
+  email: string;
+  password: string;
+}
 
 export default function Login({ setActiveForm }) {
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const router = useRouter();
+
+  const ctx = React.useContext(Context);
+
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>();
   
-  const onSubmit = data => {
+  const onSubmit = (data:LoginRequest) => {
     console.log(data)
 
-    axios.post('/login')
-      .then(res => console.log('login called'))
-      .catch(err => console.log(err));
-    
-    // axios.get('http://localhost/sanctum/csrf-cookie')
-    //   .then(res => {
-    //     // console.log(res.config.setC);
-    //     let csrf = getCookie('XSRF-TOKEN')
-    //     console.log(csrf);
-    //     axios.post('http://localhost/login', {
-    //       // withCredentials: true,
-    //       headers: {
-    //         'ContentType': 'application/json',
-    //         'Accept': 'application/json',
-    //         'X-Requested-With': 'XMLHttpRequest',
-    //         'X-XSRF-TOKEN': csrf
-    //       }
-    //     }).then(res =>  console.log('login called'))
-    //     .catch(err => console.log(err))
-    //   })
-    //   .catch(err => {
-    //     console.log("COOKIE")
-    //     console.log(err);
-    //   })
-      // axios.post('/login', data)
-      //   .then(res => console.log(res))
-      //   .catch(err => console.log(err));
+    axios.post('/auth/login', data )
+      .then(res => {
+        login(res.data.token);
+        router.push("/");
+      })
+      .catch(err => ctx.setAlert(err.response.data.error, 'error'));
     }
   return (
     <div className="form-container login">
