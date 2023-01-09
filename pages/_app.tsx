@@ -11,6 +11,7 @@ import React from 'react'
 import Context from '../context/context'
 import ImageModal from '../components/ImageModal'
 import Alert from '../components/Alert'
+import { isAuthenticated, fetchCookie } from '../helpers/helpers'
 
 
 axios.defaults.baseURL = 'http://localhost/api';
@@ -52,6 +53,9 @@ export default function App({ Component, pageProps }: AppProps) {
     state: ''
   });
 
+  const [authenticated, setauthenticated] = React.useState(false)
+  const [emojiList, setEmojiList] = React.useState([])
+
   const setAlert = (message, state) => {
     setAlertObj({
       message: message,
@@ -64,7 +68,26 @@ export default function App({ Component, pageProps }: AppProps) {
         state: ''
       });
     }, 2000);
-};
+  };
+
+
+
+  React.useEffect(() => {
+    const isLoggedIn = isAuthenticated();
+    setauthenticated(isLoggedIn)
+    if (isLoggedIn) {
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${fetchCookie()}`;
+
+      axios.get('/emojiList')
+        .then(res => {
+          setEmojiList(res.data);
+        }).catch(err => {
+          console.log(err);
+        })
+    }
+  }, [])
+  
 
 
   const refImg = React.useRef();
@@ -83,7 +106,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <Alert alertObj={alertObj} />
         <Context.Provider value={{
           setImgObj,
-          setAlert
+          setAlert,
+          emojiList,
+          authenticated
         }}>
           <Navbar />
           <div className="page-container">

@@ -1,10 +1,13 @@
 import React from 'react'
+import Context from '../../context/context';
 import OpeanbleImage from '../OpenableImage';
 import AddEmotion from './newPost/AddEmotion';
 import AddImage from './newPost/AddImage';
 import TagFriends from './newPost/TagFriends';
 
 export default function NewPost({ article, setArticle }) {
+
+    const ctx = React.useContext(Context);
 
     // Image handle
     const refFile = React.useRef(null);

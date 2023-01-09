@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import Context from '../../context/context';
 
 type RegisterRequest = {
-    name: string;
-    surname: string;
+    firstName: string;
+    lastName: string;
     birthday: string;
     email: string;
     password: string;
@@ -34,11 +34,11 @@ export default function Register({ setActiveForm }) {
         <div className="form-container register">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <h1>Create Account</h1>
-                <p>Already have account? <span onClick={() => setActiveForm("login")}>Login</span></p>
-                <input type="text" placeholder="First name" {...register("name", {required: "First name field is required",})} />
-                { errors.name && <span className='error'>{ errors.name.message }</span> }
-                <input type="text" placeholder="Last name" {...register("surname", {required: "Last name field is required",})} />
-                { errors.surname && <span className='error'>{ errors.surname.message }</span> }
+                <span>Already have account? <span onClick={() => setActiveForm("login")}>Login</span></span>
+                <input type="text" placeholder="First name" {...register("firstName", {required: "First name field is required",})} />
+                { errors.firstName && <span className='error'>{ errors.firstName.message }</span> }
+                <input type="text" placeholder="Last name" {...register("lastName", {required: "Last name field is required",})} />
+                { errors.lastName && <span className='error'>{ errors.lastName.message }</span> }
                 <span>Date of birth</span>
                 <input type="date" min={minDate.format("YYYY-MM-DD")} max={maxDate.format("YYYY-MM-DD")} {...register("birthday", {required: "Birthday field is required",})} />
                 { errors.birthday && <span className='error'>{ errors.birthday.message }</span> }

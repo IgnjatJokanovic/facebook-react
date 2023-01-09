@@ -32,7 +32,7 @@ export default function Search() {
   return (
     <form ref={refOption} onInput={e => search(e.target.value)}>
         <input type="text" placeholder='Search' defaultValue={searchParam}/>
-          <div className={open ? 'results active' : 'results'}>
+        <div className={open ? 'results active' : 'results'}>
             <SearchItem image='/logo.png' name='Ignjat' surname='Jokanovic' url='/user/1' close={() => reset}/>
         </div>
     </form>

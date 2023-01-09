@@ -44,7 +44,7 @@ export default function Login({ setActiveForm }) {
             <input type="password" placeholder="Password" {...register("password", {required: "Password field is required",})}/>
             { errors.password && <span className='error'>{ errors.password.message }</span> }
             <Link href={'/forgotPassword'}>Forgot your password?</Link>
-            <p>Dont have account? <span onClick={() => setActiveForm('register')}>Sign up</span></p>  
+            <span>Dont have account? <span onClick={() => setActiveForm('register')}>Sign up</span></span>  
             <button>Sign In</button>
         </form>
     </div>

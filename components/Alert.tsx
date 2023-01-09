@@ -9,7 +9,7 @@ export default function Alert({ alertObj }) {
                     : "alert alert--visible alert--danger"
             }
         >
-            <p>{alertObj.message}</p>
+            <div>{alertObj.message}</div>
         </div>
     ) : (
         <div
@@ -19,7 +19,7 @@ export default function Alert({ alertObj }) {
                     : "alert alert--danger"
             }
         >
-            <p>{alertObj.message}</p>
+            <div>{alertObj.message}</div>
         </div>
     )
 }

@@ -18,7 +18,11 @@ const logout = () => {
 }
 
 const getClaims = () => {
-    return jwt_decode(getCookie(tokenName));
+    return jwt_decode(fetchCookie());
+}
+
+const fetchCookie = () => {
+    return getCookie(tokenName);
 }
 
 const validateArticle = post => {
@@ -41,5 +45,6 @@ export {
     validateArticle,
     login,
     logout,
-    getClaims
+    getClaims,
+    fetchCookie
 }

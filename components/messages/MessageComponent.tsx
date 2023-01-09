@@ -19,7 +19,7 @@ export default function MessageComponent() {
         <div className="header">
               <div className="user">
                   <img src="https://dummyimage.com/300.png/09f/fff" alt="" />
-                  <p>Ignjat Jokanovic</p>
+                  <div>Ignjat Jokanovic</div>
               </div>
           <div className="navigation">
             <i className="fa fa-window-minimize" aria-hidden="true" onClick={() => setIsOpen(!isOpen)}></i>
