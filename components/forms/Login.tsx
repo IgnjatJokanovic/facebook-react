@@ -25,6 +25,7 @@ export default function Login({ setActiveForm }) {
     axios.post('/auth/login', data )
       .then(res => {
         login(res.data.token);
+        ctx.setauthenticated(true);
         router.push("/");
       })
       .catch(err => ctx.setAlert(err.response.data.error, 'error'));

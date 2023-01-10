@@ -2,8 +2,10 @@ import React from 'react'
 import Link from 'next/link'
 import { logout } from '../../../helpers/helpers';
 import { useRouter } from 'next/router';
+import Context from '../../../context/context';
 
 export default function Settings() {
+    const ctx = React.useContext(Context)
     const refOption = React.useRef();
     const [open, setOpen] = React.useState(false);
 
@@ -18,6 +20,7 @@ export default function Settings() {
 
     const handleLogout = () => {
         logout();
+        ctx.setauthenticated(false);
         router.push("/");
 
     }

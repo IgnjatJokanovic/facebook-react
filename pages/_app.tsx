@@ -1,7 +1,7 @@
 import '../styles/App.Module.scss'
 import type { AppProps } from 'next/app'
 import Navbar from '../components/navbar/Navbar'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import Pageloader from '../components/loaders/Pageloader'
 import MessagesContainer from '../components/messages/MessagesContainer'
 import Head from 'next/head'
@@ -55,6 +55,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const [authenticated, setauthenticated] = React.useState(false)
   const [emojiList, setEmojiList] = React.useState([])
+  const [emotions, setEmotions] = React.useState([])
 
   const setAlert = (message, state) => {
     setAlertObj({
@@ -82,11 +83,13 @@ export default function App({ Component, pageProps }: AppProps) {
       axios.get('/emojiList')
         .then(res => {
           setEmojiList(res.data);
+          var emts = res.data.filter(item => item.type === "emotion");
+          setEmotions(emts);
         }).catch(err => {
           console.log(err);
         })
     }
-  }, [])
+  }, [authenticated])
   
 
 
@@ -108,7 +111,9 @@ export default function App({ Component, pageProps }: AppProps) {
           setImgObj,
           setAlert,
           emojiList,
-          authenticated
+          authenticated,
+          setauthenticated,
+          emotions
         }}>
           <Navbar />
           <div className="page-container">

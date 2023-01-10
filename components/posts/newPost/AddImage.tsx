@@ -1,7 +1,7 @@
 import React from 'react'
 import Context from '../../../context/context';
 
-export default function AddImage({ post, setPost, openFile, refFile, updateImage }) {
+export default function AddImage({ openFile, refFile, updateImage }) {
   const ctx = React.useContext(Context);
 
 

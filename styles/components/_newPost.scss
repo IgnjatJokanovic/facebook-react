@@ -94,6 +94,59 @@
                         border-radius: 5px;
                         width: 90%;
                     }
+
+                    .emotion-container{
+                        display: flex;
+                        flex-wrap: wrap;
+                        color: $black;
+                        // gap: 2px;
+
+                        .emotion-item{
+                            cursor: pointer;
+                            flex: 50%;
+                            .wrapper{
+                                font-size: 1.2rem;
+                                padding: 10px;
+                                // margin: 10px 0;
+                                &.active{
+                                    border: 2px solid $darkGrey;
+                                    border-radius: 5px;
+                                }
+                                display: flex;
+                                gap: 10px;
+                                .description{
+                                    color: $black;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      }
+
+      .info-container{
+        display: flex;
+        gap: 1rem;
+        .image-container{
+            border: none;
+            img{
+                width: 4rem;
+                height: 4rem;
+                border-radius: 50%;
+            }
+
+            
+        }
+        .info{
+            color: $white;
+            span{
+                margin-left: 3px;
+            }
+            .bold{
+                font-weight: bold;
+                &.pointer{
+                    cursor: pointer;
                 }
             }
         }

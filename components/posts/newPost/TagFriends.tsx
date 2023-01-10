@@ -1,15 +1,14 @@
 import React from 'react'
 
-export default function TagFriends({ taged = [], setArticle }) {
+export default function TagFriends({ taged = [], setArticle, openTagged, setOpenTagged }) {
     const refOption = React.useRef();
-    const [open, setOpen] = React.useState(false);
     const [searchParam, setSearchParam] = React.useState('');
 
     const toggleNavOption = e => {
         if (refOption.current.contains(e.target)) {
             return;
         }
-        setOpen(false);
+        setOpenTagged(false);
     };
     const search = () => {
         console.log(searchParam)
@@ -26,9 +25,9 @@ export default function TagFriends({ taged = [], setArticle }) {
       <div ref={refOption} className='controll-item tag-friends'>
         <div className="icon-holder">
             <div className="dropdown-title">Tag friends</div>
-            <i onClick={e => setOpen(!open)} className="fas fa-user-tag"></i>
+            <i onClick={e => setOpenTagged(!openTagged)} className="fas fa-user-tag"></i>
         </div>
-          <div className={ open ? 'dropdown active' : 'dropdown' }>
+          <div className={ openTagged ? 'dropdown active' : 'dropdown' }>
               <input onChange={e => { setSearchParam(e.target.value) }} onKeyUp={ search } value={searchParam} className='search' type="text" placeholder='Search friends' />
             <div className="friend-options">
                 <div className="item">

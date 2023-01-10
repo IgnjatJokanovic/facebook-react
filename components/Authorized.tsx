@@ -1,9 +1,10 @@
 import React from 'react'
+import { getClaims } from '../helpers/helpers';
 import NewPost from './posts/NewPost'
 
 type Article = {
-  user_id: string|number|null;
-  posted_by: string|number|null;
+  owner: string|number|null;
+  creator: string|number|null;
   body: string|null;
   image: string|null;
   emotion: null;
@@ -11,9 +12,12 @@ type Article = {
 }
 
 export default function Authorized() {
-    const [newArticle, setNewArticle] = React.useState({
-        user_id: null,
-        posted_by: null,
+
+    const claims = getClaims();
+  
+    const [newArticle, setNewArticle] = React.useState<Article>({
+        owner: claims.id,
+        creator: claims.id,
         body: null,
         image: null,
         emotion: null,
@@ -21,7 +25,7 @@ export default function Authorized() {
     });
   return (
     <div className='home-container'>
-          <NewPost article={newArticle} setArticle={ setNewArticle } />
+      <NewPost article={newArticle} setArticle={setNewArticle} claims={ claims } />
     </div>
   )
 }
