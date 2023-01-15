@@ -75,3 +75,13 @@
 
     }
 }
+
+.hide-bar{
+    &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

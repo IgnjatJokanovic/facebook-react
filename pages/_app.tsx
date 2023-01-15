@@ -12,6 +12,7 @@ import Context from '../context/context'
 import ImageModal from '../components/ImageModal'
 import Alert from '../components/Alert'
 import { isAuthenticated, fetchCookie } from '../helpers/helpers'
+import { useRouter } from 'next/router';
 
 
 axios.defaults.baseURL = 'http://localhost/api';
@@ -43,6 +44,8 @@ axios.defaults.headers.common['Accept'] = 'application/json';
 
 export default function App({ Component, pageProps }: AppProps) {
 
+  const router = useRouter();
+
   const [imgObj, setImgObj] = React.useState({
     src: "",
     open: false
@@ -57,7 +60,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [emojiList, setEmojiList] = React.useState([])
   const [emotions, setEmotions] = React.useState([])
 
-  const setAlert = (message, state) => {
+  const setAlert = (message, state, redirect = null) => {
     setAlertObj({
       message: message,
       state: state
@@ -68,6 +71,10 @@ export default function App({ Component, pageProps }: AppProps) {
         message: null,
         state: ''
       });
+      if (redirect !== null) {
+        
+        router.push(redirect);
+      }
     }, 2000);
   };
 
