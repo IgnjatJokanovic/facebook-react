@@ -1,8 +1,8 @@
 .new-post-form{
     background-color: $darkGrey;
-    width: 100%;
     border-radius: 5px;
     padding: 1rem;
+    margin-bottom: 1rem;
     form{
       .image-container{
         border: 2px solid $white;
@@ -128,6 +128,13 @@
       .info-container{
         display: flex;
         gap: 1rem;
+      
+        a{
+            display: flex;
+            gap: 10px;
+            color: $white;
+            text-decoration: none;
+        }
         .image-container{
             border: none;
             img{

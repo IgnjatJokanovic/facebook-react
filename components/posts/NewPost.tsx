@@ -7,11 +7,14 @@ import AddEmotion from './newPost/AddEmotion';
 import AddImage from './newPost/AddImage';
 import TagFriends from './newPost/TagFriends';
 import ContentEditable from 'react-contenteditable'
+import { getClaims } from '../../helpers/helpers';
 
-export default function NewPost({ article, setArticle, claims }) {
+export default function NewPost({ article, setArticle, url, setOriginalPost = () => { } }) {
 
     const ctx = React.useContext(Context);
     const emojies = ctx.emojiList;
+
+    const claims = getClaims();
 
     const [openTagged, setOpenTagged] = React.useState(false);
     const [openEmoji, setOpenEmoji] = React.useState(false)
@@ -24,7 +27,18 @@ export default function NewPost({ article, setArticle, claims }) {
     }
 
     const updateImage = (image) => {
-        setArticle({...article, image: image});
+        let imageObj = article.image;
+        console.log(imageObj);
+
+        if (imageObj === null) {
+            imageObj = {
+                id: null,
+                src: null
+            }
+        }
+
+        imageObj.src = image;
+        setArticle({ ...article, image: imageObj });
     }
 
     const setBody = (body) => {
@@ -50,14 +64,18 @@ export default function NewPost({ article, setArticle, claims }) {
     
     const handleSubmit = () => {
         console.log(article);
-        if (article.id === null) {
-            axios.post('/post/create', article)
-                .then(res => {
-                    ctx.setAlert(res.data.msg, 'success', `/post/${res.data.id}`)
-                }).catch(err => {
-                    ctx.setAlert(err.response.data.error, 'error')
-                });
-        }
+    
+        axios.post(`/post/${url}`, article)
+            .then(res => {
+                ctx.setAlert(res.data.msg, 'success', `/post/${res.data.id}`);
+                if (res.data.post !== null) {
+                    setOriginalPost(res.data.post);
+                }
+                setArticle({});
+            }).catch(err => {
+                ctx.setAlert(err.response.data.error, 'error')
+            });
+        
     }
   return (
     <div className='new-post-form'>
@@ -69,10 +87,11 @@ export default function NewPost({ article, setArticle, claims }) {
                 <div className="image-container">
                     <Link href={`/user/${claims.id}`}>
                         <img src="/default_profile.png" alt="" />
+                        <span className='bold'>{`${claims.firstName} ${claims.lastName}`}</span> 
                     </Link>
                 </div>
                 <div className="info">
-                    <span className='bold'>{`${claims.firstName} ${claims.lastName}`}</span> 
+                    
                     {article.emotion != null ? (
                           <span><span dangerouslySetInnerHTML={{ __html: article.emotion.code }}></span> is feeling <span className='bold pointer' onClick={() => setOpenEmotions(!openEmotions)}>{ article.emotion.desctiption }</span></span>
                     ) : ''}
@@ -100,7 +119,7 @@ export default function NewPost({ article, setArticle, claims }) {
                     </div>
                 </div>  
             </div>
-            {article.image != null ? (
+            {article.image?.src != null ? (
                 <div className="image-container">
                     <div className="controlls">
                         <span onClick={openFile}>
@@ -110,7 +129,7 @@ export default function NewPost({ article, setArticle, claims }) {
                             Delete
                         </span>  
                     </div>
-                    <OpeanbleImage src={ article.image } alt="" />      
+                    <OpeanbleImage src={ article.image.src } alt="" />      
                 </div>      
             ) : "" }
             <div className="insert-options">

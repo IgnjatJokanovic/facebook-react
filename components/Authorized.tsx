@@ -7,7 +7,7 @@ type Article = {
   owner: string|number|null;
   creator: string|number|null;
   body: string|null;
-  image: string|null;
+  image: object;
   emotion: null;
   taged: [],
 }
@@ -21,13 +21,16 @@ export default function Authorized() {
         owner: claims.id,
         creator: claims.id,
         body: null,
-        image: null,
+        image: {
+          id: null,
+          src: null
+        },
         emotion: null,
         taged: [],
     });
   return (
     <div className='home-container'>
-      <NewPost article={newArticle} setArticle={setNewArticle} claims={ claims } />
+      <NewPost article={newArticle} setArticle={setNewArticle} url={'create'} />
     </div>
   )
 }
