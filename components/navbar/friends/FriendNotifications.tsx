@@ -1,9 +1,13 @@
 import React from 'react'
+import Context from '../../../context/context';
 import FriendItem from './FriendItem';
+import { ChannelList } from '../../../helpers/channels'
 
 export default function FriendNotifications() {
     const refOption = React.useRef();
     const [open, setOpen] = React.useState(false);
+    const ctx = React.useContext(Context);
+    const echo = ctx.echo;
 
     const toggleNavOption = e => {
         if (refOption.current.contains(e.target)) {
@@ -15,7 +19,13 @@ export default function FriendNotifications() {
     React.useEffect(() => {
         document.addEventListener("mousedown", toggleNavOption);
 
+        ctx.echo.channel(ChannelList.friends.channel)
+        .listen(ChannelList.friends.listen, (e) => {
+            console.log(e);
+        });
+
         return () => {
+            ctx.echo.leave('private-chat')
             document.removeEventListener("mousedown", toggleNavOption);
         };
     }, []);

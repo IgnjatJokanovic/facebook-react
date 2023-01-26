@@ -1,4 +1,5 @@
 import React from 'react'
+import { AlertObj } from '../types/types'
 
 export default function Alert({ alertObj }) {
     return alertObj.message != null ? (

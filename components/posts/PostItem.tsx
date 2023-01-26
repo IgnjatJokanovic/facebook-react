@@ -12,12 +12,17 @@ export default function PostItem({ post, isEditable = false, setArticle = () => 
 
   const refEdit = React.useRef();
 
-   const toggleEdit = e => {
-        if (refEdit.current.contains(e.target)) {
-            return;
-        }
-        setActiveEdit(false);
-    };
+  const toggleEdit = e => {
+      if (refEdit.current.contains(e.target)) {
+          return;
+      }
+      setActiveEdit(false);
+  };
+
+  const setEditArticle = () => {
+    var article = structuredClone(post);
+    setArticle(article);
+  }
 
     React.useEffect(() => {
         document.addEventListener("mousedown", toggleEdit);
@@ -34,7 +39,7 @@ export default function PostItem({ post, isEditable = false, setArticle = () => 
           <div className={activeEdit ? 'dropdown active' : 'dropdown'}>
             {post.owner.id === claims.id || post.creator.id === claims.id ? (
               <>
-                <div className='item' onClick={() => setArticle(post)}>Edit</div>
+                <div className='item' onClick={setEditArticle}>Edit</div>
                 <div className='item'>Delete</div>
               </>
             ): (

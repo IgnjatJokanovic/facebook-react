@@ -13,13 +13,20 @@ import ImageModal from '../components/ImageModal'
 import Alert from '../components/Alert'
 import { isAuthenticated, fetchCookie } from '../helpers/helpers'
 import { useRouter } from 'next/router';
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js'
+import { AlertObj } from '../types/types'
 
 
-axios.defaults.baseURL = 'http://localhost/api';
+
+
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_BACKEND_API;
 axios.defaults.withCredentials = false;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.headers.common['Accept'] = 'application/json';
+
 
 // axios.interceptors.request.use(request => {
 //       if (
@@ -51,7 +58,7 @@ export default function App({ Component, pageProps }: AppProps) {
     open: false
   });
 
-  const [alertObj, setAlertObj] = React.useState({
+  const [alertObj, setAlertObj] = React.useState<AlertObj>({
     message: null,
     state: ''
   });
@@ -59,6 +66,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [authenticated, setauthenticated] = React.useState(false)
   const [emojiList, setEmojiList] = React.useState([])
   const [emotions, setEmotions] = React.useState([])
+  const [echo, setEcho] = React.useState({})
 
   const setAlert = (message, state, redirect = null) => {
     setAlertObj({
@@ -78,14 +86,28 @@ export default function App({ Component, pageProps }: AppProps) {
     }, 2000);
   };
 
-
+  const channelOptions = {
+    broadcaster: 'pusher',
+    key: process.env.NEXT_PUBLIC_PUSHER_KEY,
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+    forceTLS: true,
+    authEndpoint: process.env.NEXT_PUBLIC_BACKEND_CHANNEL_AUTH
+  }
 
   React.useEffect(() => {
     const isLoggedIn = isAuthenticated();
-    setauthenticated(isLoggedIn)
+    setauthenticated(isLoggedIn);
+
     if (isLoggedIn) {
 
       axios.defaults.headers.common['Authorization'] = `Bearer ${fetchCookie()}`;
+
+      channelOptions.auth = {
+        headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + fetchCookie(),
+        }
+      }
 
       axios.get('/emojiList')
         .then(res => {
@@ -94,8 +116,16 @@ export default function App({ Component, pageProps }: AppProps) {
           setEmotions(emts);
         }).catch(err => {
           console.log(err);
-        })
+        });
     }
+
+    setEcho(
+      new Echo({
+        ...channelOptions,
+        client: new Pusher(channelOptions.key, channelOptions)
+      })
+    )
+    
   }, [authenticated])
   
 
@@ -120,7 +150,8 @@ export default function App({ Component, pageProps }: AppProps) {
           emojiList,
           authenticated,
           setauthenticated,
-          emotions
+          emotions,
+          echo
         }}>
           <Navbar />
           <div className="page-container">

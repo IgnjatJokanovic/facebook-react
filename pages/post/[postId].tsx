@@ -3,14 +3,15 @@ import { useRouter } from "next/router"
 import React from "react";
 import NewPost from "../../components/posts/NewPost";
 import PostItem from "../../components/posts/PostItem";
+import { Article } from "../../types/types";
 
 export default function Post() {
     const router = useRouter();
     const postId = router.query.postId;
 
-    const [post, setPost] = React.useState({})
+    const [post, setPost] = React.useState<Article>({})
 
-    const [editArticle, setEditArticle] = React.useState({});
+    const [editArticle, setEditArticle] = React.useState<Article>({});
 
     React.useEffect(() => {
 
