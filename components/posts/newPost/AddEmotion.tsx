@@ -45,7 +45,7 @@ export default function AddEmotion({ article, setArticle, openEmotions, setOpenE
                     <div className="emotion-item" key={i} onClick={() => update(item) }>
                         <div className={ article?.emotion?.id === item.id ? "wrapper active" : "wrapper"}>
                             <div dangerouslySetInnerHTML={{ __html: item.code }}></div>
-                            <div className='description'>{ item.desctiption }</div>
+                            <div className='description'>{ item.description }</div>
                         </div>
                     </div>
                 ))}

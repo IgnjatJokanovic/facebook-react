@@ -2,6 +2,7 @@ import React from 'react'
 import { getClaims } from '../helpers/helpers';
 import { Article } from '../types/types';
 import NewPost from './posts/NewPost'
+import axios from 'axios';
 
 // type Article = {
 //   id:    string|number|null;
@@ -15,7 +16,9 @@ import NewPost from './posts/NewPost'
 
 export default function Authorized() {
 
-    const claims = getClaims();
+  const claims = getClaims();
+
+  const [articles, setArticles] = React.useState([])
   
   const [newArticle, setNewArticle] = React.useState<Article>({
         id: null,
@@ -28,10 +31,23 @@ export default function Authorized() {
         },
         emotion: null,
         taged: [],
-    });
+  });
+  
+  React.useEffect(() => {
+    axios.get("post/")
+      .then(res => console.log(res.data))
+      .catch()
+  
+    return () => {
+      
+    }
+  }, [])
+  
+
   return (
     <div className='home-container'>
       <NewPost article={newArticle} setArticle={setNewArticle} url={'create'} />
+      <div className="posts-container"></div>
     </div>
   )
 }

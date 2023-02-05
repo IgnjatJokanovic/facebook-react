@@ -66,6 +66,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [authenticated, setauthenticated] = React.useState(false)
   const [emojiList, setEmojiList] = React.useState([])
   const [emotions, setEmotions] = React.useState([])
+  const [reactions, setReactions] = React.useState([])
   const [echo, setEcho] = React.useState({})
 
   const setAlert = (message, state, redirect = null) => {
@@ -113,18 +114,24 @@ export default function App({ Component, pageProps }: AppProps) {
         .then(res => {
           setEmojiList(res.data);
           var emts = res.data.filter(item => item.type === "emotion");
+          var reactions = res.data.filter(item => item.type === "reaction");
           setEmotions(emts);
+          setReactions(reactions);
         }).catch(err => {
           console.log(err);
         });
     }
 
-    setEcho(
-      new Echo({
-        ...channelOptions,
-        client: new Pusher(channelOptions.key, channelOptions)
-      })
-    )
+    // var echo = new Echo({
+    //   ...channelOptions,
+    //   client: new Pusher(channelOptions.key, channelOptions)
+    // });
+
+    // console.log('app', echo.options.auth);
+
+    // setEcho(
+    //   echo
+    // )
     
   }, [authenticated])
   
@@ -151,7 +158,8 @@ export default function App({ Component, pageProps }: AppProps) {
           authenticated,
           setauthenticated,
           emotions,
-          echo
+          reactions,
+          // echo
         }}>
           <Navbar />
           <div className="page-container">

@@ -10,7 +10,7 @@ const isAuthenticated = () => {
 
 
 const login = (jwt_token) => {
-    setCookie(tokenName, jwt_token);
+    setCookie(tokenName, jwt_token, { maxAge: 60 * 60 * 24 });
 }
 
 const logout = () => {
@@ -18,7 +18,7 @@ const logout = () => {
 }
 
 const getClaims = () => {
-    return jwt_decode(fetchCookie());
+    return isAuthenticated() ? jwt_decode(fetchCookie()) : null;
 }
 
 const fetchCookie = () => {

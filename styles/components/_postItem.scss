@@ -96,6 +96,64 @@
         color: $white;
         margin: 10px 0;
     }
+
+    .info-container{
+        display: flex;
+        .reactions{
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            .container{
+                display: flex;
+            }
+            .counter{
+                color: $white;
+                font-weight: bold;
+            }
+        }
+
+    }
+
+    .actions-container{
+        display: flex;
+        justify-content: space-between;
+        border-top: 2px solid $white;
+        border-bottom: 2px solid $white;
+        padding: 0.7rem;
+        position: relative;
+        .react{
+            &:hover{
+                .dropdown{
+                    display: block;
+                }
+            }
+            .dropdown{
+                position: absolute;
+                display: none;
+                background-color: $grey;
+                padding: 10px;
+                border-radius: 5px;
+                bottom: 2.1rem;
+                left: 0;
+
+                .container{
+                    display: flex;
+                    gap: 10px;
+                    .emoji-item{
+                        &:hover{
+                            transform: scale(2,2);
+                        }
+                    }
+                }
+            }
+        }
+        .item{
+            font-size: 1.3rem;
+            color: $white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    }
     
 }
 

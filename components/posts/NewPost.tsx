@@ -93,10 +93,10 @@ export default function NewPost({ article, setArticle, url, setOriginalPost = ()
                 <div className="info">
                     
                     {article.emotion != null ? (
-                          <span><span dangerouslySetInnerHTML={{ __html: article.emotion.code }}></span> is feeling <span className='bold pointer' onClick={() => setOpenEmotions(!openEmotions)}>{ article.emotion.desctiption }</span></span>
+                          <span><span dangerouslySetInnerHTML={{ __html: article.emotion.code }}></span> is feeling <span className='bold pointer' onClick={() => setOpenEmotions(!openEmotions)}>{ article.emotion.description }</span></span>
                     ) : ''}
                     {article.tagged != null ? (
-                          <span><span dangerouslySetInnerHTML={{ __html: article.emotion.code }}></span> is feeling <span className='bold pointer'>{ article.emotion.desctiption }</span></span>
+                          <span><span dangerouslySetInnerHTML={{ __html: article.emotion.code }}></span> is feeling <span className='bold pointer'>{ article.emotion.description }</span></span>
                     ) : ''}  
                 </div>    
             </div>
