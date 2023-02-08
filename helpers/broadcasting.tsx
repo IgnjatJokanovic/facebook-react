@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { useEffect } from 'react';
@@ -35,6 +36,8 @@ function createSocketConnection() {
           ...channelOptions,
           client: new Pusher(channelOptions.key, channelOptions)
       });
+
+      axios.defaults.headers.common['X-Socket-Id'] = window.Echo.socketId();
     }
 
     if (typeof window.Echo.options.auth === 'undefined' && isAuthenticated()) {

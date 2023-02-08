@@ -120,18 +120,26 @@ export default function App({ Component, pageProps }: AppProps) {
         }).catch(err => {
           console.log(err);
         });
+      
+      var echo = new Echo({
+        ...channelOptions,
+        client: new Pusher(channelOptions.key, channelOptions)
+      });
+
+      axios.defaults.headers.common['X-Socket-Id'] = echo.socketId();
+
+      setEcho(
+        echo
+      )
+
+      // console.log(echo)
     }
 
-    // var echo = new Echo({
-    //   ...channelOptions,
-    //   client: new Pusher(channelOptions.key, channelOptions)
-    // });
+    
 
     // console.log('app', echo.options.auth);
 
-    // setEcho(
-    //   echo
-    // )
+   
     
   }, [authenticated])
   
@@ -159,7 +167,7 @@ export default function App({ Component, pageProps }: AppProps) {
           setauthenticated,
           emotions,
           reactions,
-          // echo
+          echo
         }}>
           <Navbar />
           <div className="page-container">

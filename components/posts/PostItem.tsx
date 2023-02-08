@@ -1,12 +1,13 @@
 import moment from 'moment'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import Context from '../../context/context';
 import { ChannelList } from '../../helpers/channels';
 import { getClaims } from '../../helpers/helpers';
 import OpenableImage from '../OpenableImage';
 import axios from 'axios';
 import { useSocket } from '../../helpers/broadcasting';
+import { CLIENT_RENEG_LIMIT } from 'tls';
 
 export default function PostItem({ post, setPost, isEditable = false, setArticle = () => { } }) {
   const createdAt = moment(post.created_at).diff(moment(), 'days') > 7 ? moment(post.created_at).format('d. MMM, YYYY') : moment(post.created_at).fromNow();
@@ -17,6 +18,7 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
   
   const [activeEdit, setActiveEdit] = React.useState(false);
   const [reactionsCount, setReactionsCount] = React.useState(0);
+  const [distinctReactions, setDistinctReactions] = React.useState([])
 
   const refEdit = React.useRef();
 
@@ -41,49 +43,41 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
       .catch();
   }
 
-  const test = (test) => {
-    console.log('test');
+  const handleChanChange = (e) => {
+    var curr = post.distinct_reactions;
+    var rtc = e.reaction.emotion;
+    var index = curr.findIndex(obj => obj.id === rtc.id);
+    console.log(e)
+    
+    if (e.action === 'add') {
+      var exists = curr.filter(item => item.id === rtc.id).length <= 0;
+      console.log('existingIndex', exists, curr, rtc.id);
+      // Handle ADD
+      if (exists) {
+        rtc.reaction_count = 1;
+        curr.push(rtc)
+       
+      } else {
+        // Handle Change
+        curr[index].reaction_count += 1;
+        
+      }
+
+      setPost({ ...post, distinct_reactions: curr })
+    } else {
+      var newCount = curr[index].reaction_count -= 1;
+      if (newCount <= 0) {
+        curr.splice(index, 1);
+      } else {
+        curr[index].reaction_count = newCount
+      }
+    }
+
+    setPost({ ...post, distinct_reactions: curr })
+
+
   }
-
-  // const handleChanChange = (e) => {
-  //   var reactions = post.distinct_reactions;
-  //   console.log(e)
-  //   if (e.action === 'add') {
-      
-  //     if (reactions.filter(item => item.id === e.reaction.emotion.id).length <= 0) {
-  //       var apendable = e.reaction.emotion;
-  //       apendable.reaction_count = 1;
-  //       reactions.push(apendable);
-  //       setPost({ ...post, distinct_reactions: reactions });
-  //     } else {
-  //       var existingIndex = reactions.findIndex(item => item.id == e.reaction.emotion.id);
-  //       var newObj = reactions[existingIndex];
-  //       newObj.reaction_count += 1;
   
-  //       reactions[existingIndex] = newObj;
-  
-  //       setPost({...post, distinct_reactions: reactions});
-  //     }
-
-     
-  //     // reactions.push()
-  //     // setArticle(...setArticle, )
-  //   } else {
-  //     var curr = reactions.filter(item => item.id === e.reaction.emotion.id);
-  //     var newCount = curr.reaction_count - 1;
-  //     var index = reactions.findIndex(item => item.id == e.reaction.emotion.id);
-  //     if (newCount <= 0) {
-  //       reactions.splice(index, 1);
-  //     } else {
-  //       curr.reaction_count = newCount;
-  //       reactions[index] = curr;
-  //     }
-
-  //     setPost({...post, distinct_reactions: reactions});
-  //   }
-  // }
-
-
 
   // useSocket({
   //   channel: `${ChannelList.postReaction.channel}${post.id}`,
@@ -100,46 +94,32 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
           document.addEventListener("mousedown", toggleEdit);
         }
           // RADI NE DIRAJ
-        // var chan = `${ChannelList.postReaction.channel}${post.id}`
-        // ctx.echo.channel(chan)
-        // .listen(ChannelList.postReaction.listen, (e) => {
-        //     if(e.action === 'add'){
-        //       var reactions = post.distinct_reactions;
-        //       if (reactions.filter(item => item.id === e.reaction.emotion.id).length <= 0) {
-        //         var apendable = e.reaction.emotion;
-        //         apendable.reaction_count = 1;
-        //         reactions.push(apendable);
-        //         setPost({...post, distinct_reactions: reactions});
-        //       }
-
-        //       var existingIndex = reactions.findIndex(item => item.id == e.reaction.emotion.id);
-        //       var newObj = reactions[existingIndex];
-        //       newObj.reaction_count += 1;
-
-        //       reactions[existingIndex] = newObj;
-
-        //       setPost({...post, distinct_reactions: reactions});
-        //       // reactions.push()
-        //       // setArticle(...setArticle, )
-        //     }
-        //     console.log(e)
-        // });
+        
+    
+        ctx.echo.channel(`${ChannelList.postReaction.channel}${post.id}`).listen(ChannelList.postReaction.listen, (e) => {
+          handleChanChange(e);
+        });
+      
+        console.log('listening')
+        var x = post.distinct_reactions;
+        setDistinctReactions(x);
       
         
       
-        if(post.distinct_reactions.length) {
-          var reactions = post.distinct_reactions;
-          var rctCount = reactions.reduce(function (acc, obj) { return acc + obj.reaction_count; }, 0);
-          console.log('test');
-          setReactionsCount(rctCount);
+        // if(post.distinct_reactions.length) {
+        //   var reactions = post.distinct_reactions;
+        //   var rctCount = reactions.reduce(function (acc, obj) { return acc + obj.reaction_count; }, 0);
+        //   console.log('test');
+        //   setReactionsCount(rctCount);
          
-        }
+        // }
 
         return () => {
-            // ctx.echo.leave(chan)
+            ctx.echo.leave(`${ChannelList.postReaction.channel}${post.id}`)
+            console.log('leaving')
             document.removeEventListener("mousedown", toggleEdit);
         };
-    }, [reactionsCount]);
+    }, []);
   
   return (
     <div className="single-post-container">
@@ -201,16 +181,16 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
         )}
       </div>
       <div className="info-container">
-        {post.distinct_reactions.length ? (
+        { post.distinct_reactions.length ? (
           <div className="reactions">
             <div className="container">
-              {post.distinct_reactions.map((item, i) => (
+              { post.distinct_reactions.map((item, i) => (
                 <div className="reaction-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }}>
                 </div>
               ))}
             </div>
             <div className="counter">
-              {post.distinct_reactions.reduce(function (acc, obj) { return acc + obj.reaction_count; }, 0)}
+              { post.distinct_reactions.reduce(function (acc, obj) { return acc + obj.reaction_count; }, 0)}
             </div>
           </div>
         ): null}
