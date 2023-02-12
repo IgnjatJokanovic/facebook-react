@@ -4,12 +4,20 @@ import Posts from '../../components/userProfile/posts/Posts'
 import Photos from '../../components/userProfile/photos/Photos'
 import Friends from '../../components/userProfile/firends/Friends'
 import Information from '../../components/userProfile/information/Information'
+import Context from '../../context/context'
+import OpenableImage from '../../components/OpenableImage'
+import axios from 'axios'
+import { getClaims } from '../../helpers/helpers'
 
 export default function UserProfile() {
+  const ctx = React.useContext(Context);
   const defaultCover = "/default_cover.png"
   const defaultProfile = "/default_profile.png"
+  const claims = getClaims();
 
-   const refDropdown = React.useRef();
+  const [user, setUser] = React.useState({})
+
+  const refDropdown = React.useRef();
   
   const [open, setOpen] = React.useState(false)
   const img = null
@@ -37,10 +45,87 @@ export default function UserProfile() {
     }
   }
 
+  const addFriend = () => {
+    axios.post('/friend/add', { to: user.id })
+      .then(res => {
+        setUser({ ...user, isFriends: res.data.data })
+        ctx.setAlert(res.data.msg, 'success')
+      })
+      .catch(err => {
+        ctx.setAlert(err.response.data, 'error');
+      })
+  }
+
+  const removeFriend = (msg = "Removed friend") => {
+    axios.post('/friend/decline', { id: user.id })
+      .then(res => {
+        console.log(1, msg)
+        setUser({ ...user, isFriends: null })
+        ctx.setAlert(msg, 'success')
+      })
+      .catch(err => {
+        ctx.setAlert(err.response.data, 'error');
+      })
+  }
+
+  const accept = () => {
+    axios.post('friend/accept', {id: user.id})
+      .then(res => {
+        let isFriends = user.isFriends;
+        isFriends.accepted = true;
+        setUser({...user, isFriends: isFriends})
+        ctx.setAlert(res.data, 'success')
+      })
+      .catch(err => {
+        ctx.setAlert(err.response.data, 'error');
+      });
+  }
+
+  const changeCoverPhoto = () => {
+    axios.post('/friend/add', { id: claims.id })
+      .then(res => {
+        let isFriends = user.id;
+      })
+      .catch(err => {
+
+      })
+  }
+
+  const changeProfilePhoto = () => {
+    axios.post('/friend/add', { id: claims.id })
+      .then(res => {
+            
+      })
+      .catch(err => {
+        
+      })
+  }
+
+  const imagePreview = (src) => {
+    ctx.setImgObj({
+        src: src,
+        open: true
+    });
+  console.log(src);
+  }
+
   React.useEffect(() => {
 
+    if (!userId) {
+      return;
+    }
+
+    axios.get(`/user/show/${userId}`)
+      .then(res => {
+        setUser(res.data);
+        console.log("data", res.data)
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
     renderContent()
-  
+    console.log('userId', userId)
     document.addEventListener("mousedown", toggleOpen);
 
     return () => {
@@ -51,25 +136,83 @@ export default function UserProfile() {
   return (
     <div className='user-profile-container'>
       <div className="cover-photo-container">
-        <div className="cover-pohoto" style={{ '--bg-image': `url('${img ?? defaultCover}')` }}></div>
+        <div onClick={() => imagePreview(img ?? defaultCover)} className="cover-pohoto" style={{ '--bg-image': `url('${img ?? defaultCover}')` }}></div>
         <div className="profile-picture-container">
           <div className="img">
-            <img src={img ?? defaultProfile} alt="" />
+            <OpenableImage src={img ?? defaultProfile} alt="" />
             <div className="info">
               Ignjat Jokanovic
             </div>
           </div>
-          <div className="buttons" ref={refDropdown}>
-            <div className={open ? 'dropdown active' : 'dropdown'}>
-              <div className="button">
-                Send friend request
+          {ctx.authenticated ? (
+            <div className="buttons" ref={refDropdown}>
+              <div className={open ? 'dropdown active' : 'dropdown'}>
+                {
+                  (() => {
+                      if (claims.id === user.id)
+                          return (
+                            <>
+                              <div onClick={changeCoverPhoto} className="button">
+                                Change cover photo
+                              </div>
+                              <div onClick={changeProfilePhoto} className="button">
+                                Change profile photo
+                              </div>
+                            </>
+                          )
+                      if (user.isFriends === null)
+                          return (
+                            <>
+                              <div onClick={addFriend} className="button">
+                                Add friend
+                              </div>
+                                <div className="button">
+                                Send Message
+                              </div>
+                            </>
+                          )
+                      if (user.isFriends?.from === claims.id)
+                        return (
+                          <>
+                            <div onClick={() => removeFriend()} className="button">
+                              {user.isFriends?.accepted ? "Remove friend" : "Cancel request"}
+                            </div>
+                            <div className="button">
+                              Send Message
+                            </div>
+                          </>
+                        )
+                      if (user.isFriends?.from !== claims.id && user.isFriends?.accepted)
+                      return (
+                        <>
+                          <div onClick={() => removeFriend()} className="button">
+                            Remove friend
+                          </div>
+                          <div className="button">
+                            Send Message
+                          </div>
+                        </>
+                      )
+                      else
+                        return (
+                          <>
+                            <div onClick={accept} className="button">
+                              Accept
+                            </div>
+                            <div onClick={() => removeFriend("Declined friend request")} className="button">
+                              Decline
+                            </div>
+                            <div className="button">
+                              Send Message
+                            </div>
+                          </>
+                        )
+                  })()
+                }
               </div>
-              <div className="button">
-                Send friend request
-              </div>
-            </div>
-            <span onClick={() => setOpen(!open)}>...</span>
-          </div> 
+              <span onClick={() => setOpen(!open)}>...</span>
+            </div> 
+          ): null}
         </div>
       </div>
       <div className="navigation">

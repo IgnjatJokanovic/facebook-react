@@ -18,7 +18,9 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
   
   const [activeEdit, setActiveEdit] = React.useState(false);
   const [reactionsCount, setReactionsCount] = React.useState(0);
-  const [distinctReactions, setDistinctReactions] = React.useState([])
+
+  const [distinctReactions, setDistinctReactions] = React.useState(post.distinct_reactions)
+  const [currentUserReaction, setCurrentUserReaction] = React.useState(post.currentUserReaction)
 
   const refEdit = React.useRef();
 
@@ -38,19 +40,19 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
     axios.post('/reaction/create', { reaction_id: id, post_id: post.id })
       .then(res => {
         ctx.setAlert(res.data.msg, 'success')
-        setPost({...post, currentUserReaction: res.data.data})
+        setCurrentUserReaction(res.data.data);
       })
       .catch();
   }
 
   const handleChanChange = (e) => {
-    var curr = post.distinct_reactions;
-    var rtc = e.reaction.emotion;
-    var index = curr.findIndex(obj => obj.id === rtc.id);
-    console.log(e)
+    let curr = [...distinctReactions];
+    let rtc = e.reaction.emotion;
+    let index = curr.findIndex(obj => obj.id === rtc.id);
+    console.log(e, curr);
     
     if (e.action === 'add') {
-      var exists = curr.filter(item => item.id === rtc.id).length <= 0;
+      let exists = curr.filter(item => item.id === rtc.id).length <= 0;
       console.log('existingIndex', exists, curr, rtc.id);
       // Handle ADD
       if (exists) {
@@ -63,9 +65,8 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
         
       }
 
-      setPost({ ...post, distinct_reactions: curr })
     } else {
-      var newCount = curr[index].reaction_count -= 1;
+      let newCount = curr[index].reaction_count -= 1;
       if (newCount <= 0) {
         curr.splice(index, 1);
       } else {
@@ -73,7 +74,7 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
       }
     }
 
-    setPost({ ...post, distinct_reactions: curr })
+    setDistinctReactions(curr);
 
 
   }
@@ -93,7 +94,6 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
         if (ctx.authenticated && post.owner.id === claims?.id || post.creator.id === claims?.id) {
           document.addEventListener("mousedown", toggleEdit);
         }
-          // RADI NE DIRAJ
         
     
         ctx.echo.channel(`${ChannelList.postReaction.channel}${post.id}`).listen(ChannelList.postReaction.listen, (e) => {
@@ -101,18 +101,6 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
         });
       
         console.log('listening')
-        var x = post.distinct_reactions;
-        setDistinctReactions(x);
-      
-        
-      
-        // if(post.distinct_reactions.length) {
-        //   var reactions = post.distinct_reactions;
-        //   var rctCount = reactions.reduce(function (acc, obj) { return acc + obj.reaction_count; }, 0);
-        //   console.log('test');
-        //   setReactionsCount(rctCount);
-         
-        // }
 
         return () => {
             ctx.echo.leave(`${ChannelList.postReaction.channel}${post.id}`)
@@ -181,19 +169,19 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
         )}
       </div>
       <div className="info-container">
-        { post.distinct_reactions.length ? (
+        {!!distinctReactions.length && (
           <div className="reactions">
             <div className="container">
-              { post.distinct_reactions.map((item, i) => (
+              { distinctReactions.map((item, i) => (
                 <div className="reaction-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }}>
                 </div>
               ))}
             </div>
             <div className="counter">
-              { post.distinct_reactions.reduce(function (acc, obj) { return acc + obj.reaction_count; }, 0)}
+              { distinctReactions.reduce(function (acc, obj) { return acc + obj.reaction_count; }, 0)}
             </div>
           </div>
-        ): null}
+        )}
         <div className="comments"></div>
       </div>
       <div className="actions-container">
@@ -208,10 +196,10 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
               </div>
             </div>
           )}
-        {post.currentUserReaction === null ? (
+        {currentUserReaction === null ? (
           <span>React</span>
         ): (
-          <span onClick={() => handleReact(post.currentUserReaction.emotion.id) }><span dangerouslySetInnerHTML={{ __html: post.currentUserReaction.emotion.code }}></span> {post.currentUserReaction.emotion.description}</span>
+          <span onClick={() => handleReact(currentUserReaction.emotion.id) }><span dangerouslySetInnerHTML={{ __html: currentUserReaction.emotion.code }}></span> {currentUserReaction.emotion.description}</span>
         )}
         </div>
         <div className="Comment item">

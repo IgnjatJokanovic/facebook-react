@@ -1,7 +1,7 @@
 var ChannelList = {
     friends: {
-        channel: "private-chat",
-        listen: ".friends"
+        channel: "friendRequestSent.",
+        listen: ".recieved"
     },
     postReaction: {
         channel: "postReaction.",

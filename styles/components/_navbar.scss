@@ -159,6 +159,14 @@
                 display: block;
             }
 
+            .zero-notifications{
+                text-align: center;
+                padding: 1rem;
+                color: $white;
+                font-size: 1rem;
+                font-weight: bold;
+            }
+
             .item{
                 display: flex;
                 align-items: center;
@@ -167,11 +175,37 @@
                 border-radius: 5px;
                 padding: 5px;
                 margin-top: 10px;
+                &.friend-item{
+                    justify-content: space-between;
+                    .actions{
+                        display: flex;
+                        gap: 1rem;
+                    }
+                }
+                &.unread{
+                    box-shadow: 0px 0px 10px 1px rgb(8 8 255);
+                }
                 img{
                     width: 4rem;
                     border-radius: 50%;
                     margin-right: 10px;
 
+                }
+                .link{
+                    display: flex;
+                    align-items: center;
+                    text-decoration: none;
+                    color: $black;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    font-weight: bold;
+                    cursor: pointer;
+                    span{
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                    }
                 }
                 a{
                     display: flex;
