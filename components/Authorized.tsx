@@ -1,6 +1,6 @@
 import React from 'react'
 import { getClaims } from '../helpers/helpers';
-import { Article } from '../types/types';
+import { Article, AuthUser } from '../types/types';
 import NewPost from './posts/NewPost'
 import axios from 'axios';
 
@@ -16,7 +16,7 @@ import axios from 'axios';
 
 export default function Authorized() {
 
-  const claims = getClaims();
+  const claims: AuthUser|null = getClaims();
 
   const [articles, setArticles] = React.useState([])
   

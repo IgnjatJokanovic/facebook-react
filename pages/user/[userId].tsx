@@ -15,13 +15,15 @@ export default function UserProfile() {
   const defaultProfile = "/default_profile.png"
   const claims = getClaims();
 
+  const router = useRouter()
+
   const [user, setUser] = React.useState({})
 
   const refDropdown = React.useRef();
   
   const [open, setOpen] = React.useState(false)
   const img = null
-  const userId = useRouter().query.userId;
+  const userId = router.query.userId;
   const [navigationOption, setNavigationOption] = React.useState('posts')
 
   const toggleOpen = e => {
@@ -121,7 +123,7 @@ export default function UserProfile() {
         console.log("data", res.data)
       })
       .catch(err => {
-        console.log(err);
+        router.push('/404/user')
       });
 
     renderContent()
@@ -141,7 +143,7 @@ export default function UserProfile() {
           <div className="img">
             <OpenableImage src={img ?? defaultProfile} alt="" />
             <div className="info">
-              Ignjat Jokanovic
+              {user.firstName} {user.lastName}
             </div>
           </div>
           {ctx.authenticated ? (

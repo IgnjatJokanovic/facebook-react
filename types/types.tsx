@@ -9,11 +9,18 @@ export type Article = {
 }
 
 export type User = {
-    id: string,
+    id: number,
     firstName: string,
     lastName: string,
-    email: string,
     birthday: string
+}
+
+export type AuthUser = {
+    id: number,
+    firstName: string,
+    lastName: string,
+    birthday: string,
+    email:   string
 }
 
 export type AlertObj = {

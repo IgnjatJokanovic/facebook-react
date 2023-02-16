@@ -26,7 +26,7 @@ export default function Post() {
                 setPost(res.data);
             })
             .catch(err => {
-                
+                router.push('/404/post')
             });
         
     }, [postId])
