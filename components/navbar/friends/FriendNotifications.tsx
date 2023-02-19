@@ -34,7 +34,7 @@ export default function FriendNotifications() {
             handleChanChange(e.user);
         });
         
-        axios.get('friend/notifications')
+        axios.get('friend/pending')
             .then(res => {
                 setFriendRequests(res.data.data)
                 console.log(res.data.data);

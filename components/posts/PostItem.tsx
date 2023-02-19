@@ -9,7 +9,7 @@ import axios from 'axios';
 import { useSocket } from '../../helpers/broadcasting';
 import { CLIENT_RENEG_LIMIT } from 'tls';
 
-export default function PostItem({ post, setPost, isEditable = false, setArticle = () => { } }) {
+export default function PostItem({ post, isEditable = false, setArticle = (obj) => { }, deleteCallback = () => {} }) {
   const createdAt = moment(post.created_at).diff(moment(), 'days') > 7 ? moment(post.created_at).format('d. MMM, YYYY') : moment(post.created_at).fromNow();
   const claims = getClaims();
 
@@ -45,38 +45,17 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
       .catch();
   }
 
-  const handleChanChange = (e) => {
-    let curr = [...distinctReactions];
-    let rtc = e.reaction.emotion;
-    let index = curr.findIndex(obj => obj.id === rtc.id);
-    console.log(e, curr);
-    
-    if (e.action === 'add') {
-      let exists = curr.filter(item => item.id === rtc.id).length <= 0;
-      console.log('existingIndex', exists, curr, rtc.id);
-      // Handle ADD
-      if (exists) {
-        rtc.reaction_count = 1;
-        curr.push(rtc)
-       
-      } else {
-        // Handle Change
-        curr[index].reaction_count += 1;
-        
-      }
-
-    } else {
-      let newCount = curr[index].reaction_count -= 1;
-      if (newCount <= 0) {
-        curr.splice(index, 1);
-      } else {
-        curr[index].reaction_count = newCount
-      }
-    }
-
-    setDistinctReactions(curr);
 
 
+  const deletePost = () => {
+    axios.post('/post/delete', { id: post.id })
+         .then(res => {
+           ctx.setAlert(res.data.msg, 'success');
+           deleteCallback();
+         })
+         .catch(err => {
+          
+         })
   }
   
 
@@ -94,6 +73,40 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
         if (ctx.authenticated && post.owner.id === claims?.id || post.creator.id === claims?.id) {
           document.addEventListener("mousedown", toggleEdit);
         }
+      
+        const handleChanChange = (e: { reaction: { emotion: any; }; action: string; }) => {
+          let curr = [...distinctReactions];
+          let rtc = e.reaction.emotion;
+          let index = curr.findIndex(obj => obj.id === rtc.id);
+          console.log(e, curr);
+          
+          if (e.action === 'add') {
+            let exists = curr.filter(item => item.id === rtc.id).length <= 0;
+            console.log('existingIndex', exists, curr, rtc.id);
+            // Handle ADD
+            if (exists) {
+              rtc.reaction_count = 1;
+              curr.push(rtc)
+             
+            } else {
+              // Handle Change
+              curr[index].reaction_count += 1;
+              
+            }
+      
+          } else {
+            let newCount = curr[index].reaction_count -= 1;
+            if (newCount <= 0) {
+              curr.splice(index, 1);
+            } else {
+              curr[index].reaction_count = newCount
+            }
+          }
+      
+          setDistinctReactions(curr);
+      
+      
+        }
         
     
         ctx.echo.channel(`${ChannelList.postReaction.channel}${post.id}`).listen(ChannelList.postReaction.listen, (e) => {
@@ -107,21 +120,29 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
             console.log('leaving')
             document.removeEventListener("mousedown", toggleEdit);
         };
-    }, []);
+    }, [claims?.id, ctx.authenticated, ctx.echo, post.owner.id, post.creator.id, post.id, distinctReactions]);
   
   return (
     <div className="single-post-container">
       {!!ctx.authenticated && (
-        isEditable && (post.owner.id === claims?.id || post.creator.id === claims?.id) ? (
+         post.owner.id === claims?.id || post.creator.id === claims?.id ? (
           <div className="post-actions" ref={refEdit}>
             <div className={activeEdit ? 'dropdown active' : 'dropdown'}>
               {post.owner.id === claims.id || post.creator.id === claims.id ? (
                 <>
-                  <div className='item' onClick={setEditArticle}>Edit</div>
-                  <div className='item'>Delete</div>
+                  {post.creator.id === claims?.id && post.image ? (
+                    <>
+                      <div className='item'>Set profile photo</div>
+                      <div className='item'>Set cover photo</div>
+                    </>
+                  ) : null}
+                  {isEditable ? (
+                     <div className='item' onClick={setEditArticle}>Edit</div>
+                  ) : null}
+                  <div className='item' onClick={deletePost}>Delete</div>
                 </>
               ): (
-                <div className='item'>Delete</div>
+                <div className='item' onClick={deletePost}>Delete</div>
               )}
             </div>
             <i className="fa fa-ellipsis-v" aria-hidden="true" onClick={() => setActiveEdit(!activeEdit)}></i>
@@ -142,8 +163,8 @@ export default function PostItem({ post, setPost, isEditable = false, setArticle
                   <span>{post.creator.firstName} {post.creator.lastName}</span>  
               </Link>
               <i className="fa-solid fa-caret-right"></i>
-              <Link href={`/user/${post.creator.id}`}>
-                {post.creator.firstName} {post.creator.lastName}
+              <Link href={`/user/${post.owner.id}`}>
+                {post.owner.firstName} {post.owner.lastName}
               </Link>
             </>
           )}

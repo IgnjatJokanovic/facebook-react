@@ -174,7 +174,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="page-container">
             <Component {...pageProps} className='main-container' />
           </div>
-          <MessagesContainer />
+          {/* <MessagesContainer /> */}
           <ImageModal open={imgObj.open} src={imgObj.src} togleFun={toggleImage} refImg={refImg}/>
          </Context.Provider>
       </Suspense>

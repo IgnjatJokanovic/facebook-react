@@ -8,6 +8,7 @@ import Context from '../../context/context'
 import OpenableImage from '../../components/OpenableImage'
 import axios from 'axios'
 import { getClaims } from '../../helpers/helpers'
+import { User } from '../../types/types'
 
 export default function UserProfile() {
   const ctx = React.useContext(Context);
@@ -17,7 +18,7 @@ export default function UserProfile() {
 
   const router = useRouter()
 
-  const [user, setUser] = React.useState({})
+  const [user, setUser] = React.useState<User>({})
 
   const refDropdown = React.useRef();
   
@@ -34,7 +35,7 @@ export default function UserProfile() {
   };
 
   const renderContent = () => {
-    console.log(`rendering${navigationOption}`)
+    console.log(`rendering${navigationOption},`, userId)
     switch(navigationOption) {
       case 'info':
         return <Information userId={userId} />;
@@ -103,28 +104,24 @@ export default function UserProfile() {
       })
   }
 
-  const imagePreview = (src) => {
-    ctx.setImgObj({
-        src: src,
-        open: true
-    });
-  console.log(src);
-  }
-
   React.useEffect(() => {
 
     if (!userId) {
       return;
     }
 
-    axios.get(`/user/show/${userId}`)
-      .then(res => {
-        setUser(res.data);
-        console.log("data", res.data)
-      })
-      .catch(err => {
-        router.push('/404/user')
-      });
+    if (Object.keys(user).length === 0) {
+      axios.get(`/user/show/${userId}`)
+        .then(res => {
+          setUser(res.data);
+          console.log("data", res.data)
+        })
+        .catch(err => {
+          router.push('/404/user')
+        });
+    }
+
+   
 
     renderContent()
     console.log('userId', userId)
@@ -133,25 +130,32 @@ export default function UserProfile() {
     return () => {
         document.removeEventListener("mousedown", toggleOpen);
     };
-  }, [userId, navigationOption])
+  }, [router.isReady, userId, navigationOption])
   
   return (
     <div className='user-profile-container'>
       <div className="cover-photo-container">
-        <div onClick={() => imagePreview(img ?? defaultCover)} className="cover-pohoto" style={{ '--bg-image': `url('${img ?? defaultCover}')` }}></div>
+        <div className={Object.keys(user).length === 0 ? "cover-pohoto loading" : "cover-pohoto photo"} style={{ '--bg-image': `url('${img ?? defaultCover}')` }}></div>
         <div className="profile-picture-container">
-          <div className="img">
-            <OpenableImage src={img ?? defaultProfile} alt="" />
-            <div className="info">
-              {user.firstName} {user.lastName}
+          {Object.keys(user).length === 0 ? (
+            <div className="img">
+              <div className="img-loader"></div>
+              <div className="info loading"></div>
             </div>
-          </div>
+          ): (
+            <div className="img">
+              <img src={img ?? defaultProfile} alt="" />
+              <div className="info">
+                {user?.firstName} {user?.lastName}
+              </div>
+            </div>
+          )}
           {ctx.authenticated ? (
             <div className="buttons" ref={refDropdown}>
               <div className={open ? 'dropdown active' : 'dropdown'}>
                 {
                   (() => {
-                      if (claims.id === user.id)
+                      if (claims.id === user?.id)
                           return (
                             <>
                               <div onClick={changeCoverPhoto} className="button">
@@ -162,7 +166,7 @@ export default function UserProfile() {
                               </div>
                             </>
                           )
-                      if (user.isFriends === null)
+                      if (user?.isFriends === null)
                           return (
                             <>
                               <div onClick={addFriend} className="button">
@@ -173,7 +177,7 @@ export default function UserProfile() {
                               </div>
                             </>
                           )
-                      if (user.isFriends?.from === claims.id)
+                      if (user?.isFriends?.from === claims.id)
                         return (
                           <>
                             <div onClick={() => removeFriend()} className="button">
@@ -184,7 +188,7 @@ export default function UserProfile() {
                             </div>
                           </>
                         )
-                      if (user.isFriends?.from !== claims.id && user.isFriends?.accepted)
+                      if (user?.isFriends?.from !== claims.id && user?.isFriends?.accepted)
                       return (
                         <>
                           <div onClick={() => removeFriend()} className="button">

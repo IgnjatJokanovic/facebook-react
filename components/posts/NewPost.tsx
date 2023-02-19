@@ -8,8 +8,9 @@ import AddImage from './newPost/AddImage';
 import TagFriends from './newPost/TagFriends';
 import ContentEditable from 'react-contenteditable'
 import { getClaims } from '../../helpers/helpers';
+import { Article } from '../../types/types';
 
-export default function NewPost({ article, setArticle, url, setOriginalPost = () => { } }) {
+export default function NewPost({ owner, url, editArticle = null, setOriginalPost = (post) => { }, close = (post) => {} }) {
 
     const ctx = React.useContext(Context);
     const emojies = ctx.emojiList;
@@ -19,6 +20,19 @@ export default function NewPost({ article, setArticle, url, setOriginalPost = ()
     const [openTagged, setOpenTagged] = React.useState(false);
     const [openEmoji, setOpenEmoji] = React.useState(false)
     const [openEmotions, setOpenEmotions] = React.useState(false)
+
+    const [article, setArticle] = React.useState<Article>({
+        id: null,
+        owner: owner,
+        creator: claims.id,
+        body: '',
+        image: {
+          id: null,
+          src: null
+        },
+        emotion: null,
+        taged: [],
+    });
 
     // Image handle
     const refFile = React.useRef(null);
@@ -71,12 +85,36 @@ export default function NewPost({ article, setArticle, url, setOriginalPost = ()
                 if (res.data.post !== null) {
                     setOriginalPost(res.data.post);
                 }
-                setArticle({});
+                setArticle({
+                    id: null,
+                    owner: null,
+                    creator: null,
+                    body: '',
+                    image: {
+                      id: null,
+                      src: null
+                    },
+                    emotion: null,
+                    taged: [],
+                });
+                close({})
             }).catch(err => {
                 ctx.setAlert(err.response.data.error, 'error')
             });
         
     }
+
+
+    React.useEffect(() => {
+
+        if (editArticle !== null) {
+            setArticle(editArticle);
+        }
+    
+      
+    }, [])
+    
+
   return (
     <div className='new-post-form'>
         <form onSubmit={e => {
@@ -85,9 +123,9 @@ export default function NewPost({ article, setArticle, url, setOriginalPost = ()
           }}>
             <div className="info-container">
                 <div className="image-container">
-                    <Link href={`/user/${claims.id}`}>
+                    <Link href={`/user/${claims?.id}`}>
                         <img src="/default_profile.png" alt="" />
-                        <span className='bold'>{`${claims.firstName} ${claims.lastName}`}</span> 
+                        <span className='bold'>{`${claims?.firstName} ${claims?.lastName}`}</span> 
                     </Link>
                 </div>
                 <div className="info">

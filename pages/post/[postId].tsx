@@ -21,7 +21,7 @@ export default function Post() {
 
         console.log(postId);
        
-        axios.get(`/post/${postId}`)
+        axios.get(`/post/show/${postId}`)
             .then(res => {
                 setPost(res.data);
             })
@@ -29,7 +29,7 @@ export default function Post() {
                 router.push('/404/post')
             });
         
-    }, [postId])
+    }, [postId, router])
 
     return (
         <div className="show-post">
@@ -41,9 +41,9 @@ export default function Post() {
                 ): (
                     <div className="post">
                         {!!Object.keys(editArticle).length && (
-                            <NewPost article={editArticle} setArticle={setEditArticle} url={'update'} setOriginalPost={setPost} />
+                            <NewPost owner={editArticle.owner} creator={editArticle.creator} editArticle={editArticle} url={'update'} setOriginalPost={setPost} close={setEditArticle} />
                         )}
-                        <PostItem post={post} setPost={setPost} isEditable={true} setArticle={setEditArticle} />            
+                        <PostItem post={post} isEditable={true} setArticle={setEditArticle} />            
                     </div>
                     
                 ) 
