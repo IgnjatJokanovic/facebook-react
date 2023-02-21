@@ -9,6 +9,7 @@ import TagFriends from './newPost/TagFriends';
 import ContentEditable from 'react-contenteditable'
 import { getClaims } from '../../helpers/helpers';
 import { Article } from '../../types/types';
+import TagFriendsRender from './newPost/TagFriendsRender';
 
 export default function NewPost({ owner, url, editArticle = null, setOriginalPost = (post) => { }, close = (post) => {} }) {
 
@@ -98,7 +99,7 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
                     taged: [],
                 });
                 close({})
-            }).catch(err => {
+        }).catch(err => {
                 ctx.setAlert(err.response.data.error, 'error')
             });
         
@@ -133,8 +134,11 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
                     {article.emotion != null ? (
                           <span><span dangerouslySetInnerHTML={{ __html: article.emotion.code }}></span> is feeling <span className='bold pointer' onClick={() => setOpenEmotions(!openEmotions)}>{ article.emotion.description }</span></span>
                     ) : ''}
-                    {article.tagged != null ? (
-                          <span><span dangerouslySetInnerHTML={{ __html: article.emotion.code }}></span> is feeling <span className='bold pointer'>{ article.emotion.description }</span></span>
+                    {article.taged.length ? (
+                          <span>
+                              {!!article.emotion === null && ('is')} with
+                              <TagFriendsRender taged={article.taged} />
+                          </span>
                     ) : ''}  
                 </div>    
             </div>
@@ -176,12 +180,12 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
                 </div>
                 <div className="controlls">
                       <AddImage refFile={refFile} openFile={openFile} updateImage={ updateImage } />
-                      <TagFriends taged={article.taged} setArticle={setArticle} openTagged={openTagged} setOpenTagged={setOpenTagged} />
+                      <TagFriends owner={owner} article={article} setArticle={setArticle} openTagged={openTagged} setOpenTagged={setOpenTagged} />
                       <AddEmotion article={article} setArticle={setArticle} openEmotions={openEmotions} setOpenEmotions={setOpenEmotions} />  
                 </div>
                
             </div>
-            <button>Post</button>  
+            <button className='submit'>Post</button>  
         </form>      
     </div>
   )

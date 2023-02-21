@@ -83,6 +83,40 @@
                     right: 0;
                     width: 20rem;
                     display: none;
+                    .friend-options{
+                       .item{
+                            margin-top: 1rem;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            a{
+                                display: flex;
+                                gap: 10px;
+                                align-items: center;
+                                text-decoration: none;
+                                color: $blue;
+                                font-weight: bold;
+                                img{
+                                    border-radius: 50%;
+                                    width: 5rem;
+                                    height: 5rem;
+                                }
+                                font-size: 1rem;
+                                font-weight: bold;
+                            }
+
+                            .btn{
+                                outline: none;
+                                padding: 0.8rem;
+                                border-radius: 5px;
+                                border: none;
+                                background-color: $blue;
+                                color: $white;
+                                font-weight: bold;
+                                cursor: pointer;
+                            }
+                       }
+                    }
                     &.active{
                         display: block;
                     }
@@ -148,12 +182,22 @@
         .info{
             color: $white;
             span{
-                margin-left: 3px;
+                margin-left: 5px;
+                display: inline-block;
             }
             .bold{
                 font-weight: bold;
                 &.pointer{
                     cursor: pointer;
+                }
+
+                .taged-container{
+                    position: relative;
+
+                    .dropdown{
+                        position: absolute;
+                        
+                    }
                 }
             }
         }
@@ -214,7 +258,7 @@
         }
       }
 
-      button{
+      .submit{
         width: 100%;
         margin-top: 1rem;
         font-size: 1rem;
