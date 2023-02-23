@@ -2,40 +2,44 @@ import Link from 'next/link';
 import React from 'react'
 
 export default function TagFriendsRender({ taged }) {
-
-    if (taged > 3) {
-        let firstBatch = taged.slice(0, 2);
-        let lastBatch = taged.slice(3, taged.length - 1)
+    console.log(taged.length)
+    if (taged.length > 3) {
+        let firstBatch = taged.slice(0, 3);
+        let lastBatch = taged.slice(3, taged.length + 1)
 
         return (
-            <span className='bold'>
+            <div>
                 {firstBatch.map((item, i) => (
-                    <Link key={i} href={`/user/${item.id}`}>
-                        {item.firstName} {item.lastName}
-                    </Link>
+                    <div className='bold' key={i}>
+                        <Link  href={`/user/${item.id}`}>
+                            {item.firstName} {item.lastName} {i != firstBatch.length - 1 ? ",":null}
+                        </Link>
+                   </div>
                 ))} and
 
-                <span className='taged-container'>
-                    {lastBatch.length} more 
-                    <div className="drowpdown">
-                        {firstBatch.map((item, i) => (
-                            <Link key={i} href={`/user/${item.id}`}>
-                                {item.firstName} {item.lastName}
-                            </Link>
+                <div className='taged-container'>
+                    <span className='bold'>{lastBatch.length} more</span> 
+                    <div className="dropdown">
+                        {lastBatch.map((item, i) => (
+                            <div  key={i} className="item">
+                                <Link href={`/user/${item.id}`}>
+                                    {item.firstName} {item.lastName} {i != lastBatch.length - 1 ? ",":null}
+                                </Link>
+                            </div>
                         ))}
                     </div>
-                </span>
-            </span>
+                </div>
+            </div>
           )
     }
     
   return (
-    <span className='bold'>
+    <div className='bold'>
         {!!taged.length && taged.map((item, i) => (
             <Link key={i} href={`/user/${item.id}`}>
-                {item.firstName} {item.lastName}
+                {item.firstName} {item.lastName} {i != taged.length - 1 ? ",":null}
             </Link>
         ))}
-    </span>
+    </div>
   )
 }

@@ -34,7 +34,7 @@ export default function UserProfile() {
       setOpen(false);
   };
 
-  const renderContent = () => {
+  const renderContent = React.useCallback(() => {
     console.log(`rendering${navigationOption},`, userId)
     switch(navigationOption) {
       case 'info':
@@ -46,7 +46,7 @@ export default function UserProfile() {
       default:
         return <Posts userId={userId} setNavigationOption={setNavigationOption} />;
     }
-  }
+  }, [navigationOption, userId])
 
   const addFriend = () => {
     axios.post('/friend/add', { to: user.id })
@@ -110,7 +110,8 @@ export default function UserProfile() {
       return;
     }
 
-    if (Object.keys(user).length === 0) {
+    if (Object.keys(user).length === 0 || user.id != parseInt(userId)) {
+      console.log('rendering user')
       axios.get(`/user/show/${userId}`)
         .then(res => {
           setUser(res.data);
@@ -130,7 +131,7 @@ export default function UserProfile() {
     return () => {
         document.removeEventListener("mousedown", toggleOpen);
     };
-  }, [router.isReady, userId, navigationOption])
+  }, [router.isReady, userId, navigationOption, user, renderContent, router])
   
   return (
     <div className='user-profile-container'>
@@ -146,7 +147,7 @@ export default function UserProfile() {
             <div className="img">
               <img src={img ?? defaultProfile} alt="" />
               <div className="info">
-                {user?.firstName} {user?.lastName}
+                {user.firstName} {user.lastName}
               </div>
             </div>
           )}

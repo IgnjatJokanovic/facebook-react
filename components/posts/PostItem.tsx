@@ -8,6 +8,7 @@ import OpenableImage from '../OpenableImage';
 import axios from 'axios';
 import { useSocket } from '../../helpers/broadcasting';
 import { CLIENT_RENEG_LIMIT } from 'tls';
+import TagFriendsRender from './newPost/TagFriendsRender';
 
 export default function PostItem({ post, isEditable = false, setArticle = (obj) => { }, deleteCallback = () => {} }) {
   const createdAt = moment(post.created_at).diff(moment(), 'days') > 7 ? moment(post.created_at).format('d. MMM, YYYY') : moment(post.created_at).fromNow();
@@ -170,12 +171,14 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
           )}
         </div>
         <div className="other">
-          {!!post.emotion && (
-            <span>
-              <span dangerouslySetInnerHTML={{ __html: post.emotion.code}}></span>
-              &nbsp;<span>is feeling <span className='bold'>{post.emotion.description}</span></span>
-            </span>
-          )}
+          {post.emotion != null ? (
+              <div><div dangerouslySetInnerHTML={{ __html: post.emotion.code }}></div> is feeling <div className='bold pointer'>{ post.emotion.description }</div></div>
+          ) : ''}
+          {post.taged.length ? (
+              <div>
+                  {post.emotion === null && ('is')} with <TagFriendsRender taged={post.taged} />
+              </div>
+          ) : ''}  
         </div>
       </div>
       <div className="created">

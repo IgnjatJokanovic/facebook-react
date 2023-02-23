@@ -103,3 +103,14 @@
         
     }
 }
+
+.btn{
+    outline: none;
+    padding: 0.8rem;
+    border-radius: 5px;
+    border: none;
+    background-color: $blue;
+    color: $white;
+    font-weight: bold;
+    cursor: pointer;
+}

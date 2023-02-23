@@ -162,7 +162,7 @@
       .info-container{
         display: flex;
         gap: 1rem;
-      
+        white-space: nowrap;
         a{
             display: flex;
             gap: 10px;
@@ -181,9 +181,51 @@
         }
         .info{
             color: $white;
-            span{
+            display: inline;
+            white-space: normal;
+            line-height: 1.3rem;
+            div{
                 margin-left: 5px;
                 display: inline-block;
+                white-space: normal;
+                a{
+                    display: inline-block;
+                    margin-left: 5px;
+                }
+            }
+            .taged-container{
+                position: relative;
+                &:hover{
+                    .dropdown{
+                        display: block;
+                       
+                    }
+                }
+                .dropdown{
+                    position: absolute;
+                    display: none;
+                    border-radius: 5px;
+                    background-color: $grey;
+                    padding: 1rem;
+                    color: $blue;
+                    z-index: 2;
+                    .item{
+                       white-space: nowrap;
+                       margin-top: 5px;
+                       margin-left: 0;
+                       &:nth-of-type(1){
+                            margin-top: 0;
+                       }
+                       a{
+                            width: fit-content;
+                            color: $blue;
+                            width: 100%;
+                         
+                           
+                        }
+                    }
+                   
+                }
             }
             .bold{
                 font-weight: bold;
@@ -191,14 +233,7 @@
                     cursor: pointer;
                 }
 
-                .taged-container{
-                    position: relative;
-
-                    .dropdown{
-                        position: absolute;
-                        
-                    }
-                }
+              
             }
         }
       }

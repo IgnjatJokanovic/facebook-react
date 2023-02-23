@@ -23,7 +23,7 @@ export default function FriendNotifications() {
     const handleChanChange = (payload) => {
         console.log(payload);
         let curr = [...friendRequests];
-        curr.splice(0, 0, payload);
+        curr.unshift(payload);
         setFriendRequests(curr);
     }
 

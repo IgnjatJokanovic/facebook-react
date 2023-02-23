@@ -67,8 +67,8 @@ export default function FriendItem({ profile, img, name, surname, id, opened = f
             <span>{name} {surname}</span>
           </div>
           <div className="actions">
-            <button onClick={accept}>Accept</button>
-            <button onClick={decline}>Decline</button>
+            <div className='btn' onClick={accept}>Accept</div>
+            <div className='btn' onClick={decline}>Decline</div>
           </div>
     </div>
   )
