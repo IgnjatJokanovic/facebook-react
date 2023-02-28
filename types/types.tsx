@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export type Article = {
     id:    string|number|null;
     owner: string|number|null;
@@ -15,15 +17,21 @@ export type User = {
     birthday: string
 }
 
+export type ImageObj = {
+    src: string
+}
+
 export type AuthUser = {
     id: number,
     firstName: string,
     lastName: string,
     birthday: string,
-    email:   string
+    email: string,
+    profile: ImageObj|null
 }
 
 export type AlertObj = {
     message: string|null,
     state: string
 }
+

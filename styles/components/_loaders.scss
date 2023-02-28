@@ -82,3 +82,29 @@
     }
 
 }
+
+.comment-loader{
+    background-color: $darkGrey;
+    border-radius: 5px;
+    padding: 1rem;
+    display: flex;
+    gap: 10px;
+    .profile{
+        border-radius: 50%;
+        height: 4rem;
+        width: 4rem;
+        @extend .loading-animation;
+
+     
+    }
+
+    .body{
+        width: 10rem;
+        height: 4rem;
+        border-radius: 5px;
+        flex: 1;
+
+        @extend .loading-animation;
+    }
+
+}

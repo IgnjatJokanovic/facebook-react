@@ -122,19 +122,21 @@ export default function App({ Component, pageProps }: AppProps) {
           console.log(err);
         });
       
-      var echo = new Echo({
-        ...channelOptions,
-        client: new Pusher(channelOptions.key, channelOptions)
-      });
-
-      axios.defaults.headers.common['X-Socket-Id'] = echo.socketId();
-
-      setEcho(
-        echo
-      )
+      
 
       // console.log(echo)
     }
+
+    var echo = new Echo({
+      ...channelOptions,
+      client: new Pusher(channelOptions.key, channelOptions)
+    });
+
+    axios.defaults.headers.common['X-Socket-Id'] = echo.socketId();
+
+    setEcho(
+      echo
+    )
 
     
 

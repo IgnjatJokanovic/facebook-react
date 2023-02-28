@@ -7,7 +7,7 @@ import { Article, AuthUser } from '../../../types/types';
 import DefaultPrefixImage from '../../DefaultPrefixImage';
 import NewPost from '../../posts/NewPost';
 import PostItem from '../../posts/PostItem';
-import PostLoader from '../loaders/PostLoader';
+import PostLoader from '../../loaders/PostLoader';
 
 export default function Posts({ userId, setNavigationOption }) {
   const ctx = React.useContext(Context)
@@ -88,7 +88,7 @@ export default function Posts({ userId, setNavigationOption }) {
           
         })
     
-    // Load few images for photos tab
+    // Load few friends for friends tab
     axios.get(`/friend/userFriends/${userId}/1`)
         .then(res => {
           setFriends(res.data);
@@ -126,7 +126,7 @@ export default function Posts({ userId, setNavigationOption }) {
         
                     photos.map((item, i) => (
                       <Link key={i} href={`/post/${item.id}`}>
-                        <img src={item.image.src} alt="" />  
+                        <DefaultPrefixImage src={item.image.src} alt="" />  
                       </Link>
                     ))
                   ): (

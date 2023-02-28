@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useSocket } from '../../helpers/broadcasting';
 import { CLIENT_RENEG_LIMIT } from 'tls';
 import TagFriendsRender from './newPost/TagFriendsRender';
+import CommentComponnent from './CommentComponnent';
 
 export default function PostItem({ post, isEditable = false, setArticle = (obj) => { }, deleteCallback = () => {} }) {
   const createdAt = moment(post.created_at).diff(moment(), 'days') > 7 ? moment(post.created_at).format('d. MMM, YYYY') : moment(post.created_at).fromNow();
@@ -19,6 +20,7 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
   
   const [activeEdit, setActiveEdit] = React.useState(false);
   const [reactionsCount, setReactionsCount] = React.useState(0);
+  const [openComment, setOpenComment] = React.useState(false);
 
   const [distinctReactions, setDistinctReactions] = React.useState(post.distinct_reactions)
   const [currentUserReaction, setCurrentUserReaction] = React.useState(post.currentUserReaction)
@@ -226,12 +228,15 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
           <span onClick={() => handleReact(currentUserReaction.emotion.id) }><span dangerouslySetInnerHTML={{ __html: currentUserReaction.emotion.code }}></span> {currentUserReaction.emotion.description}</span>
         )}
         </div>
-        <div className="Comment item">
-          Comment
+        <div className="Comment item" onClick={() => setOpenComment(true)}>
+          Comment {!!post.commentCount && (
+            <span>(post.commentCount)</span>
+          )}
         </div>
       </div>
-      <div className="comments-section">
-      </div>  
+      {!!openComment && (
+        <CommentComponnent postId={post.id}/>
+      )}
     </div>
   )
 }

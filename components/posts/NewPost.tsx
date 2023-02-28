@@ -10,6 +10,7 @@ import ContentEditable from 'react-contenteditable'
 import { getClaims } from '../../helpers/helpers';
 import { Article } from '../../types/types';
 import TagFriendsRender from './newPost/TagFriendsRender';
+import DefaultPrefixImage from '../DefaultPrefixImage';
 
 export default function NewPost({ owner, url, editArticle = null, setOriginalPost = (post) => { }, close = (post) => {} }) {
 
@@ -125,7 +126,7 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
             <div className="info-container">
                 <div className="image-container">
                     <Link href={`/user/${claims?.id}`}>
-                        <img src="/default_profile.png" alt="" />
+                          <DefaultPrefixImage src={claims?.profile?.src} alt={`${claims?.firstName} ${claims?.lastName}`} />
                         <span className='bold'>{`${claims?.firstName} ${claims?.lastName}`}</span> 
                     </Link>
                 </div>
@@ -144,7 +145,8 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
                 </div>    
             </div>
             <div className="body-container">
-                <ContentEditable className="txt  hide-bar"
+                  <ContentEditable
+                      className="txt  hide-bar"
                     //  innerRef={refEditable}
                      html={article.body} // innerHTML of the editable div
                      disabled={false}       // use true to disable editing

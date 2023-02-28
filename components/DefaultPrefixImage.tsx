@@ -7,21 +7,7 @@ export default function DefaultPrefixImage({ className = '', src = null, alt = '
     
     const [image, setImage] = React.useState('')
     
-    const prefixSrc = (item) => {
-      if (item === null) {
-        setImage(defaultProfile);
-      }
-      else if (item.includes("data:image")) {
-        setImage(item);
-      } else {
-        setImage(process.env.NEXT_PUBLIC_BACKEND_BASE_URL + item);
-      }
-     
-    }
-  
-  
-
-    const imagePreview = (src) => {
+    const imagePreview = () => {
       if (openable) {
         ctx.setImgObj({
           src: image,
@@ -31,8 +17,17 @@ export default function DefaultPrefixImage({ className = '', src = null, alt = '
     }
   
     React.useEffect(() => {
-      prefixSrc(src)
-    }, [prefixSrc])
+      
+      if (src === null) {
+        setImage(defaultProfile);
+      }
+      else if (src.includes("data:image")) {
+        setImage(src);
+      } else {
+        setImage(process.env.NEXT_PUBLIC_BACKEND_BASE_URL + src);
+      }
+      
+    }, [src])
     
   
   
