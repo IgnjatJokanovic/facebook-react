@@ -230,12 +230,12 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
         </div>
         <div className="Comment item" onClick={() => setOpenComment(true)}>
           Comment {!!post.commentCount && (
-            <span>(post.commentCount)</span>
+            <span>({post.commentCount})</span>
           )}
         </div>
       </div>
       {!!openComment && (
-        <CommentComponnent postId={post.id}/>
+        <CommentComponnent postId={post.id} owner={post.owner.id} />
       )}
     </div>
   )

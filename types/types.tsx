@@ -35,3 +35,11 @@ export type AlertObj = {
     state: string
 }
 
+export type Comment = {
+    id: number|null,
+    body: string|null,
+    user_id: number,
+    post_id: number,
+    comment_id: number|null,
+}
+

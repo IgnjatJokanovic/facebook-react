@@ -6,8 +6,9 @@ import ContentEditable from 'react-contenteditable'
 import Context from '../../context/context'
 import { getClaims } from '../../helpers/helpers'
 import DefaultPrefixImage from '../DefaultPrefixImage'
+import CommentForm from './CommentForm'
 
-export default function CommentItem({ comment, comments, setComments, postId, isOwner, next = -1, parent = null }) {
+export default function CommentItem({ comment, comments, setComments, postId, owner, next = 0, parent = null }) {
 
   const createdAt = moment(comment.created_at).diff(moment(), 'days') > 7 ? moment(comment.created_at).format('d. MMM, YYYY') : moment(comment.created_at).fromNow();
   const claims = getClaims();
@@ -17,16 +18,15 @@ export default function CommentItem({ comment, comments, setComments, postId, is
   const [children, setChildren] = React.useState([])
   const [nextPage, setNextPage] = React.useState(next)
   const [openNew, setOpenNew] = React.useState(false)
-  const [openEmoji, setOpenEmoji] = React.useState(false)
+  
   const [newComment, setNewComment] = React.useState({
     body: '',
     user_id: claims?.id,
     post_id: postId,
-    comment_id: parent
+    comment_id: comment.id
   })
 
   const ctx = React.useContext(Context)
-  const emojies = ctx.emojiList;
 
  
   const handleChange = e => {
@@ -121,10 +121,10 @@ export default function CommentItem({ comment, comments, setComments, postId, is
   const loadChildren = () => {
     let parentUrl = parent != null ? `/${parent}` : '';
     let url = `/comment/postRelated/${comment.post_id}${parentUrl}?page=${nextPage}`;
-    if (nextPage >= 0) {
+    if (nextPage >= 0 && comment.repliesCount > 0) {
       axios.get(url)
       .then(res => {
-        setChildren([...children, ...res.data]);
+        setChildren([...children, ...res.data.data]);
         if (res.data.next_page_url === null) {
           setNextPage(-1);
         } else {
@@ -144,37 +144,22 @@ export default function CommentItem({ comment, comments, setComments, postId, is
     <div className='comment-item'>
       <div className="body">
         <div className="profile">
-          <Link href={`/user/`}>
-            <DefaultPrefixImage src={comment.user.image.src} alt={`${comment.user.firstName} ${comment.user.lastName}`} />
+          <Link href={`/user/${comment.user_id}`}>
+            <DefaultPrefixImage src={comment.user.profile_photo?.src} alt={`${comment.user.firstName} ${comment.user.lastName}`} />
           </Link>
         </div>
         <div className="content-container">
           <div className="content">
             {ctx.isAuthenticated && Object.keys(edit).length ? (
               <>
-                <div className="input-comment">
-                  <ContentEditable
-                    className="txt  hide-bar"
-                    //  innerRef={refEditable}
-                    html={edit.body} // innerHTML of the editable div
-                    disabled={false}       // use true to disable editing
-                    onChange={handleChange} // handle innerHTML change
-                  />
-                  <div className="emoji-holder">
-                    <i onClick={e => setOpenEmoji(!openEmoji)} className="fas fa-smile-beam"></i>
-                      <div className={ openEmoji ? 'dropdown active' : 'dropdown' }>
-                      <div className="flex hide-bar">
-                          {!!emojies && emojies.map((item, i) => (
-                              <div className="emoji-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }} onClick={() => setBody(item.code) }>
-                              </div>
-                          ))}
-                      </div>
-                    </div>
-                  </div>  
-                </div>
+                <CommentForm
+                  comment={edit}
+                  handleChangeCallback={handleChange}
+                  setBodyCallback={setBody}
+                />
                 <div className="btns">
                   <div className="btn" onClick={() => setEdit({})}>Cancel</div>
-                  <div className="save" onClick={handleUpdate}>Save</div>
+                  <div className="btn" onClick={handleUpdate}>Save</div>
                 </div>
               </>
               
@@ -182,35 +167,24 @@ export default function CommentItem({ comment, comments, setComments, postId, is
               <>
                 <div className="body">
                   <Link href={`/user/`}>
-                    {comment.user.firstName} {comment.user.lastName}
+                    {comment.user.firstName} {comment.user.lastName}1
                   </Link>
-                  <div dangerouslySetInnerHTML={{ __html: comment.body }}></div>
+                  <div className='html' dangerouslySetInnerHTML={{ __html: comment.body }}></div>
                 </div>
-                {ctx.isAuthenticated && (comment.user_id == claims?.id || isOwner) (
-                  <div className="user-actions">
-                    <i className="fa fa-ellipsis-v" aria-hidden="true" onClick={() => setOpen(!open)}></i>
-                    <div className={open ? 'drowpdown active' : 'drowpdown'}>
-                      {comment.user_id == claims?.id ? (
-                        <div className="btn" onClick={() => setEdit(comment)}>Edit</div>
-                      ): null}
-                      {comment.user_id == claims?.id || isOwner ? (
-                        <div className="btn" onClick={() => handleDelete(comment.id)}>Delete</div>
-                      ): null}    
-                    </div>
-                  </div>
-                )}
+              
               </>
             )}
            
           </div>
           <div className="actions">
-            {comment.post_id == null ? (
-              <div onClick={() => console.log('')}>Reply</div>
+          <div>{createdAt}</div>
+            {comment.coment_id == null ? (
+              <div onClick={() => setOpenNew(!openNew)}>Reply</div>
             ) : null}
-            <div>{createdAt}</div>
+            
           </div>
           <div className="children">
-            {children.length && (
+            {!!children.length && (
               children.map((item, i) => (
                 <CommentItem
                   key={i}
@@ -218,33 +192,18 @@ export default function CommentItem({ comment, comments, setComments, postId, is
                   comments={children}
                   postId={postId}
                   setComments={setChildren}
-                  isOwner={isOwner}
+                  owner={owner}
                   parent={comment.id}
                 />
               ))
             )}
             {openNew && (
               <>
-                <div className="input-comment">
-                  <ContentEditable
-                    className="txt  hide-bar"
-                    //  innerRef={refEditable}
-                    html={edit.body} // innerHTML of the editable div
-                    disabled={false}       // use true to disable editing
-                    onChange={handleChangeNew} // handle innerHTML change
-                  />
-                  <div className="emoji-holder">
-                    <i onClick={e => setOpenEmoji(!openEmoji)} className="fas fa-smile-beam"></i>
-                      <div className={ openEmoji ? 'dropdown active' : 'dropdown' }>
-                      <div className="flex hide-bar">
-                          {!!emojies && emojies.map((item, i) => (
-                              <div className="emoji-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }} onClick={() => setBodyNew(item.code) }>
-                              </div>
-                          ))}
-                      </div>
-                    </div>
-                  </div>  
-                </div>
+                <CommentForm
+                  comment={newComment}
+                  handleChangeCallback={handleChangeNew}
+                  setBodyCallback={setBodyNew}
+                />
                 <div className="save" onClick={handleSave}>Save</div>
               </>
             )}
@@ -255,6 +214,19 @@ export default function CommentItem({ comment, comments, setComments, postId, is
             )}
           </div>
         </div>
+        {(ctx.authenticated && (comment.user_id == claims?.id || owner == claims?.id)) && (
+          <div className="user-actions">
+            <i className="fa fa-ellipsis-v" aria-hidden="true" onClick={() => setOpen(!open)}></i>
+            <div className={open ? 'dropdown active' : 'dropdown'}>
+              {comment.user_id == claims?.id ? (
+                <div className="btn" onClick={() => setEdit(comment)}>Edit</div>
+              ): null}
+              {comment.user_id == claims?.id || owner == claims?.id ? (
+                <div className="btn" onClick={() => handleDelete(comment.id)}>Delete</div>
+              ): null}    
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

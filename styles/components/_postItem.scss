@@ -211,6 +211,101 @@
             cursor: pointer;
         }
     }
+
+    .comments-section{
+        margin-top: 1rem;
+        .load-more{
+            cursor: pointer;
+            color: $white;
+            font-size: 1rem;
+            text-align: center;
+            padding: 1rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .comment-item{
+            .body{
+                display: flex;
+                gap: 1rem;
+               .profile{
+                a{
+                    img{
+                        width: 4rem;
+                        height: 4rem;
+                        border-radius: 50%;
+                    }   
+                }
+               }
+               
+               .content-container{
+                flex: 1;
+               
+                .content{
+                    background-color: $grey;
+                    padding: 0.2rem 0.5rem;
+                    border-radius: 5px;
+                    color: $black;
+                    .body{
+                        display: block;
+                        a{
+                            font-size: 1rem;
+                            text-decoration: none;
+                        }
+                        .html{
+                            color: $black;
+                        }
+                    }
+                    .btns{
+                        
+                    }
+                }
+
+                .actions{
+                    font-size: 1rem;
+                    display: flex;
+                    gap: 1rem;
+                    margin-top: 0.2rem;
+                    margin-bottom: 0.2rem;
+                }
+               }
+
+               .user-actions{
+                position: relative;
+                i{
+                    cursor: pointer;
+                }
+                .dropdown{
+                    display: none;
+                    position: absolute;
+                    z-index: 1;
+                    &.active{
+                        display: block;
+                    }
+                }
+               }
+            }
+        } 
+        .new-comment-form{
+           display: flex;
+            gap: 1rem;
+            align-items: center;
+           .profile{
+            a{
+                img{
+                    width: 4rem;
+                    height: 4rem;
+                    border-radius: 50%;
+                }
+            }
+           }
+           .input-comment{
+            width: 100%;
+           }
+           .btn{
+            height: fit-content;
+           }
+        }
+    }
     
 }
 

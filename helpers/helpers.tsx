@@ -1,6 +1,6 @@
 import jwt_decode from "jwt-decode";
 import { getCookie, setCookie, deleteCookie, hasCookie } from 'cookies-next';
-import { AuthUser } from "../types/types";
+import { AuthUser, Comment } from "../types/types";
 
 const tokenName = 'user-token';
 
@@ -26,6 +26,16 @@ const fetchCookie = () => {
     return getCookie(tokenName);
 }
 
+const validateComment = (comment:Comment) => {
+    return new Promise((resolve, reject) => {
+        if (comment.body?.length) {
+            return resolve('');
+        }
+        return reject("Comment cant be empty");
+      
+    })
+}
+
 // const validateArticle = post => {
 //     return new  Promise((resolve, reject) => {
 //         if(
@@ -47,5 +57,6 @@ export {
     login,
     logout,
     getClaims,
-    fetchCookie
+    fetchCookie,
+    validateComment
 }
