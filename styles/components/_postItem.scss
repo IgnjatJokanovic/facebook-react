@@ -219,11 +219,12 @@
             color: $white;
             font-size: 1rem;
             text-align: center;
-            padding: 1rem;
+            padding: 0.4rem;
             font-weight: bold;
             font-size: 1.2rem;
         }
         .comment-item{
+            margin: 0.7rem 0;
             .body{
                 display: flex;
                 gap: 1rem;
@@ -239,6 +240,11 @@
                
                .content-container{
                 flex: 1;
+                .btns{
+                    margin-bottom: 10px;
+                    display: flex;
+                    gap: 1rem;
+                }
                
                 .content{
                     background-color: $grey;
@@ -250,13 +256,12 @@
                         a{
                             font-size: 1rem;
                             text-decoration: none;
+                            color: $blue;
                         }
                         .html{
                             color: $black;
+                            font-size: 1rem;
                         }
-                    }
-                    .btns{
-                        
                     }
                 }
 
@@ -266,6 +271,9 @@
                     gap: 1rem;
                     margin-top: 0.2rem;
                     margin-bottom: 0.2rem;
+                    .link{
+                        cursor: pointer;
+                    }
                 }
                }
 
@@ -278,17 +286,58 @@
                     display: none;
                     position: absolute;
                     z-index: 1;
+                    background-color: $grey;
+                    padding: 0.5rem;
+                    border-radius: 5px;
+                    .btn{
+                        width: 60%;
+                        text-align: center;
+                        &:nth-of-type(1){
+                            margin-bottom: 1rem;
+                        }
+                    }
                     &.active{
                         display: block;
                     }
                 }
                }
+
+               .children{
+
+                .comment-new{
+                    display: flex;
+                    gap: 1rem;
+                    align-items: center;
+
+                    a{
+                        img{
+                            width: 4rem;
+                            height: 4rem;
+                            border-radius: 50%;
+                        }
+                    }
+
+                    .input-comment{
+                        font-size: 1rem;
+                        font-weight: 300;
+                        flex: 1;
+                    }
+                    .btn{
+                        width: fit-content;
+                    }
+                }
+
+                .btn{
+                    margin-top: 1rem;
+                }
+               }
             }
         } 
         .new-comment-form{
-           display: flex;
+            display: flex;
             gap: 1rem;
             align-items: center;
+            margin-top: 1rem;
            .profile{
             a{
                 img{

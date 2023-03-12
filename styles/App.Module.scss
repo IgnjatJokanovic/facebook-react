@@ -91,12 +91,13 @@
 .input-comment{
     display: flex;
     background-color: $white;
-    margin-bottom: 10px;
     border-radius: 5px;
     height: 4rem;
     padding: 5px;
     position: relative;
     color: $black;
+    font-size: 1rem;
+    font-weight: 400;
     .txt{
         height: 4rem;
         width: 100%;

@@ -18,6 +18,8 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
   const [children, setChildren] = React.useState([])
   const [nextPage, setNextPage] = React.useState(next)
   const [openNew, setOpenNew] = React.useState(false)
+
+  const refDropdown = React.useRef();
   
   const [newComment, setNewComment] = React.useState({
     body: '',
@@ -60,6 +62,18 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
       setNewComment({ ...newComment, body: newValue });
     }
   }
+
+  const openEdit = () => {
+    let curr = structuredClone(comment);
+    setEdit(curr)
+  }
+
+  const toggleOpen = e => {
+    if (refDropdown.current.contains(e.target)) {
+        return;
+    }
+    setOpen(false);
+  };
 
   const handleUpdate = () => {
     axios.post(`comment/update`, edit)
@@ -107,10 +121,10 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
         setNewComment({...newComment, body: ''})
         ctx.setAlert(res.data.msg, 'success')
 
-        let curr = [...comments];
+        let curr = [...children];
         curr.push(res.data.data)
 
-        setComments(curr);
+        setChildren(curr);
      
       })
       .catch(err => {
@@ -119,8 +133,9 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
   }
 
   const loadChildren = () => {
-    let parentUrl = parent != null ? `/${parent}` : '';
-    let url = `/comment/postRelated/${comment.post_id}${parentUrl}?page=${nextPage}`;
+    setOpenNew(true);
+    console.log("CUM");
+    let url = `/comment/postRelated/${comment.post_id}/${comment.id}?page=${nextPage}`;
     if (nextPage >= 0 && comment.repliesCount > 0) {
       axios.get(url)
       .then(res => {
@@ -140,6 +155,15 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
     }
   }
 
+  React.useEffect(() => {
+    document.addEventListener("mousedown", toggleOpen);
+  
+    return () => {
+      document.removeEventListener("mousedown", toggleOpen);
+    }
+  }, [])
+  
+
   return (
     <div className='comment-item'>
       <div className="body">
@@ -150,36 +174,32 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
         </div>
         <div className="content-container">
           <div className="content">
-            {ctx.isAuthenticated && Object.keys(edit).length ? (
-              <>
+            {Object.keys(edit).length ? (
                 <CommentForm
                   comment={edit}
                   handleChangeCallback={handleChange}
                   setBodyCallback={setBody}
-                />
-                <div className="btns">
-                  <div className="btn" onClick={() => setEdit({})}>Cancel</div>
-                  <div className="btn" onClick={handleUpdate}>Save</div>
-                </div>
-              </>
-              
+                />  
             ): (
-              <>
                 <div className="body">
-                  <Link href={`/user/`}>
-                    {comment.user.firstName} {comment.user.lastName}1
+                  <Link href={`/user/${comment.user_id}`}>
+                    {comment.user.firstName} {comment.user.lastName}
                   </Link>
                   <div className='html' dangerouslySetInnerHTML={{ __html: comment.body }}></div>
                 </div>
-              
-              </>
             )}
            
           </div>
+          {!!Object.keys(edit).length && (
+              <div className="btns">
+                <div className="btn" onClick={() => setEdit({})}>Cancel</div>
+                <div className="btn" onClick={handleUpdate}>Update</div>
+              </div>
+          )}
           <div className="actions">
-          <div>{createdAt}</div>
-            {comment.coment_id == null ? (
-              <div onClick={() => setOpenNew(!openNew)}>Reply</div>
+            <div>{createdAt}</div>
+            {parent == null && ctx.authenticated ? (
+              <div className='link' onClick={() => setOpenNew(!openNew)}>Reply</div>
             ) : null}
             
           </div>
@@ -198,28 +218,31 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
               ))
             )}
             {openNew && (
-              <>
+              <div className='comment-new'>
+                 <Link href={`/user/${comment.user_id}`}>
+                  <DefaultPrefixImage src={comment.user.profile_photo?.src} alt={`${comment.user.firstName} ${comment.user.lastName}`} />
+                </Link>
                 <CommentForm
                   comment={newComment}
                   handleChangeCallback={handleChangeNew}
                   setBodyCallback={setBodyNew}
                 />
-                <div className="save" onClick={handleSave}>Save</div>
-              </>
+                <div className="btn" onClick={handleSave}>Reply</div>
+              </div>
             )}
             {(comment.repliesCount > 0 && nextPage >= 0) && (
-              <div className="link" onClick={loadChildren}>
+              <div className="load-more" onClick={loadChildren}>
                 Load more replies
               </div>
             )}
           </div>
         </div>
         {(ctx.authenticated && (comment.user_id == claims?.id || owner == claims?.id)) && (
-          <div className="user-actions">
+          <div ref={refDropdown} className="user-actions">
             <i className="fa fa-ellipsis-v" aria-hidden="true" onClick={() => setOpen(!open)}></i>
             <div className={open ? 'dropdown active' : 'dropdown'}>
               {comment.user_id == claims?.id ? (
-                <div className="btn" onClick={() => setEdit(comment)}>Edit</div>
+                <div className="btn" onClick={openEdit}>Edit</div>
               ): null}
               {comment.user_id == claims?.id || owner == claims?.id ? (
                 <div className="btn" onClick={() => handleDelete(comment.id)}>Delete</div>
