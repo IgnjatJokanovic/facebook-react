@@ -241,6 +241,9 @@
                .content-container{
                 flex: 1;
                 .btns{
+                    .btn{
+                        margin-top: 1rem;
+                    }
                     margin-bottom: 10px;
                     display: flex;
                     gap: 1rem;

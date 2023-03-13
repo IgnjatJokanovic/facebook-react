@@ -4,7 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 import ContentEditable from 'react-contenteditable'
 import Context from '../../context/context'
-import { getClaims } from '../../helpers/helpers'
+import { getClaims, validateComment } from '../../helpers/helpers'
 import DefaultPrefixImage from '../DefaultPrefixImage'
 import CommentForm from './CommentForm'
 
@@ -76,7 +76,8 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
   };
 
   const handleUpdate = () => {
-    axios.post(`comment/update`, edit)
+    validateComment(edit).then(() => {
+      axios.post(`comment/update`, edit)
       .then(res => {
         setEdit({})
         ctx.setAlert(res.data.msg, 'success')
@@ -93,6 +94,10 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
       .catch(err => {
         ctx.setAlert(err.response.data.error, 'error');
       })
+    }).catch(err => {
+        ctx.setAlert(err, 'error');
+    })
+
   }
 
   const handleDelete = (id) => {
@@ -101,9 +106,9 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
         setEdit({})
         ctx.setAlert(res.data.msg, 'success')
 
-        let updated = res.data.data;
+        let id = res.data.data;
         let curr = [...comments];
-        let index = curr.findIndex(obj => obj.id === updated.id);
+        let index = curr.findIndex(obj => obj.id === id);
       
         curr.splice(index, 1);
 
@@ -111,12 +116,14 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
      
       })
       .catch(err => {
+        console.log('err', err)
         ctx.setAlert(err.response.data.error, 'error');
       })
   }
 
   const handleSave = () => {
-    axios.post(`comment/create`, newComment)
+    validateComment(newComment).then(() => {
+      axios.post(`comment/create`, newComment)
       .then(res => {
         setNewComment({...newComment, body: ''})
         ctx.setAlert(res.data.msg, 'success')
@@ -130,6 +137,10 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
       .catch(err => {
         ctx.setAlert(err.response.data.error, 'error');
       })
+    }).catch(err => {
+      ctx.setAlert(err, 'error');
+    })
+    
   }
 
   const loadChildren = () => {
@@ -156,8 +167,12 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
   }
 
   React.useEffect(() => {
-    document.addEventListener("mousedown", toggleOpen);
-  
+    
+    
+    if (ctx.authenticated && (comment.user_id == claims?.id || owner == claims?.id)) {
+      document.addEventListener("mousedown", toggleOpen);
+    }
+   
     return () => {
       document.removeEventListener("mousedown", toggleOpen);
     }
