@@ -43,7 +43,7 @@ export default function Post() {
                         {!!Object.keys(editArticle).length && (
                             <NewPost owner={editArticle.owner} creator={editArticle.creator} editArticle={editArticle} url={'update'} setOriginalPost={setPost} close={setEditArticle} />
                         )}
-                        <PostItem post={post} isEditable={true} setArticle={setEditArticle} />            
+                            <PostItem post={post} isEditable={true} linkable={false} setArticle={setEditArticle} />            
                     </div>
                     
                 ) 

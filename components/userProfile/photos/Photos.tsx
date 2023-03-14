@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
+import DefaultPrefixImage from '../../DefaultPrefixImage';
 
 type props = {
   userId?: number
@@ -67,7 +68,7 @@ export default function Photos({ userId }:props) {
 
             photos.map((item, i) => (
               <Link className='item' key={i} href={`/post/${item.id}`}>
-                <img src={item.image.src} alt="" />  
+                <DefaultPrefixImage src={item.image.src} alt="" />  
               </Link>
             ))
           ): (

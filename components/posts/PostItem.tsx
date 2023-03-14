@@ -6,12 +6,12 @@ import { ChannelList } from '../../helpers/channels';
 import { getClaims } from '../../helpers/helpers';
 import OpenableImage from '../OpenableImage';
 import axios from 'axios';
-import { useSocket } from '../../helpers/broadcasting';
-import { CLIENT_RENEG_LIMIT } from 'tls';
 import TagFriendsRender from './newPost/TagFriendsRender';
 import CommentComponnent from './CommentComponnent';
+import DefaultPrefixImage from '../DefaultPrefixImage';
+import ReactionsItem from './ReactionsItem';
 
-export default function PostItem({ post, isEditable = false, setArticle = (obj) => { }, deleteCallback = () => {} }) {
+export default function PostItem({ post, isEditable = false, linkable = true, setArticle = (obj) => { }, deleteCallback = () => {} }) {
   const createdAt = moment(post.created_at).diff(moment(), 'days') > 7 ? moment(post.created_at).format('d. MMM, YYYY') : moment(post.created_at).fromNow();
   const claims = getClaims();
 
@@ -19,13 +19,28 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
   const reactions = ctx.reactions;
   
   const [activeEdit, setActiveEdit] = React.useState(false);
-  const [reactionsCount, setReactionsCount] = React.useState(0);
   const [openComment, setOpenComment] = React.useState(false);
+
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [activeReaction, setActiveReaction] = React.useState<number>(0);
 
   const [distinctReactions, setDistinctReactions] = React.useState(post.distinct_reactions)
   const [currentUserReaction, setCurrentUserReaction] = React.useState(post.currentUserReaction)
 
   const refEdit = React.useRef();
+  const refOpen = React.useRef();
+
+  const toggleOpen = e => {
+    if (refOpen.current.contains(e.target)) {
+      return;
+    }
+    setIsOpen(false);
+  }
+
+  const openReactions = (id: number) => {
+    setIsOpen(true);
+    setActiveReaction(id);
+  }
 
   const toggleEdit = e => {
     if (refEdit.current.contains(e.target)) {
@@ -110,6 +125,10 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
       
       
         }
+      
+        if(post.distinct_reactions.length){
+          document.addEventListener("mousedown", toggleOpen);
+        }
         
     
         ctx.echo.channel(`${ChannelList.postReaction.channel}${post.id}`).listen(ChannelList.postReaction.listen, (e) => {
@@ -122,8 +141,9 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
             ctx.echo.leave(`${ChannelList.postReaction.channel}${post.id}`)
             console.log('leaving')
             document.removeEventListener("mousedown", toggleEdit);
+            document.removeEventListener("mousedown", toggleOpen);
         };
-    }, [claims?.id, ctx.authenticated, ctx.echo, post.owner.id, post.creator.id, post.id, distinctReactions]);
+    }, [claims?.id, ctx.authenticated, ctx.echo, post.owner.id, post.creator.id, post.id, distinctReactions, post.distinct_reactions.length]);
   
   return (
     <div className="single-post-container">
@@ -139,9 +159,15 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
                       <div className='item'>Set cover photo</div>
                     </>
                   ) : null}
-                  {isEditable ? (
-                     <div className='item' onClick={setEditArticle}>Edit</div>
-                  ) : null}
+                  {linkable ? (
+                     <div className="item">
+                      <Link className='linkable' href={`/post/${post.id}`}>
+                        Edit
+                      </Link>
+                     </div>
+                  ) : (
+                    <div className='item' onClick={setEditArticle}>Edit</div>
+                  )}
                   <div className='item' onClick={deletePost}>Delete</div>
                 </>
               ): (
@@ -174,7 +200,7 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
         </div>
         <div className="other">
           {post.emotion != null ? (
-              <div><div dangerouslySetInnerHTML={{ __html: post.emotion.code }}></div> is feeling <div className='bold pointer'>{ post.emotion.description }</div></div>
+              <div><div dangerouslySetInnerHTML={{ __html: post.emotion.code }}></div> is feeling <Link className='linkable bold pointer' href={`/post/${post.id}`}>{ post.emotion.description }</Link></div>
           ) : ''}
           {post.taged.length ? (
               <div>
@@ -184,22 +210,45 @@ export default function PostItem({ post, isEditable = false, setArticle = (obj) 
         </div>
       </div>
       <div className="created">
-        {createdAt }
+        {linkable ? (
+          <Link className='linkable' href={`/post/${post.id}`}>
+            {createdAt}
+          </Link>
+        ): (
+          createdAt
+        )}
       </div>
       {!!post.body && (
-        <div className="body" dangerouslySetInnerHTML={{ __html: post.body}}></div>
+         <Link className='linkable' href={`/post/${post.id}`}>
+            <div className="body" dangerouslySetInnerHTML={{ __html: post.body}}></div>
+         </Link>
+        
       )}
       <div className="image">
         {!!post.image && (
-          <OpenableImage src={post.image.src}/>
+          linkable ? (
+            <Link className='linkable' href={`/post/${post.id}`}>
+              <DefaultPrefixImage src={post.image.src}/>
+            </Link>
+          ): (
+            <OpenableImage src={post.image.src}/> 
+          )
         )}
       </div>
       <div className="info-container">
         {!!distinctReactions.length && (
           <div className="reactions">
+            <ReactionsItem
+              reactions={distinctReactions}
+              isOpen={isOpen}
+              activeReaction={activeReaction}
+              setActiveReaction={setActiveReaction}
+              postId={post.id}
+              refOpen={refOpen}
+            />
             <div className="container">
               { distinctReactions.map((item, i) => (
-                <div className="reaction-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }}>
+                <div onClick={() => openReactions(item.id)} className="reaction-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }}>
                 </div>
               ))}
             </div>
