@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import Context from '../../context/context';
 import { ChannelList } from '../../helpers/channels';
-import { getClaims } from '../../helpers/helpers';
+import { getClaims, refreshToken } from '../../helpers/helpers';
 import OpenableImage from '../OpenableImage';
 import axios from 'axios';
 import TagFriendsRender from './newPost/TagFriendsRender';
@@ -67,13 +67,22 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
 
   const deletePost = () => {
     axios.post('/post/delete', { id: post.id })
-         .then(res => {
-           ctx.setAlert(res.data.msg, 'success');
-           deleteCallback();
-         })
-         .catch(err => {
+      .then(res => {
+        if (deleteCallback.toString().trim() === "()=>{}") {
+          ctx.setAlert(res.data.msg, 'success', '/');
+        } else {
+          ctx.setAlert(res.data.msg, 'success');
+        }
+
+        if (claims?.profile?.id == post.id) {
+          refreshToken();
+        }
+         
+        deleteCallback();
+      })
+      .catch(err => {
           
-         })
+      });
   }
   
 
@@ -182,13 +191,19 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
         <div className="links">
           {post.owner.id === post.creator.id ? (
             <Link href={`/user/${post.creator.id}`}>
-              <img src={post.creator.profile === null ? "/default_profile.png" : post.creator.profile} alt={post.creator.firstName + " "+ post.creator.lastName} />
+              <DefaultPrefixImage
+                src={post.creator.profile_photo?.image.src}
+                alt={post.creator.firstName + " "+ post.creator.lastName}
+              />
               <span>{post.creator.firstName} {post.creator.lastName}</span>  
             </Link>
           ) : (
             <>
               <Link href={`/user/${post.creator.id}`}>
-                  <img src={post.creator.profile === null ? "/default_profile.png" : post.creator.profile} alt={post.creator.firstName + " "+ post.creator.lastName} />
+                  <DefaultPrefixImage
+                    src={post.creator.profile_photo?.image.src}
+                    alt={post.creator.firstName + " "+ post.creator.lastName}
+                  />
                   <span>{post.creator.firstName} {post.creator.lastName}</span>  
               </Link>
               <i className="fa-solid fa-caret-right"></i>

@@ -1,6 +1,7 @@
 import jwt_decode from "jwt-decode";
 import { getCookie, setCookie, deleteCookie, hasCookie } from 'cookies-next';
 import { AuthUser, Comment } from "../types/types";
+import axios from "axios";
 
 const tokenName = 'user-token';
 
@@ -26,6 +27,17 @@ const fetchCookie = () => {
     return getCookie(tokenName);
 }
 
+const refreshToken = () => {
+    axios.get('/auth/refreshToken')
+        .then(res => {
+            console.log('token', res.data)
+            login(res.data);
+        })
+        .catch(err => {
+
+        });
+}
+
 const validateComment = (comment:Comment) => {
     return new Promise((resolve, reject) => {
         if (comment.body?.length) {
@@ -35,6 +47,8 @@ const validateComment = (comment:Comment) => {
       
     })
 }
+
+
 
 // const validateArticle = post => {
 //     return new  Promise((resolve, reject) => {
@@ -58,5 +72,6 @@ export {
     logout,
     getClaims,
     fetchCookie,
-    validateComment
+    validateComment,
+    refreshToken
 }

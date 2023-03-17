@@ -1,7 +1,8 @@
+import Link from 'next/link';
 import React from 'react'
 import Context from '../context/context';
 
-export default function DefaultPrefixImage({ className = '', src = null, alt = 'alt', openable = false }) {
+export default function DefaultPrefixImage({ className = '', src = null, url = '', alt = 'alt', openable = false }) {
     const defaultProfile = "/default_profile.png";
     const ctx = React.useContext(Context);
     
@@ -33,6 +34,12 @@ export default function DefaultPrefixImage({ className = '', src = null, alt = '
   
   
   return (
-    <img className={className} src={image} alt={alt} onClick={imagePreview} />
+    url.length ? (
+      <Link href={url}>
+        <img className={className} src={image} alt={alt} onClick={imagePreview} />
+      </Link>
+    ): (
+      <img className={className} src={image} alt={alt} onClick={imagePreview} />
+    )
   )
 }

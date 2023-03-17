@@ -7,7 +7,7 @@ import AddEmotion from './newPost/AddEmotion';
 import AddImage from './newPost/AddImage';
 import TagFriends from './newPost/TagFriends';
 import ContentEditable from 'react-contenteditable'
-import { getClaims } from '../../helpers/helpers';
+import { getClaims, refreshToken } from '../../helpers/helpers';
 import { Article } from '../../types/types';
 import TagFriendsRender from './newPost/TagFriendsRender';
 import DefaultPrefixImage from '../DefaultPrefixImage';
@@ -83,8 +83,11 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
     
         axios.post(`/post/${url}`, article)
             .then(res => {
-                ctx.setAlert(res.data.msg, 'success', `/post/${res.data.id}`);
-                if (res.data.post !== null) {
+                ctx.setAlert(res.data.msg, 'success', `/post/${res.data.data.id}`);
+                if (url == 'update') {
+                    if (claims?.profile?.id == article.id) {
+                        refreshToken();
+                    }
                     setOriginalPost(res.data.post);
                 }
                 setArticle({
@@ -114,7 +117,7 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
         }
     
       
-    }, [])
+    }, [editArticle])
     
 
   return (
@@ -126,7 +129,7 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
             <div className="info-container">
                 <div className="image-container">
                     <Link href={`/user/${claims?.id}`}>
-                          <DefaultPrefixImage src={claims?.profile?.src} alt={`${claims?.firstName} ${claims?.lastName}`} />
+                          <DefaultPrefixImage src={claims?.profile?.image?.src} alt={`${claims?.firstName} ${claims?.lastName}`} />
                         <span className='bold'>{`${claims?.firstName} ${claims?.lastName}`}</span> 
                     </Link>
                 </div>

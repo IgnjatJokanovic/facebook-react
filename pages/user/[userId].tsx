@@ -7,8 +7,11 @@ import Information from '../../components/userProfile/information/Information'
 import Context from '../../context/context'
 import OpenableImage from '../../components/OpenableImage'
 import axios from 'axios'
-import { getClaims } from '../../helpers/helpers'
-import { User } from '../../types/types'
+import { getClaims, login, refreshToken } from '../../helpers/helpers'
+import { Article, User } from '../../types/types'
+import ImageModal from '../../components/ImageModal'
+import DefaultPrefixImage from '../../components/DefaultPrefixImage'
+import Link from 'next/link'
 
 export default function UserProfile() {
   const ctx = React.useContext(Context);
@@ -20,10 +23,23 @@ export default function UserProfile() {
 
   const [user, setUser] = React.useState<User>({})
 
+  const [isProfile, setisprofile] = React.useState(false);
+  const [post, setPost] = React.useState({
+    owner: claims?.id,
+    creator: claims?.id,
+    image: {
+      id: null,
+      src: ''
+    }
+  });
+
+  
+
   const refDropdown = React.useRef();
+  const refFile = React.useRef();
   
   const [open, setOpen] = React.useState(false)
-  const img = null
+
   const userId = router.query.userId;
   const [navigationOption, setNavigationOption] = React.useState('posts')
 
@@ -84,24 +100,47 @@ export default function UserProfile() {
       });
   }
 
-  const changeCoverPhoto = () => {
-    axios.post('/friend/add', { id: claims.id })
-      .then(res => {
-        let isFriends = user.id;
-      })
-      .catch(err => {
-
-      })
+  const openFile = (profile: boolean) => {
+    setisprofile(profile);
+    refFile.current.click();
   }
 
-  const changeProfilePhoto = () => {
-    axios.post('/friend/add', { id: claims.id })
+  const updateImage = (image) => {
+    let imageObj = post.image;
+    
+    imageObj.src = image;
+    setPost({ ...post, image: imageObj });
+  }
+
+  const handleUpload = () => {
+    let article = post;
+    post.isProfile = isProfile;
+
+    axios.post('/post/create', article)
       .then(res => {
-            
+        ctx.setAlert(res.data.msg, "success");
+        
+        if (isProfile) {
+          setUser({ ...user, profile_photo: res.data.data });
+        } else {
+          setUser({ ...user, cover_photo: res.data.data });
+        }
+
+        handleCancel();
+
+        refreshToken();
       })
       .catch(err => {
-        
-      })
+        ctx.setAlert(res.response.data.error, "error");
+      });
+  }
+
+  const handleCancel = () => {
+    let imageObj = {
+      id: null,
+      src: ''
+    };
+    setPost({ ...post, image: imageObj });
   }
 
   React.useEffect(() => {
@@ -135,8 +174,16 @@ export default function UserProfile() {
   
   return (
     <div className='user-profile-container'>
+      <ImageModal
+        open={post.image.src.length}
+        src={post.image.src}
+        togleFun={handleCancel}
+        displayBtns={true}
+        saveCallback={handleUpload}
+      />
+      <input type="file" ref={refFile} className="d-none" onChange={e => ctx.handleFileRead(e, updateImage)} />
       <div className="cover-photo-container">
-        <div className={Object.keys(user).length === 0 ? "cover-pohoto loading" : "cover-pohoto photo"} style={{ '--bg-image': `url('${img ?? defaultCover}')` }}></div>
+        <div className={Object.keys(user).length === 0 ? "cover-pohoto loading" : "cover-pohoto photo"} style={{ '--bg-image': `url('${user.cover_photo?.image?.src != null ? process.env.NEXT_PUBLIC_BACKEND_BASE_URL + user.cover_photo?.image?.src : defaultCover}')` }}></div>
         <div className="profile-picture-container">
           {Object.keys(user).length === 0 ? (
             <div className="img">
@@ -145,7 +192,11 @@ export default function UserProfile() {
             </div>
           ): (
             <div className="img">
-              <img src={img ?? defaultProfile} alt="" />
+              <DefaultPrefixImage 
+                src={user.profile_photo?.image?.src}
+                alt={`${user?.firstName} ${user?.lastName}`}
+                url={user.profile_photo != null ? `/post/${user.profile_photo.id}` : ''} 
+              />
               <div className="info">
                 {user.firstName} {user.lastName}
               </div>
@@ -159,11 +210,11 @@ export default function UserProfile() {
                       if (claims.id === user?.id)
                           return (
                             <>
-                              <div onClick={changeCoverPhoto} className="button">
-                                Change cover photo
-                              </div>
-                              <div onClick={changeProfilePhoto} className="button">
+                              <div onClick={() => openFile(true)} className="button">
                                 Change profile photo
+                              </div>
+                              <div onClick={() => openFile(false)} className="button">
+                                Change cover photo
                               </div>
                             </>
                           )

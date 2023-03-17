@@ -40,7 +40,7 @@
 .image-modal{
     display: none;
     position: fixed;
-    z-index: 2;
+    z-index: 3;
     padding-top: 100px;
     left: 0;
     top: 0;
@@ -75,6 +75,14 @@
         animation-name: zoom;
         animation-duration: 0.6s;
 
+    }
+    .btns{
+        position: absolute;
+        left: 50%;
+        top: 60%;
+        transform: translate(-50%, 100%);
+        display: flex;
+        gap: 1rem;
     }
 }
 

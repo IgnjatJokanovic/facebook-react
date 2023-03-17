@@ -88,6 +88,34 @@ export default function App({ Component, pageProps }: AppProps) {
     }, 2000);
   };
 
+  const getBase46 = (file) => {
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+            resolve(fileReader.result);
+        }
+        fileReader.onerror = (error) => {
+            reject(error);
+        }
+    });
+  };
+
+  const handleFileRead = async (e, callback) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.type.match('image.*')) {
+          const base64 = await getBase46(file);
+          callback(base64);
+        } else {
+          //handle error
+          setAlert('Please select a valid image', 'error')
+        }
+      }
+      
+      
+  };
+
   const channelOptions = {
     broadcaster: 'pusher',
     key: process.env.NEXT_PUBLIC_PUSHER_KEY,
@@ -170,7 +198,8 @@ export default function App({ Component, pageProps }: AppProps) {
           setauthenticated,
           emotions,
           reactions,
-          echo
+          echo,
+          handleFileRead,
         }}>
           <Navbar />
           <div className="page-container">

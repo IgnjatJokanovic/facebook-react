@@ -184,7 +184,7 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
       <div className="body">
         <div className="profile">
           <Link href={`/user/${comment.user_id}`}>
-            <DefaultPrefixImage src={comment.user.profile_photo?.src} alt={`${comment.user.firstName} ${comment.user.lastName}`} />
+            <DefaultPrefixImage src={comment.user.profile_photo?.image?.src} alt={`${comment.user.firstName} ${comment.user.lastName}`} />
           </Link>
         </div>
         <div className="content-container">
