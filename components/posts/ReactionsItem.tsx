@@ -52,13 +52,13 @@ export default function ReactionsItem({ reactions, isOpen, activeReaction, setAc
   }, [activeReaction, nextPage, postId, refOpen, usersReaction])
     
   React.useEffect(() => {
-    refOpen.current.addEventListener("wheel", loadUsersReaction);
     
-    if(!usersReaction.length){
+    if (!usersReaction.length && isOpen) {
+        refOpen?.current?.addEventListener("wheel", loadUsersReaction);
         loadUsersReaction();
     }
     return () => {
-        refOpen.current.removeEventListener('wheel', loadUsersReaction);
+        refOpen?.current?.removeEventListener('wheel', loadUsersReaction);
     }
   }, [isOpen, activeReaction, refOpen, loadUsersReaction, usersReaction.length])
   

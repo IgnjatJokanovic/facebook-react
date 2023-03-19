@@ -34,6 +34,16 @@
             border-radius: 10px;
             display: none;
             padding: 10px;
+            overflow-y: scroll;
+            max-height: 40vh;
+
+            .not-found{
+                font-size: 1.2rem;
+                text-align: center;
+                color: $white;
+                padding: 1rem;
+            }
+
             &.active{
                 display: block;
                 z-index: 3;
@@ -50,16 +60,19 @@
                     margin-bottom: 10px;
 
                     img{
-                        max-width: 20%;
+                        width: 4rem;
+                        height: 4rem;
+                        border-radius: 50%;
                     }
 
-                    span{
+                    div{
                         text-overflow: ellipsis;
                         white-space: nowrap;
                         overflow: hidden;
-                        font-size: 2vh;
                         align-self: center;
                         margin-left: 1rem;
+                        font-size: 1rem;
+                        font-weight: bold;
                     }
                 }
             }

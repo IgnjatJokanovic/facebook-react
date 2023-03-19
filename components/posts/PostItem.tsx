@@ -31,7 +31,7 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
   const refOpen = React.useRef();
 
   const toggleOpen = e => {
-    if (refOpen.current.contains(e.target)) {
+    if (refOpen?.current?.contains(e.target)) {
       return;
     }
     setIsOpen(false);
@@ -253,14 +253,16 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
       <div className="info-container">
         {!!distinctReactions.length && (
           <div className="reactions">
-            <ReactionsItem
-              reactions={distinctReactions}
-              isOpen={isOpen}
-              activeReaction={activeReaction}
-              setActiveReaction={setActiveReaction}
-              postId={post.id}
-              refOpen={refOpen}
-            />
+            {!!isOpen && (
+              <ReactionsItem
+                reactions={distinctReactions}
+                isOpen={isOpen}
+                activeReaction={activeReaction}
+                setActiveReaction={setActiveReaction}
+                postId={post.id}
+                refOpen={refOpen}
+              />
+            )}
             <div className="container">
               { distinctReactions.map((item, i) => (
                 <div onClick={() => openReactions(item.id)} className="reaction-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }}>
