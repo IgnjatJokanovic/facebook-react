@@ -3,6 +3,7 @@ import { getClaims } from '../helpers/helpers';
 import { Article, AuthUser } from '../types/types';
 import NewPost from './posts/NewPost'
 import axios from 'axios';
+import RecomendedFriends from './RecomendedFriends';
 
 export default function Authorized() {
 
@@ -21,7 +22,8 @@ export default function Authorized() {
 
   return (
     <div className='home-container'>
-      <NewPost owner={claims.id} url={'create'} />
+      <RecomendedFriends />
+      <NewPost owner={claims?.id} url={'create'} />
       <div className="posts-container"></div>
     </div>
   )

@@ -102,6 +102,50 @@
         width: 100%;
         
     }
+
+    .recomended{
+        background-color: $darkGrey;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+        padding: 0.9rem;
+        overflow-x: scroll;
+        .text-left{
+            font-size: 1.7rem;
+            color: $white;
+            font-weight: bold;
+            span{
+                border-bottom: 5px solid $blue;
+            }
+            margin-bottom: 1rem;
+        }
+
+        .slider{
+            display: flex;
+            gap: 1rem;
+            flex-direction: row;
+            .item{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: $white;
+                text-decoration: none;
+                font-weight: bold;
+                gap: 1rem;
+                font-size: 1.6rem;
+                img{
+                    width: 10rem;
+                    height: 10rem;
+                    border-radius: 50%;
+                }
+            }
+
+            .not-found{
+                color: $white;
+                font-size: 1.7rem;
+                text-align: center;
+            }
+        }
+    }
 }
 
 .btn{
