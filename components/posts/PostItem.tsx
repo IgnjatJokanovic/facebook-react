@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import Context from '../../context/context';
 import { ChannelList } from '../../helpers/channels';
-import { getClaims, refreshToken } from '../../helpers/helpers';
+import { getClaims, refreshToken, updatePhoto } from '../../helpers/helpers';
 import OpenableImage from '../OpenableImage';
 import axios from 'axios';
 import TagFriendsRender from './newPost/TagFriendsRender';
@@ -61,6 +61,16 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
         setCurrentUserReaction(res.data.data);
       })
       .catch();
+  }
+
+  const handlePhotoChange = (profile: boolean, id: number) => {
+    updatePhoto(profile, id)
+      .then(res => {
+        ctx.setAlert(res.data.msg, 'success');
+      })
+      .catch(err => {
+        ctx.setAlert(err.response.data.error, 'error');
+      });
   }
 
 
@@ -164,8 +174,8 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
                 <>
                   {post.creator.id === claims?.id && post.image ? (
                     <>
-                      <div className='item'>Set profile photo</div>
-                      <div className='item'>Set cover photo</div>
+                      <div className='item' onClick={() => handlePhotoChange(true, post.id)}>Set profile photo</div>
+                      <div className='item' onClick={() => handlePhotoChange(false, post.id)}>Set cover photo</div>
                     </>
                   ) : null}
                   {linkable ? (

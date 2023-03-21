@@ -234,8 +234,8 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
             )}
             {openNew && (
               <div className='comment-new'>
-                 <Link href={`/user/${comment.user_id}`}>
-                  <DefaultPrefixImage src={comment.user.profile_photo?.src} alt={`${comment.user.firstName} ${comment.user.lastName}`} />
+                <Link href={`/user/${claims?.id}`}>
+                  <DefaultPrefixImage src={claims?.profile?.image?.src} alt={`${claims?.firstName} ${claims?.lastName}`}/>
                 </Link>
                 <CommentForm
                   comment={newComment}

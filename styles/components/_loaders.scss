@@ -108,3 +108,22 @@
     }
 
 }
+
+.user-loader{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    .profile{
+        width: 10rem;
+        height: 10rem;
+        border-radius: 5px;
+
+        @extend .loading-animation;
+    }
+    .name{
+        width: 10rem;
+        height: 2rem;
+        border-radius: 5px;
+        @extend .loading-animation;
+    }
+}

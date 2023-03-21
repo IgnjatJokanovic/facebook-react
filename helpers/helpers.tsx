@@ -38,6 +38,22 @@ const refreshToken = () => {
         });
 }
 
+const updatePhoto = (profile:boolean = false, id: number): Promise<object> => {
+    return axios.post('/user/updatePhoto',
+            {
+                id: id,
+                isProfile: profile
+            }
+        )
+        .then(res => {
+            refreshToken();
+            return Promise.resolve(res);
+        })
+        .catch(err => {
+            return Promise.reject(err);
+        })
+}
+
 const validateComment = (comment:Comment) => {
     return new Promise((resolve, reject) => {
         if (comment.body?.length) {
@@ -73,5 +89,6 @@ export {
     getClaims,
     fetchCookie,
     validateComment,
-    refreshToken
+    refreshToken,
+    updatePhoto
 }

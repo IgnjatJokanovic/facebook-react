@@ -2,6 +2,7 @@ import axios from 'axios'
 import Link from 'next/link';
 import React from 'react'
 import DefaultPrefixImage from './DefaultPrefixImage';
+import UserLoader from './loaders/UserLoader';
 
 export default function RecomendedFriends() {
 
@@ -55,12 +56,11 @@ export default function RecomendedFriends() {
     <div ref={refSlider} className='recomended'>
         <div className="text-left"><span>Recomended friends</span></div>
         {isLoading ? (
-            <>
-            <div className="item"></div>
-            <div className="item"></div>
-            <div className="item"></div>
-            
-            </>
+            <div className='loading-slider'>
+                <UserLoader />
+                <UserLoader />
+                <UserLoader />
+            </div>
         ): (
             <div className='slider'>
             {users.length ? (
