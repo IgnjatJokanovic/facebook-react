@@ -43,3 +43,13 @@ export type Comment = {
     comment_id: number|null,
 }
 
+export type Message = {
+
+}
+
+export type ActiveMessage = {
+    isOpen: boolean,
+    user: User
+    messages: Message[],
+}
+

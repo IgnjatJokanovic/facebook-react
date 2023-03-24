@@ -69,6 +69,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [emotions, setEmotions] = React.useState([])
   const [reactions, setReactions] = React.useState([])
   const [echo, setEcho] = React.useState({})
+  const [activeMessages, setActiveMessages] = React.useState([]);
 
   const setAlert = (message, state, redirect = null) => {
     setAlertObj({
@@ -205,7 +206,9 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="page-container">
             <Component {...pageProps} className='main-container' />
           </div>
-          {/* <MessagesContainer /> */}
+          {/* {!!authenticated && (
+            <MessagesContainer />
+          )} */}
           <ImageModal open={imgObj.open} src={imgObj.src} togleFun={toggleImage} refImg={refImg}/>
          </Context.Provider>
       </Suspense>

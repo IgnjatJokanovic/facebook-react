@@ -50,7 +50,7 @@ export default function RecomendedFriends() {
         return () => {
             refSlider?.current?.removeEventListener('scroll', loadData);
         };
-    }, [nextPage, users.length])
+    }, [nextPage, users.length, isLoading])
     
   return (
     <div ref={refSlider} className='recomended'>

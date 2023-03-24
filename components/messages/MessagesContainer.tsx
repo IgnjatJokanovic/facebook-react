@@ -1,7 +1,7 @@
 import MessageComponent from "./MessageComponent";
 
 
-export default function MessagesContainer() {
+export default function MessagesContainer({activeMessages, setActiveMessages}) {
   return (
     <div className="messages-container">
         <MessageComponent />
