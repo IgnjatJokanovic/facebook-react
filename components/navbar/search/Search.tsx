@@ -91,7 +91,7 @@ export default function Search() {
 
     React.useEffect(() => {
         handleSearch();
-    }, [param]);
+    }, [handleSearch, param]);
     
   return (
     <div ref={refOption}>
