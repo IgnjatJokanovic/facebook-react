@@ -49,7 +49,10 @@ export type Message = {
 
 export type ActiveMessage = {
     isOpen: boolean,
-    user: User
+    id: number,
+    firstName: string,
+    lastName: string,
+    profile: string|null,
     messages: Message[],
 }
 

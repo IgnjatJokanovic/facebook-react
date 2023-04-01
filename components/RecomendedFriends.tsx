@@ -62,19 +62,18 @@ export default function RecomendedFriends() {
                 <UserLoader />
             </div>
         ): (
-            <div className='slider'>
-            {users.length ? (
-
-                users.map((item, i) => (
-                <Link className='item' key={i} href={`/user/${item.id}`}>
-                    <DefaultPrefixImage src={item.profile} alt={`${item.firstName} ${item.lastName}`} />
-                    <span>{item.firstName} {item.lastName}</span>  
-                </Link>
-                ))
+            users.length ? (
+                <div className="slider">
+                    {users.map((item, i) => (
+                        <Link className='item' key={i} href={`/user/${item.id}`}>
+                            <DefaultPrefixImage src={item.profile} alt={`${item.firstName} ${item.lastName}`} />
+                            <span>{item.firstName} {item.lastName}</span>
+                        </Link>
+                    ))}
+                </div>
             ): (
                 <div className='not-found'>No recomendations try adding some friends</div>
-            )}
-            </div>
+            )
         )}
     </div>
   )

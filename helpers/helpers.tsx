@@ -64,6 +64,18 @@ const validateComment = (comment:Comment) => {
     })
 }
 
+const validateMessage = (message: string) => {
+    return new Promise((resolve, reject) => {
+        if (message.length) {
+            return resolve('');
+        }
+        return reject("Message cant be empty");
+      
+    })
+}
+
+
+
 
 
 // const validateArticle = post => {
@@ -90,5 +102,6 @@ export {
     fetchCookie,
     validateComment,
     refreshToken,
-    updatePhoto
+    updatePhoto,
+    validateMessage,
 }

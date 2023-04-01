@@ -70,6 +70,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [reactions, setReactions] = React.useState([])
   const [echo, setEcho] = React.useState({})
   const [activeMessages, setActiveMessages] = React.useState([]);
+  const [messageNotifications, setMessageNotifications] = React.useState([]);
 
   const setAlert = (message, state, redirect = null) => {
     setAlertObj({
@@ -201,14 +202,21 @@ export default function App({ Component, pageProps }: AppProps) {
           reactions,
           echo,
           handleFileRead,
+          setActiveMessages,
+          activeMessages,
+          messageNotifications,
+          setMessageNotifications,
         }}>
           <Navbar />
           <div className="page-container">
             <Component {...pageProps} className='main-container' />
           </div>
-          {/* {!!authenticated && (
-            <MessagesContainer />
-          )} */}
+          {!!authenticated && (
+            <MessagesContainer
+              activeMessages={activeMessages}
+              setActiveMessages={setActiveMessages}
+            />
+          )}
           <ImageModal open={imgObj.open} src={imgObj.src} togleFun={toggleImage} refImg={refImg}/>
          </Context.Provider>
       </Suspense>

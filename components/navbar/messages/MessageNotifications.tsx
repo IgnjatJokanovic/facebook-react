@@ -2,8 +2,12 @@ import axios from 'axios';
 import React from 'react'
 import MessageItem from './MessageItem';
 import MessageLoader from '../../loaders/MessageLoader';
+import Context from '../../../context/context';
+import { ActiveMessage } from '../../../types/types';
 
 export default function MessageNotifications() {
+
+    const ctx = React.useContext(Context);
    
     const [open, setOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -38,6 +42,37 @@ export default function MessageNotifications() {
         }
         setOpen(false);
     };
+
+    const openMessage = (item) => {
+        let curr: ActiveMessage[] = [...ctx.activeMessages];
+        let index = curr.findIndex(obj => obj.id === item.id);
+
+        if (index >= 0) {
+            // handle set first position and open
+            let currObj = curr.splice(index, 1)[0];
+            currObj.isOpen = true;
+            curr.unshift(currObj);
+
+        } else {
+            // handle adding new item
+            let newObj: ActiveMessage = {
+                isOpen: true,
+                id: item.id,
+                firstName: item.firstName,
+                lastName: item.lastName,
+                profile: item.profile,
+                messages: [],
+            };
+
+            console.log('setting', newObj);
+
+            curr.unshift(newObj);
+        }
+
+        ctx.setActiveMessages(curr);
+        setOpen(false);
+
+    }
 
     const loadData = React.useCallback(() => {
         if (search.length) {
@@ -124,29 +159,31 @@ export default function MessageNotifications() {
               <span>10</span>
           </i>
           <div ref={refDropdown} className={open ? 'dropdown active' : 'dropdown'}>
-              <form onInput={e => handleChange(e)}>
-                <input
-                    onChange={e => {
-                        handleChange(e);
-                    }}
-                    type="text" 
-                    placeholder='Search messages'
-                />
-              </form>
+              {!!messages.length && (
+                <form>
+                  <input
+                      onChange={e => {
+                          handleChange(e);
+                      }}
+                      type="text" 
+                      placeholder='Search messages'
+                  />
+                </form>
+              )}
               {isLoading ? (
                  <MessageLoader />
               ) : (
                     search.length > 0 ? (
                         searchData.length ? (
                             searchData.map((item, i) => (
-                            <MessageItem 
+                                <MessageItem 
                                     key={i}
                                     img={item.profile}
                                     name={item.firstName}
                                     surname={item.lastName}
                                     message={item.body}
-                                    setOpen={setOpen}
-                            /> 
+                                    openMessage={() => openMessage(item)}
+                                /> 
                             ))
                         ): (
                             <div className="not-found">No results found</div>
@@ -154,17 +191,17 @@ export default function MessageNotifications() {
                     ): (
                         messages.length ? (
                             messages.map((item, i) => (
-                            <MessageItem 
+                                <MessageItem 
                                     key={i}
                                     img={item.profile}
                                     name={item.firstName}
                                     surname={item.lastName}
                                     message={item.body}
-                                    setOpen={setOpen}
-                            /> 
+                                    openMessage={() => openMessage(item)}
+                                /> 
                             ))
                         ): (
-                            <div className="not-found">No new messages</div>
+                            <div className="zero-notifications">No new messages</div>
                         )      
                     )
                     

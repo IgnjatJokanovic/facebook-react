@@ -143,12 +143,23 @@
                     border-radius: 5px;
                 }
             }
+        }
 
-            .not-found{
-                color: $white;
-                font-size: 1.7rem;
-                text-align: center;
-            }
+        .not-found{
+            color: $white;
+            font-size: 1.7rem;
+            text-align: center;
+        }
+    }
+
+    .posts-container{
+        .not-found{
+            text-align: center;
+            padding: 1rem;
+            background-color: $darkGrey;
+            border-radius: 5px;
+            color: $white;
+            font-size: 1.5rem;
         }
     }
 }
