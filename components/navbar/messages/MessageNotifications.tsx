@@ -8,10 +8,12 @@ import { ActiveMessage } from '../../../types/types';
 export default function MessageNotifications() {
 
     const ctx = React.useContext(Context);
+
+    const messages = ctx.messageNotifications;
+    const setMessages = ctx.setMessageNotifications;
    
     const [open, setOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
-    const [messages, setMessages] = React.useState([]);
     const [searchData, setSearchData] = React.useState([]);
     const [search, setSearch] = React.useState('');
 
@@ -96,8 +98,6 @@ export default function MessageNotifications() {
                 .catch((err) => {
                     // handle error
                 });
-            } else {
-                refDropdown.current.removeEventListener("wheel", loadData);
             }
         } else {
             if (nextPage >= 0) {
@@ -120,12 +120,10 @@ export default function MessageNotifications() {
                 .catch((err) => {
                     // handle error
                 });
-            } else {
-                refDropdown.current.removeEventListener("wheel", loadData);
             }
         }
         
-    }, [nextPage, nextPageSearch, search]);
+    }, [nextPage, nextPageSearch, search, setMessages]);
 
     React.useEffect(() => {
         if (search.length) {
@@ -159,7 +157,7 @@ export default function MessageNotifications() {
               <span>10</span>
           </i>
           <div ref={refDropdown} className={open ? 'dropdown active' : 'dropdown'}>
-              {!!messages.length && (
+              
                 <form>
                   <input
                       onChange={e => {
@@ -169,7 +167,7 @@ export default function MessageNotifications() {
                       placeholder='Search messages'
                   />
                 </form>
-              )}
+              
               {isLoading ? (
                  <MessageLoader />
               ) : (

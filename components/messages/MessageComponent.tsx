@@ -4,18 +4,28 @@ import ContentEditable from "react-contenteditable"
 import DefaultPrefixImage from "../DefaultPrefixImage";
 import Link from "next/link";
 import Context from "../../context/context";
-import { validateMessage } from "../../helpers/helpers";
+import { getClaims, validateMessage } from "../../helpers/helpers";
 import axios from "axios";
+import MessageItemLoader from "../loaders/MessageItemLoader";
 
 export default function MessageComponent({ messageThread, minimize, close }) {
   
   const ctx = React.useContext(Context)
   const emojies = ctx.emojiList;
+  const claims = getClaims();
 
-  const [openEmoji, setOpenEmoji] = React.useState(false)
+  const notifications = ctx.messageNotifications;
+  const setNotifications = ctx.setMessageNotifications;
+
+  const refBody = React.useRef();
+
+  const [openEmoji, setOpenEmoji] = React.useState(false);
+  const [messages, setMessages] = React.useState([]);
+  const [nextPage, setNextPage] = React.useState(0);
+  const [isLoading, setIsLoading] = React.useState(true);
   
   const [newMessage, setNewMessage] = React.useState({
-    id: messageThread.id,
+    to: messageThread.id,
     body: ''
   })
 
@@ -72,6 +82,30 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     }
   }
 
+  const updateNotifications = (data: string, id = null) => {
+    // handle update
+    if (id != null) {
+      let curr = [...notifications];
+      let index = curr.findIndex(obj => obj.messageId === id);
+
+      if (index >= 0) {
+        let currObj = curr[index];
+
+        currObj.body = data;
+        setNotifications(curr);
+      }
+
+    } else {
+      //handle insert
+      let curr = [...notifications];
+      let index = curr.findIndex(obj => obj.id === messageThread.id);
+      let currObj = curr[index];
+
+      currObj.body = data;
+      setNotifications(curr);
+    }
+  }
+
   const handleSubmit = () => {
     if (Object.keys(edit).length) {
       validateMessage(edit.body)
@@ -79,9 +113,24 @@ export default function MessageComponent({ messageThread, minimize, close }) {
           axios.post('/message/update', edit)
             .then(res => {
               ctx.setAlert(res.data.msg, 'success');
+              let body = res.data.data.body;
+              let id = res.data.data.id;
+
+              let curr = [...messages];
+              let index = curr.findIndex(obj => obj.id === id);
+        
+              if (index >= 0) {
+                let currObj = curr[index];
+        
+                currObj.body = body;
+                setNotifications(curr);
+              }
+
+              updateNotifications(res.data.data.body, res.data.data.id);
+              reset();
             })
             .catch(err => {
-
+              ctx.setAlert(err.response.data.error, 'error')
             })
         })
         .catch(err => {
@@ -93,9 +142,19 @@ export default function MessageComponent({ messageThread, minimize, close }) {
           axios.post('/message/create', newMessage)
             .then(res => {
               ctx.setAlert(res.data.msg, 'success');
+
+              let body = res.data.data.body;
+
+              let curr = [...messages];
+              curr.push(res.data.data);
+
+              setMessages(curr);
+              updateNotifications(body);
+
+              reset();
             })
             .catch(err => {
-              
+              ctx.setAlert(err.response.data.error, 'error')
             })
         })
         .catch(err => {
@@ -107,19 +166,44 @@ export default function MessageComponent({ messageThread, minimize, close }) {
 
   React.useEffect(() => {
     
-    if (messageThread.messages.length) {
-      axios.get('/message/create', newMessage)
-        .then(res => {
-          ctx.setAlert(res.data.msg, 'success');
-        })
-        .catch(err => {
-          
-        })
+    const loadData = () => {
+      console.log(nextPage);
+      if (nextPage >= 0) {
+        axios.get(`/message/show/${messageThread.id}?page=${nextPage}`)
+          .then(res => {
+            console.log('setting messages', res)
+            setMessages(prevState => [...prevState, ...res.data.data]);
+            setIsLoading(false);
+  
+            if (res.data.next_page_url === null) {
+              setNextPage(-1);
+            }
+  
+            let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
+            console.log(lastIndex)
+            setNextPage(lastIndex);
+          })
+          .catch(err => {
+            
+          })
+      } else {
+        refBody?.current?.removeEventListener('wheel', loadData);
+      }
     }
+
+    if (!messages.length) {
+      console.log('re-render MESSAGE THREAD');
+      loadData();
+    }
+    
+    
+    refBody?.current?.addEventListener('wheel', loadData);
+  
+
     return () => {
-      
+      refBody?.current?.removeEventListener('wheel', loadData);
     }
-  }, [])
+  }, [messageThread.id, messages.length, nextPage])
   
 
   
@@ -137,31 +221,24 @@ export default function MessageComponent({ messageThread, minimize, close }) {
           </div>  
         </div>
         <div className={ messageThread.isOpen ? "body active" : "body" }>
-          <div className="messages">
-            <div className="bubble">
-                  Test
-              </div>
-              <div className="bubble">
-                  Test
-              </div>
-              <div className="bubble">
-                  Test
-              </div>
-              <div className="bubble">
-                  Test
-              </div>
-              <div className="bubble">
-                  Test
-              </div>
-              <div className="bubble">
-                  Test
-              </div>
-              <div className="bubble">
-                  Test
-              </div>
-              <div className="bubble right">
-                  Test
-              </div>
+          <div ref={refBody} className="messages">
+            {isLoading ? (
+                <>
+                  <MessageItemLoader />
+                  <MessageItemLoader />
+                  <MessageItemLoader />
+                </>
+              ): (
+                <>
+                  {messages.length ? (
+                    messages.map((item, i) => (
+                      <div key={i} className={item.from == claims?.id ? "bubble right" : "bubble"} dangerouslySetInnerHTML={{ __html: item.body }}>
+                       
+                      </div>
+                    ))
+                  ): null}
+              </>
+            )}
             
           </div>
           <form onSubmit={e => {

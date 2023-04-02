@@ -15,7 +15,7 @@ import { isAuthenticated, fetchCookie } from '../helpers/helpers'
 import { useRouter } from 'next/router';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js'
-import { AlertObj } from '../types/types'
+import { ActiveMessage, AlertObj } from '../types/types'
 
 
 
@@ -69,7 +69,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [emotions, setEmotions] = React.useState([])
   const [reactions, setReactions] = React.useState([])
   const [echo, setEcho] = React.useState({})
-  const [activeMessages, setActiveMessages] = React.useState([]);
+  const [activeMessages, setActiveMessages] = React.useState<ActiveMessage>([]);
   const [messageNotifications, setMessageNotifications] = React.useState([]);
 
   const setAlert = (message, state, redirect = null) => {

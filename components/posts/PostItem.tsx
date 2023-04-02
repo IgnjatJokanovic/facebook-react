@@ -244,9 +244,14 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
         )}
       </div>
       {!!post.body && (
-         <Link className='linkable' href={`/post/${post.id}`}>
+        linkable ? (
+
+          <Link className='linkable' href={`/post/${post.id}`}>
             <div className="body" dangerouslySetInnerHTML={{ __html: post.body}}></div>
-         </Link>
+          </Link>
+        ): (
+          <div className="body" dangerouslySetInnerHTML={{ __html: post.body}}></div>
+        )
         
       )}
       <div className="image">

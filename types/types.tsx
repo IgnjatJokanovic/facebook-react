@@ -44,7 +44,11 @@ export type Comment = {
 }
 
 export type Message = {
-
+    id: number,
+    from: number,
+    to: number,
+    body: string,
+    opened: boolean,
 }
 
 export type ActiveMessage = {
