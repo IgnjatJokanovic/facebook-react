@@ -4,6 +4,7 @@ import { getClaims, logout } from '../../../helpers/helpers';
 import { useRouter } from 'next/router';
 import Context from '../../../context/context';
 import DefaultPrefixImage from '../../DefaultPrefixImage';
+import axios from 'axios';
 
 export default function Settings() {
     const ctx = React.useContext(Context)
@@ -25,6 +26,15 @@ export default function Settings() {
         ctx.setauthenticated(false);
         router.push("/");
 
+    }
+
+    const handleSendMail = () => {
+        axios.post('/activation/resend')
+            .then(res => {
+                ctx.setAlert(res.data, 'success')
+            }).catch(err => {
+                ctx.setAlert(err.response.data.error, 'error');
+            });
     }
 
     React.useEffect(() => {
@@ -51,15 +61,20 @@ export default function Settings() {
                     </div>
                    
                     <div>
-                        <Link href='/updateinfo'>
+                        <Link href='/user/update'>
                             Update basic info
                         </Link>
                     </div>
                     <div>
-                        <Link href='/changepassword'>
+                        <Link href='/password/update'>
                             Change password
                         </Link>
                     </div>
+                    {!claims?.active ? (
+                        <div className="logout" onClick={handleSendMail}>
+                            Resend activation email
+                        </div>
+                    ): null}
                     <div className='logout' onClick={handleLogout}>
                         Logout
                     </div>

@@ -77,7 +77,7 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
 
   const deletePost = () => {
     axios.post('/post/delete', { id: post.id })
-      .then(res => {
+      .then(async res => {
         if (deleteCallback.toString().trim() === "()=>{}") {
           ctx.setAlert(res.data.msg, 'success', '/');
         } else {
@@ -85,7 +85,7 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
         }
 
         if (claims?.profile?.id == post.id) {
-          refreshToken();
+          await refreshToken();
         }
          
         deleteCallback();

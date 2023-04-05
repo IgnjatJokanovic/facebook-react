@@ -5,11 +5,7 @@ import { useForm } from "react-hook-form";
 import Context from '../../context/context';
 import { login } from '../../helpers/helpers';
 import { useRouter } from 'next/router';
-
-type LoginRequest = {
-  email: string;
-  password: string;
-}
+import { LoginRequest } from '../../types/types';
 
 export default function Login({ setActiveForm }) {
 
@@ -44,7 +40,7 @@ export default function Login({ setActiveForm }) {
             { errors.email && <span className='error'>{ errors.email.message }</span> }
             <input type="password" placeholder="Password" {...register("password", {required: "Password field is required",})}/>
             { errors.password && <span className='error'>{ errors.password.message }</span> }
-            <Link href={'/forgotPassword'}>Forgot your password?</Link>
+            <Link href={'/password/forgot'}>Forgot your password?</Link>
             <span>Dont have account? <span onClick={() => setActiveForm('register')}>Sign up</span></span>  
             <button>Sign In</button>
         </form>

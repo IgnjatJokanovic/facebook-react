@@ -117,7 +117,7 @@ export default function UserProfile() {
     post.isProfile = isProfile;
 
     axios.post('/post/create', article)
-      .then(res => {
+      .then(async res => {
         ctx.setAlert(res.data.msg, "success");
         
         if (isProfile) {
@@ -128,7 +128,7 @@ export default function UserProfile() {
 
         handleCancel();
 
-        refreshToken();
+        await refreshToken();
       })
       .catch(err => {
         ctx.setAlert(res.response.data.error, "error");
@@ -141,6 +141,18 @@ export default function UserProfile() {
       src: ''
     };
     setPost({ ...post, image: imageObj });
+  }
+
+  const openMessage = () => {
+    let userObj = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profile: user.profile_photo?.image?.src,
+    }
+
+    ctx.openMessage(userObj);
+    setOpen(false);
   }
 
   React.useEffect(() => {
@@ -224,7 +236,7 @@ export default function UserProfile() {
                               <div onClick={addFriend} className="button">
                                 Add friend
                               </div>
-                                <div className="button">
+                              <div className="button" onClick={() => openMessage()}>
                                 Send Message
                               </div>
                             </>
@@ -235,7 +247,7 @@ export default function UserProfile() {
                             <div onClick={() => removeFriend()} className="button">
                               {user.isFriends?.accepted ? "Remove friend" : "Cancel request"}
                             </div>
-                            <div className="button">
+                            <div className="button" onClick={() => openMessage()}>
                               Send Message
                             </div>
                           </>
@@ -246,7 +258,7 @@ export default function UserProfile() {
                           <div onClick={() => removeFriend()} className="button">
                             Remove friend
                           </div>
-                          <div className="button">
+                          <div className="button" onClick={() => openMessage()}>
                             Send Message
                           </div>
                         </>
@@ -260,7 +272,7 @@ export default function UserProfile() {
                             <div onClick={() => removeFriend("Declined friend request")} className="button">
                               Decline
                             </div>
-                            <div className="button">
+                            <div className="button" onClick={() => openMessage()}>
                               Send Message
                             </div>
                           </>

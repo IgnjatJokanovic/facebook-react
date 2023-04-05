@@ -1,35 +1,55 @@
-import moment from 'moment'
 import axios from 'axios';
-import React from 'react';
-
-import { useForm } from "react-hook-form";
+import moment from 'moment';
+import React from 'react'
+import { useForm } from 'react-hook-form';
 import Context from '../../context/context';
-import { RegisterRequest } from '../../types/types';
+import { getClaims, login, logout, refreshToken } from '../../helpers/helpers';
+import { UpdateUserRequest } from '../../types/types';
 
+export default function Reset() {
 
+  const maxDate = moment();
+  const minDate = moment().subtract(100, 'years');
 
-export default function Register({ setActiveForm }) {
+  const ctx = React.useContext(Context);
+  const claims = getClaims();
 
-    const ctx = React.useContext(Context);
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<UpdateUserRequest>();
+  
+  const onSubmit = (data:UpdateUserRequest) => {
+    console.log(data)
+
+    axios.post('/user/update', data)
+      .then(async res => {
+          ctx.setAlert(res.data.msg, 'success');
+          if (res.data.data) {
+            logout();
+          } else {
+            await refreshToken();
+          }
+          
+      })
+      .catch(err => ctx.setAlert(err.response.data.error, 'error'));
     
-    const maxDate = moment();
-    const minDate = moment().subtract(100, 'years');
+  }
 
-    const { register, handleSubmit, formState: { errors } } = useForm<RegisterRequest>();
-
-    const onSubmit = (data:RegisterRequest) => {
-        axios.post('/user/create', data)
-            .then(res => {
-                ctx.setAlert(res.data, 'success')
-            }).catch(err => {
-                ctx.setAlert(err.response.data.error, 'error');
-            });
+  React.useEffect(() => {
+    setValue('firstName', claims?.firstName);
+    setValue('lastName', claims?.lastName);
+    setValue('birthday', claims?.birthday);
+    setValue('email', claims?.email);
+  
+    return () => {
+      
     }
+  }, [claims?.birthday, claims?.email, claims?.firstName, claims?.lastName, setValue])
+  
+
   return (
+    <div className="generic-form">
         <div className="form-container register">
             <form onSubmit={handleSubmit(onSubmit)}>
-                <h1>Create Account</h1>
-                <span>Already have account? <span onClick={() => setActiveForm("login")}>Login</span></span>
+                <h1>Update Account</h1>
                 <input type="text" placeholder="First name" {...register("firstName", {required: "First name field is required",})} />
                 { errors.firstName && <span className='error'>{ errors.firstName.message }</span> }
                 <input type="text" placeholder="Last name" {...register("lastName", {required: "Last name field is required",})} />
@@ -45,10 +65,9 @@ export default function Register({ setActiveForm }) {
                     }
                 })} />
                 { errors.email && <span className='error'>{ errors.email.message }</span> }
-                <input type="password" placeholder="Password" {...register("password", {required: "Password field is required",})} />
-                { errors.password && <span className='error'>{ errors.password.message }</span> }
-                <button>Sign Up</button>
+                <button>Update</button>
             </form>
         </div>
+    </div>
   )
 }

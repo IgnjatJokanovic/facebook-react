@@ -7,7 +7,7 @@ import AddEmotion from './newPost/AddEmotion';
 import AddImage from './newPost/AddImage';
 import TagFriends from './newPost/TagFriends';
 import ContentEditable from 'react-contenteditable'
-import { getClaims, refreshToken } from '../../helpers/helpers';
+import { getClaims, refreshToken, validateActiveUser } from '../../helpers/helpers';
 import { Article } from '../../types/types';
 import TagFriendsRender from './newPost/TagFriendsRender';
 import DefaultPrefixImage from '../DefaultPrefixImage';
@@ -79,33 +79,38 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
     }
     
     const handleSubmit = () => {
-        console.log(article);
-    
-        axios.post(`/post/${url}`, article)
-            .then(res => {
-                ctx.setAlert(res.data.msg, 'success', `/post/${res.data.data.id}`);
-                if (url == 'update') {
-                    if (claims?.profile?.id == article.id) {
-                        refreshToken();
+        validateActiveUser()
+            .then(() => {
+                axios.post(`/post/${url}`, article)
+                .then(async res => {
+                    ctx.setAlert(res.data.msg, 'success', `/post/${res.data.data.id}`);
+                    if (url == 'update') {
+                        if (claims?.profile?.id == article.id) {
+                            await refreshToken();
+                        }
+                        setOriginalPost(res.data.post);
                     }
-                    setOriginalPost(res.data.post);
-                }
-                setArticle({
-                    id: null,
-                    owner: null,
-                    creator: null,
-                    body: '',
-                    image: {
-                      id: null,
-                      src: null
-                    },
-                    emotion: null,
-                    taged: [],
+                    setArticle({
+                        id: null,
+                        owner: null,
+                        creator: null,
+                        body: '',
+                        image: {
+                          id: null,
+                          src: null
+                        },
+                        emotion: null,
+                        taged: [],
+                    });
+                    close({})
+                })
+                .catch(err => {
+                    ctx.setAlert(err.response.data.error, 'error')
                 });
-                close({})
-        }).catch(err => {
-                ctx.setAlert(err.response.data.error, 'error')
-            });
+            })
+            .catch(err => {
+                ctx.setAlert(err, 'error');
+            })
         
     }
 

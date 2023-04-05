@@ -27,6 +27,7 @@ export type AuthUser = {
     lastName: string,
     birthday: string,
     email: string,
+    active: boolean,
     profile: ImageObj|null
 }
 
@@ -59,4 +60,37 @@ export type ActiveMessage = {
     profile: string|null,
     messages: Message[],
 }
+
+export type LoginRequest = {
+    email: string,
+    password: string,
+}
+
+export type PasswordResetRequest = {
+    email: string,
+}
+
+export type PasswordResetUpdateRequest = {
+    token: string,
+    password: string,
+}
+
+export type UpdatePasswordRequest = {
+    password: string,
+}
+
+export type UpdateUserRequest = {
+    email: string,
+    birthday: string,
+    firstName: string,
+    lastName: string,
+}
+
+export type RegisterRequest = {
+    firstName: string;
+    lastName: string;
+    birthday: string;
+    email: string;
+    password: string;
+  }
 

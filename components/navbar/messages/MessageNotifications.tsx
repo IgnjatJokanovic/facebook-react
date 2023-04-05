@@ -3,7 +3,6 @@ import React from 'react'
 import MessageItem from './MessageItem';
 import MessageLoader from '../../loaders/MessageLoader';
 import Context from '../../../context/context';
-import { ActiveMessage } from '../../../types/types';
 
 export default function MessageNotifications() {
 
@@ -46,32 +45,7 @@ export default function MessageNotifications() {
     };
 
     const openMessage = (item) => {
-        let curr: ActiveMessage[] = [...ctx.activeMessages];
-        let index = curr.findIndex(obj => obj.id === item.id);
-
-        if (index >= 0) {
-            // handle set first position and open
-            let currObj = curr.splice(index, 1)[0];
-            currObj.isOpen = true;
-            curr.unshift(currObj);
-
-        } else {
-            // handle adding new item
-            let newObj: ActiveMessage = {
-                isOpen: true,
-                id: item.id,
-                firstName: item.firstName,
-                lastName: item.lastName,
-                profile: item.profile,
-                messages: [],
-            };
-
-            console.log('setting', newObj);
-
-            curr.unshift(newObj);
-        }
-
-        ctx.setActiveMessages(curr);
+        ctx.openMessage(item);
         setOpen(false);
 
     }
@@ -146,7 +120,7 @@ export default function MessageNotifications() {
 
         return () => {
             document.removeEventListener("mousedown", toggleNavOption);
-            refDropdown.current.removeEventListener("wheel", loadData);
+            refDropdown?.current?.removeEventListener("wheel", loadData);
         };
     }, [messages.length, nextPage, search.length, loadData]);
 

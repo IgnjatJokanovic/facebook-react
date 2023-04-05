@@ -27,7 +27,7 @@ const fetchCookie = () => {
     return getCookie(tokenName);
 }
 
-const refreshToken = () => {
+const refreshToken = async () => {
     axios.get('/auth/refreshToken')
         .then(res => {
             console.log('token', res.data)
@@ -45,8 +45,8 @@ const updatePhoto = (profile:boolean = false, id: number): Promise<object> => {
                 isProfile: profile
             }
         )
-        .then(res => {
-            refreshToken();
+        .then(async res => {
+            await refreshToken();
             return Promise.resolve(res);
         })
         .catch(err => {
@@ -70,6 +70,17 @@ const validateMessage = (message: string) => {
             return resolve('');
         }
         return reject("Message cant be empty");
+      
+    })
+}
+
+const validateActiveUser = () => {
+    let user = getClaims();
+    return new Promise((resolve, reject) => {
+        if (user?.active) {
+            return resolve('');
+        }
+        return reject("Please confirm your email.");
       
     })
 }
@@ -104,4 +115,5 @@ export {
     refreshToken,
     updatePhoto,
     validateMessage,
+    validateActiveUser,
 }

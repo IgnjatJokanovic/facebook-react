@@ -69,7 +69,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [emotions, setEmotions] = React.useState([])
   const [reactions, setReactions] = React.useState([])
   const [echo, setEcho] = React.useState({})
-  const [activeMessages, setActiveMessages] = React.useState<ActiveMessage>([]);
+  const [activeMessages, setActiveMessages] = React.useState<ActiveMessage[]>([]);
   const [messageNotifications, setMessageNotifications] = React.useState([]);
 
   const setAlert = (message, state, redirect = null) => {
@@ -117,6 +117,35 @@ export default function App({ Component, pageProps }: AppProps) {
       
       
   };
+
+  const openMessage = (item) => {
+    let curr: ActiveMessage[] = [...activeMessages];
+    let index = curr.findIndex(obj => obj.id === item.id);
+
+    if (index >= 0) {
+        // handle set first position and open
+        let currObj = curr.splice(index, 1)[0];
+        currObj.isOpen = true;
+        curr.unshift(currObj);
+
+    } else {
+        // handle adding new item
+        let newObj: ActiveMessage = {
+            isOpen: true,
+            id: item.id,
+            firstName: item.firstName,
+            lastName: item.lastName,
+            profile: item.profile,
+            messages: [],
+        };
+
+        console.log('setting', newObj);
+
+        curr.unshift(newObj);
+    }
+
+    setActiveMessages(curr);
+}
 
   const channelOptions = {
     broadcaster: 'pusher',
@@ -206,6 +235,7 @@ export default function App({ Component, pageProps }: AppProps) {
           activeMessages,
           messageNotifications,
           setMessageNotifications,
+          openMessage,
         }}>
           <Navbar />
           <div className="page-container">
