@@ -11,7 +11,7 @@ import React from 'react'
 import Context from '../context/context'
 import ImageModal from '../components/ImageModal'
 import Alert from '../components/Alert'
-import { isAuthenticated, fetchCookie } from '../helpers/helpers'
+import { isAuthenticated, fetchCookie, setAuth } from '../helpers/helpers'
 import { useRouter } from 'next/router';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js'
@@ -161,7 +161,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
     if (isLoggedIn) {
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${fetchCookie()}`;
+      setAuth(fetchCookie())
 
       channelOptions.auth = {
         headers: {

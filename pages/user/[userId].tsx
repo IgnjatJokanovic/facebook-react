@@ -7,7 +7,7 @@ import Information from '../../components/userProfile/information/Information'
 import Context from '../../context/context'
 import OpenableImage from '../../components/OpenableImage'
 import axios from 'axios'
-import { getClaims, login, refreshToken } from '../../helpers/helpers'
+import { getClaims, login, refreshToken, validateActiveUser } from '../../helpers/helpers'
 import { Article, User } from '../../types/types'
 import ImageModal from '../../components/ImageModal'
 import DefaultPrefixImage from '../../components/DefaultPrefixImage'
@@ -65,13 +65,19 @@ export default function UserProfile() {
   }, [navigationOption, userId])
 
   const addFriend = () => {
-    axios.post('/friend/add', { to: user.id })
-      .then(res => {
-        setUser({ ...user, isFriends: res.data.data })
-        ctx.setAlert(res.data.msg, 'success')
+    validateActiveUser()
+      .then(() => {
+        axios.post('/friend/add', { to: user.id })
+          .then(res => {
+            setUser({ ...user, isFriends: res.data.data })
+            ctx.setAlert(res.data.msg, 'success')
+          })
+          .catch(err => {
+            ctx.setAlert(err.response.data, 'error');
+          })
       })
       .catch(err => {
-        ctx.setAlert(err.response.data, 'error');
+        ctx.setAlert(err, 'error');
       })
   }
 

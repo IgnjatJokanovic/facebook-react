@@ -1,5 +1,6 @@
 import axios from 'axios';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import React from 'react'
 import { useForm } from 'react-hook-form';
 import Context from '../../context/context';
@@ -9,7 +10,9 @@ import { UpdateUserRequest } from '../../types/types';
 export default function Reset() {
 
   const maxDate = moment();
-  const minDate = moment().subtract(100, 'years');
+    const minDate = moment().subtract(100, 'years');
+    
+    const router = useRouter()
 
   const ctx = React.useContext(Context);
   const claims = getClaims();
@@ -22,14 +25,12 @@ export default function Reset() {
     axios.post('/user/update', data)
       .then(async res => {
           ctx.setAlert(res.data.msg, 'success');
-          if (res.data.data) {
-            logout();
-          } else {
-            await refreshToken();
-          }
+          await refreshToken();
           
       })
       .catch(err => ctx.setAlert(err.response.data.error, 'error'));
+      
+     
     
   }
 

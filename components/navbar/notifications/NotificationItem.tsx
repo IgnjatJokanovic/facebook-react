@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import React from 'react'
 
-export default function NotificationItem({ img, link, name, surname, text }) {
+export default function NotificationItem({ url, img, name, surname, text, opened = false }) {
   return (
       <div className='item notification-item'>
-          <Link href={ link }>
+          <Link href={ '' }>
               <img src={img} alt="" />
               <div><span>{name} {surname}</span> { text}</div>
           </Link>

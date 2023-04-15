@@ -113,6 +113,14 @@
             padding: 10px;
             overflow-y: scroll;
 
+            .link{
+                color: $white;
+                text-align: right;
+                font-weight: bold;
+                padding: 0.4rem;
+                cursor: pointer;
+            }
+
             .settings{
                 color: $white;
                 .logout{

@@ -13,6 +13,7 @@ const isAuthenticated = (): boolean => {
 
 const login = (jwt_token: string) => {
     setCookie(tokenName, jwt_token, { maxAge: 60 * 60 * 24 });
+    setAuth(jwt_token);
 }
 
 const logout = (): void => {
@@ -30,7 +31,8 @@ const fetchCookie = () => {
 const refreshToken = async () => {
     axios.get('/auth/refreshToken')
         .then(res => {
-            console.log('token', res.data)
+            console.log('token', res.data);
+            setAuth(res.data);
             login(res.data);
         })
         .catch(err => {
@@ -52,6 +54,10 @@ const updatePhoto = (profile:boolean = false, id: number): Promise<object> => {
         .catch(err => {
             return Promise.reject(err);
         })
+}
+
+const setAuth = (token: string) => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
 const validateComment = (comment:Comment) => {
@@ -116,4 +122,5 @@ export {
     updatePhoto,
     validateMessage,
     validateActiveUser,
+    setAuth,
 }

@@ -3,9 +3,17 @@ var ChannelList = {
         channel: "friendRequestSent.",
         listen: ".recieved"
     },
+    friendCanceled: {
+        channel: "friendRequestCanceled.",
+        listen: ".canceled"
+    },
+    notification: {
+        channel: "notification.",
+        listen: ".canceled"
+    },
     postReaction: {
         channel: "postReaction.",
-        listen: ".reaction"
+        listen: ".recieved"
     }
 }
 

@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router';
 import Context from '../../../context/context';
 
-export default function FriendItem({ profile, img, name, surname, id, opened = false, setFriendRequests, friendRequests }) {
+export default function FriendItem({ profile, img, name, surname, id, opened = false, setFriendRequests, friendRequests, setCount }) {
   const router = useRouter();
   const ctx = React.useContext(Context);
 
@@ -20,6 +20,7 @@ export default function FriendItem({ profile, img, name, surname, id, opened = f
           curr[index].opened = true;
           setFriendRequests(curr);
           router.push(profile);
+          setCount(prevCount => prevCount > 0 ? prevCount - 1 : 0);
         })
         .catch(err => {
           ctx.setAlert(err.response.data, 'error');
@@ -33,6 +34,11 @@ export default function FriendItem({ profile, img, name, surname, id, opened = f
       .then(res => {
         let curr = [...friendRequests];
         let index = curr.findIndex(obj => obj.id === id);
+
+        if (!curr[index].opened) {
+          setCount(prevCount => prevCount > 0 ? prevCount - 1 : 0);
+        }
+
         curr.splice(index, 1);
         setFriendRequests(curr);
 
