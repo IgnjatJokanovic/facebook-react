@@ -10,6 +10,7 @@ import TagFriendsRender from './newPost/TagFriendsRender';
 import CommentComponnent from './CommentComponnent';
 import DefaultPrefixImage from '../DefaultPrefixImage';
 import ReactionsItem from './ReactionsItem';
+import { useSocket } from '../../helpers/broadcasting';
 
 export default function PostItem({ post, isEditable = false, linkable = true, setArticle = (obj) => { }, deleteCallback = () => {} }) {
   const createdAt = moment(post.created_at).diff(moment(), 'days') > 7 ? moment(post.created_at).format('d. MMM, YYYY') : moment(post.created_at).fromNow();
@@ -94,16 +95,51 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
           
       });
   }
+
+  const handleChanChange = (e: { reaction: { emotion: any; }; action: string; }) => {
+    console.log("NUKE", e);
+    let curr = [...distinctReactions];
+    let rtc = e.reaction.emotion;
+    let index = curr.findIndex(obj => obj.id === rtc.id);
+    console.log(e, curr);
+    
+    if (e.action === 'add') {
+      let exists = curr.filter(item => item.id === rtc.id).length <= 0;
+      console.log('existingIndex', exists, curr, rtc.id);
+      // Handle ADD
+      if (exists) {
+        rtc.reaction_count = 1;
+        curr.push(rtc)
+       
+      } else {
+        // Handle Change
+        curr[index].reaction_count += 1;
+        
+      }
+
+    } else {
+      let newCount = curr[index].reaction_count -= 1;
+      if (newCount <= 0) {
+        curr.splice(index, 1);
+      } else {
+        curr[index].reaction_count = newCount
+      }
+    }
+
+    setDistinctReactions(curr);
+
+
+  }
   
 
-  // useSocket({
-  //   channel: `${ChannelList.postReaction.channel}${post.id}`,
-  //   event: ChannelList.postReaction.listen,
-  //   isPrivate: false,
-  //   callBack: (payload) => {
-  //     handleChanChange(payload);
-  //   },
-  // })
+  useSocket({
+    channel: `${ChannelList.postReaction.channel}${post.id}`,
+    event: ChannelList.postReaction.listen,
+    isPrivate: false,
+    callBack: (payload) => {
+      handleChanChange(payload);
+    },
+  })
 
 
     React.useEffect(() => {
@@ -111,54 +147,13 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
           document.addEventListener("mousedown", toggleEdit);
         }
       
-        const handleChanChange = (e: { reaction: { emotion: any; }; action: string; }) => {
-          let curr = [...distinctReactions];
-          let rtc = e.reaction.emotion;
-          let index = curr.findIndex(obj => obj.id === rtc.id);
-          console.log(e, curr);
-          
-          if (e.action === 'add') {
-            let exists = curr.filter(item => item.id === rtc.id).length <= 0;
-            console.log('existingIndex', exists, curr, rtc.id);
-            // Handle ADD
-            if (exists) {
-              rtc.reaction_count = 1;
-              curr.push(rtc)
-             
-            } else {
-              // Handle Change
-              curr[index].reaction_count += 1;
-              
-            }
       
-          } else {
-            let newCount = curr[index].reaction_count -= 1;
-            if (newCount <= 0) {
-              curr.splice(index, 1);
-            } else {
-              curr[index].reaction_count = newCount
-            }
-          }
-      
-          setDistinctReactions(curr);
-      
-      
-        }
       
         if(post.distinct_reactions.length){
           document.addEventListener("mousedown", toggleOpen);
         }
-        
-    
-        ctx.echo.channel(`${ChannelList.postReaction.channel}${post.id}`).listen(ChannelList.postReaction.listen, (e) => {
-          handleChanChange(e);
-        });
-      
-        console.log('listening')
 
         return () => {
-            ctx.echo.leave(`${ChannelList.postReaction.channel}${post.id}`)
-            console.log('leaving')
             document.removeEventListener("mousedown", toggleEdit);
             document.removeEventListener("mousedown", toggleOpen);
         };

@@ -272,17 +272,30 @@
                 }
 
                 &.notification-item{
-                    
-                    
-                    div{
-                        text-overflow: ellipsis;
-                        width: 17rem;
-                        white-space: initial;
+                    .notification{
+                        cursor: pointer;
                         overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        *{
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                        .bold{
+                            font-weight: bold;
+                        }
                     }
-                    span{
-                        font-weight: bold;
-                    }
+                    
+                    // div{
+                    //     text-overflow: ellipsis;
+                    //     width: 17rem;
+                    //     white-space: initial;
+                    //     overflow: hidden;
+                    // }
+                    // span{
+                    //     font-weight: bold;
+                    // }
                 }
 
                

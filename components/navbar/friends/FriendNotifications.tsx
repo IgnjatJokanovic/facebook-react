@@ -5,6 +5,7 @@ import { ChannelList } from '../../../helpers/channels'
 import { getClaims } from '../../../helpers/helpers';
 import axios from 'axios';
 import MessageLoader from '../../loaders/MessageLoader';
+import { useSocket } from '../../../helpers/broadcasting';
 
 export default function FriendNotifications() {
     const ctx = React.useContext(Context);
@@ -62,16 +63,29 @@ export default function FriendNotifications() {
             
           })
     }
+  
+    useSocket({
+      channel: `${ChannelList.friends.channel}${claims?.id}`,
+      event: ChannelList.friends.listen,
+      isPrivate: false,
+      callBack: (payload) => {
+        handleChanChange(payload);
+      },
+    })
+  
+    useSocket({
+      channel: `${ChannelList.friendCanceled.channel}${claims?.id}`,
+      event: ChannelList.friendCanceled.listen,
+      isPrivate: false,
+      callBack: (payload) => {
+        handleCancel(payload);
+      },
+    })
 
     
 
     React.useEffect(() => {
         document.addEventListener("mousedown", toggleNavOption);
-        
-
-        ctx.echo.channel(`${ChannelList.friends.channel}${claims.id}`).listen(ChannelList.friends.listen, handleChanChange);
-
-        ctx.echo.channel(`${ChannelList.friendCanceled.channel}${claims.id}`).listen(ChannelList.friendCanceled.listen, handleCancel);
       
         const loadData = () => {
           console.log("first")
@@ -110,12 +124,8 @@ export default function FriendNotifications() {
         refDropdown?.current?.addEventListener('wheel', loadData);
 
         return () => {
-            ctx.echo.leave(ChannelList.friends.channel)
-            ctx.echo.leave(ChannelList.friendCanceled.channel)
             document.removeEventListener("mousedown", toggleNavOption);
             refDropdown?.current?.removeEventListener('wheel', loadData);
-            ctx.echo.channel(`${ChannelList.friends.channel}${claims.id}`).stopListening(ChannelList.friends.listen, handleChanChange);
-            ctx.echo.channel(`${ChannelList.friendCanceled.channel}${claims.id}`).stopListening(ChannelList.friendCanceled.listen, handleCancel);
         };
     }, [friendRequests, nextPage]);
   
@@ -123,7 +133,7 @@ export default function FriendNotifications() {
     <div ref={ refOption} className='item friend-notifications-container'>
           <i className='fas fa-user-friends' onClick={e => setOpen(!open)}>
             {!!count  && (
-              <span>{count}</span>
+              <span>{count < 100 ? count : '99+'}</span>
             )}
           </i>
           <div ref={refDropdown} className={open ? 'dropdown active' : 'dropdown'}>
