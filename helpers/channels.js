@@ -9,11 +9,15 @@ var ChannelList = {
     },
     notification: {
         channel: "notification.",
-        listen: ".canceled"
+        listen: ".recieved"
+    },
+    notificationRemoved: {
+        channel: "notificationRemoved.",
+        listen: ".removed"
     },
     postReaction: {
         channel: "postReaction.",
-        listen: ".recieved"
+        listen: ".reaction"
     }
 }
 

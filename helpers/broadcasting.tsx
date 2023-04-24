@@ -10,9 +10,10 @@ function listen(callBack: (payload: any) => void, channel: string, event: string
         callBack(payload);
     });
 
-    // return function cleanUp() {
-    //     window.Echo.leaveChannel(channel);
-    // };
+    return function cleanUp() {
+        window.Echo.channel(channel).stopListening(event, callBack);
+        window.Echo.leaveChannel(channel);
+    };
 }
 
 type Options = {
@@ -48,14 +49,11 @@ function createSocketConnection() {
             }
           }
     }
-
-    console.log('echo', window.Echo);
   }
 
 export const useSocket = ({ channel, event, callBack, isPrivate = false }: Options) => {
   useEffect(() => {
     createSocketConnection();
-    console.log('listening');
     return listen(callBack, channel, event, isPrivate);
   });
 };
