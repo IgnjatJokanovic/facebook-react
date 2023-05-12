@@ -211,7 +211,7 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
                   />
                   <span>{post.creator.firstName} {post.creator.lastName}</span>  
               </Link>
-              <i className="fa-solid fa-caret-right"></i>
+              <i className="fa fa-caret-right"></i>
               <Link href={`/user/${post.owner.id}`}>
                 {post.owner.firstName} {post.owner.lastName}
               </Link>

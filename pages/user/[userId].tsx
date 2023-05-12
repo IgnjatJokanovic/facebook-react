@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import Posts from '../../components/userProfile/posts/Posts'
+import Home from '../../components/userProfile/home/Home'
 import Photos from '../../components/userProfile/photos/Photos'
 import Friends from '../../components/userProfile/firends/Friends'
 import Information from '../../components/userProfile/information/Information'
@@ -12,6 +12,7 @@ import { Article, User } from '../../types/types'
 import ImageModal from '../../components/ImageModal'
 import DefaultPrefixImage from '../../components/DefaultPrefixImage'
 import Link from 'next/link'
+import Posts from '../../components/userProfile/posts/Posts'
 
 export default function UserProfile() {
   const ctx = React.useContext(Context);
@@ -60,7 +61,7 @@ export default function UserProfile() {
       case 'photos':
           return  <Photos userId={userId} />;
       default:
-        return <Posts userId={userId} setNavigationOption={setNavigationOption} />;
+        return <Home userId={userId} setNavigationOption={setNavigationOption} />;
     }
   }, [navigationOption, userId])
 

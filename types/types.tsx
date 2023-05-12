@@ -61,6 +61,29 @@ export type ActiveMessage = {
     messages: Message[],
 }
 
+export type MessageNotification = {
+    id: number,
+    firstName: string,
+    lastName: string,
+    profile: string | null,
+    messageId: number,
+    from: number,
+    to: number,
+    body: string,
+    created_at: string,
+    opened: boolean,
+}
+
+export type MessageDto = {
+    id: number,
+    from: number,
+    to: number,
+    body: string,
+    opened: boolean,
+    user: AuthUser,
+    created_at: string,
+}
+
 export type LoginRequest = {
     email: string,
     password: string,

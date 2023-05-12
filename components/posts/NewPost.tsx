@@ -25,7 +25,7 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
 
     const [article, setArticle] = React.useState<Article>({
         id: null,
-        owner: owner,
+        owner: parseInt(owner),
         creator: claims.id,
         body: '',
         image: {

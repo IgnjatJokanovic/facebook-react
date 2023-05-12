@@ -255,6 +255,10 @@
 
                 &.message-item{
                     cursor: pointer;
+
+                    &.unread{
+                        box-shadow: 0px 0px 10px 1px rgb(8 8 255); 
+                    }
                     
                     .last-message-container{
                         div{

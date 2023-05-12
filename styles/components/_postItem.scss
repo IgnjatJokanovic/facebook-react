@@ -55,6 +55,8 @@
         .links{
             display: flex;
             gap: 10px;
+            align-items: center;
+            color: $white;
             .arrow-right{
                 font-size: 3rem;
                 font-weight: bold;

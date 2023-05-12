@@ -1,9 +1,9 @@
 import React from 'react'
 import DefaultPrefixImage from '../../DefaultPrefixImage'
 
-export default function MessageItem({ img, name, surname, openMessage, message = null, isRead = false }) {
+export default function MessageItem({ img, name, surname, openMessage, message = null, opened = false }) {
   return (
-    <div className='item message-item' onClick={openMessage}>
+    <div className={opened ? 'item message-item' : 'item message-item unread'} onClick={openMessage}>
           <DefaultPrefixImage src={img} alt="" />
           <div className="last-message-container">
               <div>{name} {surname}</div>

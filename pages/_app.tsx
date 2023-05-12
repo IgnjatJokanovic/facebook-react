@@ -11,11 +11,13 @@ import React from 'react'
 import Context from '../context/context'
 import ImageModal from '../components/ImageModal'
 import Alert from '../components/Alert'
-import { isAuthenticated, fetchCookie, setAuth } from '../helpers/helpers'
+import { isAuthenticated, fetchCookie, setAuth, getClaims } from '../helpers/helpers'
 import { useRouter } from 'next/router';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js'
-import { ActiveMessage, AlertObj } from '../types/types'
+import { ActiveMessage, AlertObj, MessageNotification } from '../types/types'
+import { useSocket } from '../helpers/broadcasting'
+import { ChannelList } from '../helpers/channels'
 
 
 
@@ -70,7 +72,8 @@ export default function App({ Component, pageProps }: AppProps) {
   const [reactions, setReactions] = React.useState([])
   const [echo, setEcho] = React.useState({})
   const [activeMessages, setActiveMessages] = React.useState<ActiveMessage[]>([]);
-  const [messageNotifications, setMessageNotifications] = React.useState([]);
+  const [messageNotifications, setMessageNotifications] = React.useState<MessageNotification>([]);
+  const [count, setCount] = React.useState(0);
 
   const setAlert = (message, state, redirect = null) => {
     setAlertObj({
@@ -159,9 +162,27 @@ export default function App({ Component, pageProps }: AppProps) {
     const isLoggedIn = isAuthenticated();
     setauthenticated(isLoggedIn);
 
+    const SCREEN_SIZES = {
+      small: 480,
+      medium: 768,
+      large: 1024,
+    };
+    
+    
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < SCREEN_SIZES.small) {
+        console.log('small');
+      } else if (width < SCREEN_SIZES.medium) {
+        console.log('medium');
+      } else {
+        console.log('large');
+      }
+    };
+
     if (isLoggedIn) {
 
-      setAuth(fetchCookie())
+      setAuth(fetchCookie());
 
       channelOptions.auth = {
         headers: {
@@ -180,6 +201,8 @@ export default function App({ Component, pageProps }: AppProps) {
         }).catch(err => {
           console.log(err);
         });
+
+      window.addEventListener('resize', handleResize);
       
       
 
@@ -198,6 +221,8 @@ export default function App({ Component, pageProps }: AppProps) {
     )
 
     
+
+    return () => window.removeEventListener('resize', handleResize);
 
     // console.log('app', echo.options.auth);
 
@@ -236,6 +261,8 @@ export default function App({ Component, pageProps }: AppProps) {
           messageNotifications,
           setMessageNotifications,
           openMessage,
+          count,
+          setCount,
         }}>
           <Navbar />
           <div className="page-container">
@@ -245,6 +272,9 @@ export default function App({ Component, pageProps }: AppProps) {
             <MessagesContainer
               activeMessages={activeMessages}
               setActiveMessages={setActiveMessages}
+              messageNotifications={messageNotifications}
+              setMessageNotifications={setMessageNotifications}
+              setCount={setCount}
             />
           )}
           <ImageModal open={imgObj.open} src={imgObj.src} togleFun={toggleImage} refImg={refImg}/>
