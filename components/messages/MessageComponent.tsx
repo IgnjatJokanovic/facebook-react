@@ -9,6 +9,8 @@ import axios from "axios";
 import MessageItemLoader from "../loaders/MessageItemLoader";
 import { useSocket } from "../../helpers/broadcasting";
 import { ChannelList } from "../../helpers/channels";
+import MessageItem from "./MessageItem";
+import { MessageDto, MessageNotification } from "../../types/types";
 
 export default function MessageComponent({ messageThread, minimize, close }) {
   
@@ -83,7 +85,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
           if (index >= 0) {
             if (msg != null) {
               msg.opened = res.data.opened;
-              curr[index].opened = msg;
+              curr[index] = msg;
               
             } else {
               curr[index].opened = res.data.opened;
@@ -114,12 +116,20 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     let curr = [...notifications];
     let index = curr.findIndex(obj => obj.messageId === id);
 
-    axios.post('/delete', { id: id })
+    let currMessages = [...messages];
+    let indexMsgs = currMessages.findIndex(obj => obj.id === id);
+
+    if (indexMsgs >= 0) {
+      currMessages.splice(indexMsgs, 1);
+      setMessages(currMessages)
+    }
+
+    axios.post('/message/delete', { id: id })
     .then(res => {
       ctx.setAlert(res.data.msg, 'success')
-      if (index > 0) {
-        if (res.data != null) {
-            curr[index] = res.data;
+      if (index >= 0) {
+        if (res.data.data != null) {
+            curr[index] = res.data.data;
         } else {
             curr.splice(index, 1);
         }
@@ -143,28 +153,35 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     }
   }
 
-  const updateNotifications = (data: string, id = null) => {
-    // handle update
-    if (id != null) {
+  const updateNotifications = (data) => {
       let curr = [...notifications];
-      let index = curr.findIndex(obj => obj.messageId === id);
+      let index = curr.findIndex(obj => obj.messageId === data.id);
+      
+      console.log('updateNotifications', data, index)
 
       if (index >= 0) {
         let currObj = curr[index];
 
         currObj.body = data;
-        setNotifications(curr);
-      }
+       
+      } else {
+          let newMsg: MessageNotification = {
+            id: messageThread.id,
+            firstName: messageThread.firstName,
+            lastName: messageThread.lastName,
+            profile: messageThread.profile,
+            messageId: data.id,
+            from: data.from,
+            to: data.to,
+            body: data.body,
+            created_at: data.created_at,
+            opened: false,
+          }
+        
+          curr.unshift(newMsg);
+        } 
 
-    } else {
-      //handle insert
-      let curr = [...notifications];
-      let index = curr.findIndex(obj => obj.id === messageThread.id);
-      let currObj = curr[index];
-
-      currObj.body = data;
       setNotifications(curr);
-    }
   }
 
   const handleSubmit = () => {
@@ -187,7 +204,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
                 setNotifications(curr);
               }
 
-              updateNotifications(res.data.data.body, res.data.data.id);
+              updateNotifications(res.data.data);
               reset();
             })
             .catch(err => {
@@ -210,12 +227,14 @@ export default function MessageComponent({ messageThread, minimize, close }) {
               curr.push(res.data.data);
 
               setMessages(curr);
-              updateNotifications(body);
+              updateNotifications(res.data.data);
+              console.log('ADDED NEW')
+              console.log(curr, res.data.data)
 
               reset();
             })
             .catch(err => {
-              ctx.setAlert(err.response.data.error, 'error')
+              ctx.setAlert(err?.response?.data?.error, 'error')
             })
         })
         .catch(err => {
@@ -231,9 +250,9 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     if (messageThread.isOpen) {
       markAsRead([msg.id], false, payload.notification)
       msg.opened = true;
-      curr.unshift(msg);
+      curr.push(msg);
     } else {
-      curr.unshift(msg);
+      curr.push(msg);
     }
 
     setMessages(curr);
@@ -252,12 +271,16 @@ export default function MessageComponent({ messageThread, minimize, close }) {
 
   const handleUpdate = (payload) => {
     let curr = [...messages];
-    let index = curr.findIndex(obj => obj.id === payload.id);
+    let index = curr.findIndex(obj => obj.id === payload.message.id);
+
+    console.log("TRIGGER UPDATE")
+    console.log(payload)
+    console.log(index);
 
     if (index > -1) {
       let msg = curr[index];
-      msg.body = payload.body;
-      msg.opened = payload.opened;
+      msg.body = payload.message.body;
+      msg.opened = payload.message.opened;
       setMessages(curr)
     }
   }
@@ -398,14 +421,14 @@ export default function MessageComponent({ messageThread, minimize, close }) {
             )}
             {messages.length ? (
               messages.map((item, i) => (
-                <div key={i} className="message-item">
-                  <div  className={item.from == claims?.id ? "bubble right" : "bubble"} dangerouslySetInnerHTML={{ __html: item.body }}>
-                       
-                  </div>
-                  <div className="actions">
-                    
-                  </div>
-                </div>
+                <MessageItem
+                  key={i}
+                  opened={item.opened}
+                  owner={item.from == claims?.id}
+                  body={item.body}
+                  deleteCallback={() => handleMessageDelete(item.id)}
+                  editCallback={() => openEdit(item)}
+                />
               ))
             ) : null}
           </div>

@@ -83,12 +83,56 @@
                     padding: 5px;
                     border-radius: 5px;
                     .message-item{
+                        display: flex;
+                        margin: 10px 5px;
+                        gap: 0.5rem;
+                        .actions{
+                            text-align: right;
+                            font-weight: bold;
+                            position: relative;
+                            z-index: 5;
+
+                            i{
+                                cursor: pointer;
+                            }
+
+                            .dropdown{
+                                display: none;
+                                position: absolute;
+                                top: 0;
+                                top: 1.1rem;
+                                background-color: $grey;
+                                color: $white;
+                                padding: 0.6rem;
+                                text-align: center;
+                               
+                                border-radius: 5px;
+                                .item{
+                                    background-color: $blue;
+                                    cursor: pointer;
+                                    border: 1px solid $white;
+                                    border-radius: 5px;
+                                    padding: 0.4rem;
+                                    margin-top: 0.4rem;
+                                    &:nth-of-type(1){
+                                        margin-top: 0;
+                                    }
+                                }
+                                &.active{
+                                    display: block;
+                                }
+                            }
+                        }
                         .bubble{
                             padding: 5px;
                             border-radius: 5px;
                             background-color: $grey;
                             text-align: left;
-                            margin: 10px 5px;
+                           
+                            flex: 1;
+                            .read{
+                                margin-top: 0.5rem;
+                            }
                             &.right{
                                 background-color: $blue;
                                 color: $white;

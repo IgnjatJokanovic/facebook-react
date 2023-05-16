@@ -62,7 +62,7 @@ export default function MessageNotifications() {
 
     const handleAdd = (payload: MessageDto) => {
         let currActive = [...activeMessages];
-        let indexActive = currActive.findIndex(obj => obj.id === payload.from);
+        let indexActive = currActive.findIndex(obj => obj.id === payload.notification.id);
 
         console.log("ADD TRIGGERED", indexActive, payload.notification);
     
@@ -81,7 +81,7 @@ export default function MessageNotifications() {
 
     const updateNotifications = (msg: MessageNotification) => {
         let curr = [...messages];
-        let index = curr.findIndex(obj => obj.id === msg.from);
+        let index = curr.findIndex(obj => obj.id == msg.id);
 
         console.log('updateNotifications', index)
         console.log('updateNotifications', curr)
@@ -97,14 +97,17 @@ export default function MessageNotifications() {
     }
     
       const handleDelte = (payload) => {
+        console.log('MESSAGE DELETED', payload)
         let curr = [...messages];
-        let index = curr.findIndex(obj => obj.messageId === payload.id);
+        let index = curr.findIndex(obj => obj.messageId === payload.message.id);
+        console.log("messageId", index)
         
         if(index >= 0){
             let id = curr[index].id;
             axios.get(`/message/latest/${id}`)
                 .then(res => {
-                    if (res.data != null) {
+                    console.log('RES DELETING', res.data)
+                    if (res.data.message != null) {
                         curr[index] = res.data;
                     } else {
                         curr.splice(index, 1);
@@ -115,7 +118,7 @@ export default function MessageNotifications() {
                 .catch(err => { });
         }
           
-        if (!payload.opened && payload.to == claims?.id) {
+        if (!payload.message.opened && payload.message.to == claims?.id) {
             setCount(prevCount => prevCount > 0 ? prevCount - 1 : 0);
         }
         
@@ -123,10 +126,10 @@ export default function MessageNotifications() {
     
     const handleUpdate = (payload) => {
         let curr = [...messages];
-        let index = curr.findIndex(obj => obj.messageId === payload.id);
+        let index = curr.findIndex(obj => obj.messageId === payload.message.id);
         if (index >= 0) {
             let msg = curr[index];
-            msg.body = payload.body;
+            msg.body = payload.message.body;
             setMessages(curr);
         }
     }
@@ -219,8 +222,13 @@ export default function MessageNotifications() {
 
         if (!messages.length) {
             console.log('re-render messages');
+            axios.get('/message/unreadCount')
+                .then(res => {
+                    setCount(res.data);
+                })
+                .catch(err => { })
             loadData();
-          }
+        }
 
         document.addEventListener("mousedown", toggleNavOption);
 
@@ -264,6 +272,7 @@ export default function MessageNotifications() {
                                     name={item.firstName}
                                     surname={item.lastName}
                                     message={item.body}
+                                    opened={item.opened}
                                     openMessage={() => openMessage(item)}
                                 /> 
                             ))
