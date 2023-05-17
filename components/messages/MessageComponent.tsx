@@ -131,6 +131,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
         if (res.data.data != null) {
             curr[index] = res.data.data;
         } else {
+          
             curr.splice(index, 1);
         }
 
@@ -153,19 +154,26 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     }
   }
 
-  const updateNotifications = (data) => {
-      let curr = [...notifications];
-      let index = curr.findIndex(obj => obj.messageId === data.id);
+  const updateNotifications = (data, isUpdate = false) => {
+    console.log("UPDATING...", data)
+    let curr = [...notifications];
+
+    if (isUpdate) {
       
-      console.log('updateNotifications', data, index)
+      let index = curr.findIndex(obj => obj.messageId === data.id);
 
       if (index >= 0) {
-        let currObj = curr[index];
+        curr[index].body = data.body;
+      }
 
-        currObj.body = data;
-       
+    } else {
+      let index = curr.findIndex(obj => obj.id === messageThread.id);
+
+      if (index >= 0) {
+        curr[index].body = data.body;
+        curr[index].messageId = data.id;
       } else {
-          let newMsg: MessageNotification = {
+        let newMsg: MessageNotification = {
             id: messageThread.id,
             firstName: messageThread.firstName,
             lastName: messageThread.lastName,
@@ -175,13 +183,15 @@ export default function MessageComponent({ messageThread, minimize, close }) {
             to: data.to,
             body: data.body,
             created_at: data.created_at,
-            opened: false,
+            opened: true,
           }
         
-          curr.unshift(newMsg);
-        } 
+        curr.unshift(newMsg);
+      }
 
-      setNotifications(curr);
+    }
+
+    setNotifications(curr);
   }
 
   const handleSubmit = () => {
@@ -204,7 +214,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
                 setNotifications(curr);
               }
 
-              updateNotifications(res.data.data);
+              updateNotifications(res.data.data, true);
               reset();
             })
             .catch(err => {

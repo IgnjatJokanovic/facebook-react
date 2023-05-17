@@ -226,7 +226,7 @@ export default function UserProfile() {
               <div className={open ? 'dropdown active' : 'dropdown'}>
                 {
                   (() => {
-                      if (claims.id === user?.id)
+                      if (claims?.id === user?.id)
                           return (
                             <>
                               <div onClick={() => openFile(true)} className="button">
@@ -248,7 +248,7 @@ export default function UserProfile() {
                               </div>
                             </>
                           )
-                      if (user?.isFriends?.from === claims.id)
+                      if (user?.isFriends?.from === claims?.id)
                         return (
                           <>
                             <div onClick={() => removeFriend()} className="button">
@@ -259,7 +259,7 @@ export default function UserProfile() {
                             </div>
                           </>
                         )
-                      if (user?.isFriends?.from !== claims.id && user?.isFriends?.accepted)
+                      if (user?.isFriends?.from !== claims?.id && user?.isFriends?.accepted)
                       return (
                         <>
                           <div onClick={() => removeFriend()} className="button">
