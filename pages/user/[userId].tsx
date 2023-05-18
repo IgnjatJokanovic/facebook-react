@@ -119,6 +119,12 @@ export default function UserProfile() {
     setPost({ ...post, image: imageObj });
   }
 
+  const previewCover = () => {
+    if (user.cover_photo != null) {
+      router.push(`/post/${user.cover_photo.id}`);
+    }
+  }
+
   const handleUpload = () => {
     let article = post;
     post.isProfile = isProfile;
@@ -202,7 +208,7 @@ export default function UserProfile() {
       />
       <input type="file" ref={refFile} className="d-none" onChange={e => ctx.handleFileRead(e, updateImage)} />
       <div className="cover-photo-container">
-        <div className={Object.keys(user).length === 0 ? "cover-pohoto loading" : "cover-pohoto photo"} style={{ '--bg-image': `url('${user.cover_photo?.image?.src != null ? process.env.NEXT_PUBLIC_BACKEND_BASE_URL + user.cover_photo?.image?.src : defaultCover}')` }}></div>
+        <div onClick={previewCover} className={Object.keys(user).length === 0 ? "cover-pohoto loading" : "cover-pohoto photo"} style={{ '--bg-image': `url('${user.cover_photo?.image?.src != null ? process.env.NEXT_PUBLIC_BACKEND_BASE_URL + user.cover_photo?.image?.src : defaultCover}')` }}></div>
         <div className="profile-picture-container">
           {Object.keys(user).length === 0 ? (
             <div className="img">
