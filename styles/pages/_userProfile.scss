@@ -121,6 +121,11 @@
             background-color: $darkGrey;
             padding: 10px;
             border-radius: 5px;
+            .not-found{
+                color: $white;
+                font-weight: bold;
+                margin: auto
+            }
             &.loading{
                 .item{
                     @extend .loading-animation;
@@ -238,6 +243,15 @@
                 width: calc(100%/2 - 1rem);
                 @media only screen and (max-width: 1000px) {
                     width: 100%;
+                }
+
+                .not-found{
+                    background-color: $darkGrey;
+                    padding: 1rem;
+                    text-align: center;
+                    color: $white;
+                    border-radius: 5px;
+                    font-weight: bold;
                 }
             }
         }

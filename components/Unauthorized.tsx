@@ -4,7 +4,7 @@ import { useState } from "react";
 import Login from "./forms/Login";
 import Register from "./forms/Register";
 
-export default function unauthorized() {
+export default function Unauthorized() {
   const [activeForm, setActiveForm] = useState('login')
   return (
     <div className={'auth-container ' + activeForm}>

@@ -442,10 +442,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
               ))
             ) : null}
           </div>
-          <form onSubmit={e => {
-              e.preventDefault();
-              handleSubmit();
-            }}>
+          <div>
               <div className="form-inputs">
                 {Object.keys(edit).length ? (
                   <ContentEditable
@@ -476,14 +473,14 @@ export default function MessageComponent({ messageThread, minimize, close }) {
                   </div>
                     
                  <div className="btns">
-                  <button className="btn">{Object.keys(edit).length ? 'Update' : 'Save'}</button>
+                  <div className="btn" onClick={handleSubmit}>{Object.keys(edit).length ? 'Update' : 'Save'}</div>
                   {!!Object.keys(edit).length && (
                     <div className="btn" onClick={reset}>Cancel</div>
                   )}
                  </div>
                 </div>
               </div>
-          </form>    
+          </div>    
         </div>
       </div>
     </div>
