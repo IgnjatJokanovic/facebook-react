@@ -1,4 +1,4 @@
-var ChannelList = {
+export const ChannelList = {
     friends: {
         channel: "friendRequestSent.",
         listen: ".recieved"
@@ -18,7 +18,17 @@ var ChannelList = {
     postReaction: {
         channel: "postReaction.",
         listen: ".reaction"
-    }
+    },
+    newMessage: {
+        channel: "newMessage.",
+        listen: ".recieved"
+    },
+    messageDeleted: {
+        channel: "messageRemoved.",
+        listen: ".removed"
+    },
+    messageUpdated: {
+        channel: "messageUpdated.",
+        listen: ".updated"
+    },
 }
-
-export { ChannelList }

@@ -2,25 +2,18 @@ import axios from 'axios'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import Context from '../../../context/context';
-import { getClaims, isAuthenticated } from '../../../helpers/helpers';
-import { Article, AuthUser } from '../../../types/types';
 import DefaultPrefixImage from '../../DefaultPrefixImage';
 import NewPost from '../../posts/NewPost';
-import PostItem from '../../posts/PostItem';
-import PostLoader from '../../loaders/PostLoader';
+import Posts from './Posts';
 
-export default function Posts({ userId, setNavigationOption }) {
+export default function Home({ userId, setNavigationOption }) {
   const ctx = React.useContext(Context)
 
   const [photos, setPhotos] = useState([])
   const [friends, setFriends] = useState([])
-  const [posts, setPosts] = useState([])
 
   const [isLoadingPhotos, setIsLoadingPhotos] = React.useState(true)
   const [isLoadingFriends, setIsLoadingFriends] = React.useState(true)
-  const [isLoadingPosts, setIsLoadingPosts] = React.useState(true)
-
-  const [nextPage, setNextPage] = React.useState(0);
 
   const renderPhotos = () => {
     setNavigationOption('photos')
@@ -30,52 +23,9 @@ export default function Posts({ userId, setNavigationOption }) {
     setNavigationOption('friends')
   }
 
-  const handleDelete = (index, id) => {
-    let curr = posts;
-    curr.splice(index, 1);
-    setPosts(curr);
-
-    let currPhotos = photos;
-    let photoIndex = currPhotos.findIndex(obj => obj.id === id);
-    if (photoIndex >= 0) {
-      currPhotos.splice(photoIndex, 1);
-    }
-    setPhotos(currPhotos);
-  }
-
   useEffect(() => {
     if (!userId) {
       return;
-    }
-
-    const loadData = () => {
-      console.log(nextPage);
-      if (nextPage >= 0) {
-        axios.get(`/post/userRelated/${userId}?page=${nextPage}`)
-        .then(res => {
-          setPosts([...posts, ...res.data.data]);
-          setIsLoadingPosts(false);
-          if (res.data.next_page_url === null) {
-            setNextPage(-1);
-          }
-          let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-          console.log(lastIndex)
-          setNextPage(lastIndex);
-        })
-        .catch(err => {
-          
-        })
-      } else {
-        document.removeEventListener('wheel', loadData);
-      }
-    }
-
-
-    document.addEventListener('wheel', loadData);
-    
-    if (!posts.length) {
-      console.log('re-render');
-      loadData();
     }
 
     // Load few images for photos tab
@@ -99,10 +49,10 @@ export default function Posts({ userId, setNavigationOption }) {
         })
     
     return () => {
-      document.removeEventListener('wheel', loadData);
+      
     };
 
-  }, [nextPage, photos.length, posts, userId])
+  }, [userId])
   
 
   return (
@@ -170,20 +120,11 @@ export default function Posts({ userId, setNavigationOption }) {
         {!!(ctx.authenticated && userId) && (
           <NewPost owner={userId} url={'create'} />
         )}
-        {isLoadingPosts ? (
-            <PostLoader />
-          ): (
-            <>
-              {posts.length ? (
-    
-                posts.map((item, i) => (
-                  <PostItem key={i} post={item} deleteCallback={() => handleDelete(i, item.id)} />
-                ))
-              ): (
-                <div className='not-found'>User has no posts</div>
-              )}
-          </>
-        )}
+        <Posts
+          userId={userId}
+          photos={photos}
+          setPhotos={setPhotos}
+        />
       </div>
     </div>
   )

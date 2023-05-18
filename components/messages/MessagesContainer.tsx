@@ -1,8 +1,16 @@
+import React from "react";
+import Context from "../../context/context";
+import { useSocket } from "../../helpers/broadcasting";
+import { ChannelList } from "../../helpers/channels";
+import { getClaims } from "../../helpers/helpers";
 import { ActiveMessage } from "../../types/types";
 import MessageComponent from "./MessageComponent";
+import axios from "axios";
 
 
-export default function MessagesContainer({ activeMessages, setActiveMessages }) {
+export default function MessagesContainer({ activeMessages, setActiveMessages, messageNotifications, setMessageNotifications, setCount  }) {
+  const claims = getClaims();
+  const ctx = React.useContext(Context);
   
   const minimize = (id: number) => {
     let curr: ActiveMessage[] = [...activeMessages];

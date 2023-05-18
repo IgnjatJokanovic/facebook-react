@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import Posts from '../../components/userProfile/posts/Posts'
+import Home from '../../components/userProfile/home/Home'
 import Photos from '../../components/userProfile/photos/Photos'
 import Friends from '../../components/userProfile/firends/Friends'
 import Information from '../../components/userProfile/information/Information'
@@ -12,6 +12,7 @@ import { Article, User } from '../../types/types'
 import ImageModal from '../../components/ImageModal'
 import DefaultPrefixImage from '../../components/DefaultPrefixImage'
 import Link from 'next/link'
+import Posts from '../../components/userProfile/posts/Posts'
 
 export default function UserProfile() {
   const ctx = React.useContext(Context);
@@ -60,7 +61,7 @@ export default function UserProfile() {
       case 'photos':
           return  <Photos userId={userId} />;
       default:
-        return <Posts userId={userId} setNavigationOption={setNavigationOption} />;
+        return <Home userId={userId} setNavigationOption={setNavigationOption} />;
     }
   }, [navigationOption, userId])
 
@@ -225,7 +226,7 @@ export default function UserProfile() {
               <div className={open ? 'dropdown active' : 'dropdown'}>
                 {
                   (() => {
-                      if (claims.id === user?.id)
+                      if (claims?.id === user?.id)
                           return (
                             <>
                               <div onClick={() => openFile(true)} className="button">
@@ -247,7 +248,7 @@ export default function UserProfile() {
                               </div>
                             </>
                           )
-                      if (user?.isFriends?.from === claims.id)
+                      if (user?.isFriends?.from === claims?.id)
                         return (
                           <>
                             <div onClick={() => removeFriend()} className="button">
@@ -258,7 +259,7 @@ export default function UserProfile() {
                             </div>
                           </>
                         )
-                      if (user?.isFriends?.from !== claims.id && user?.isFriends?.accepted)
+                      if (user?.isFriends?.from !== claims?.id && user?.isFriends?.accepted)
                       return (
                         <>
                           <div onClick={() => removeFriend()} className="button">

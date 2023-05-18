@@ -7,14 +7,23 @@ import Context from "../../context/context";
 import { getClaims, validateMessage } from "../../helpers/helpers";
 import axios from "axios";
 import MessageItemLoader from "../loaders/MessageItemLoader";
+import { useSocket } from "../../helpers/broadcasting";
+import { ChannelList } from "../../helpers/channels";
+import MessageItem from "./MessageItem";
+import { MessageDto, MessageNotification } from "../../types/types";
 
 export default function MessageComponent({ messageThread, minimize, close }) {
   
   const ctx = React.useContext(Context)
   const emojies = ctx.emojiList;
   const claims = getClaims();
+  const activeMessages = ctx.activeMessages;
+  const setActiveMessages = ctx.setActiveMessages;
+  const setCount = ctx.setCount;
 
-  const notifications = ctx.messageNotifications;
+  const ref = React.useRef();
+
+  const notifications  = ctx.messageNotifications;
   const setNotifications = ctx.setMessageNotifications;
 
   const refBody = React.useRef();
@@ -66,11 +75,74 @@ export default function MessageComponent({ messageThread, minimize, close }) {
    
   }
 
+  const markAsRead = React.useCallback((ids, set = false, msg = null) => {
+    if (ids.length) {
+      axios.post('/message/markAsRead', {ids: ids})
+        .then(res => {
+          let curr = [...notifications];
+          let index = curr.findIndex(obj => obj.id === messageThread.id);
+
+          if (index >= 0) {
+            if (msg != null) {
+              msg.opened = res.data.opened;
+              curr[index] = msg;
+              
+            } else {
+              curr[index].opened = res.data.opened;
+            }
+
+            setNotifications(curr);
+          }
+
+          if (set) {
+            setCount(prevCount => prevCount > 0 ? prevCount - res.data.count : 0);
+            
+          }
+      })
+      .catch(err => {
+        
+      })
+    }
+  }, [messageThread.id, notifications, setCount, setNotifications])
+
   const openEdit = (item) => {
     setEdit({
       id: item.id,
       body: item.body
     })
+  }
+
+  const handleMessageDelete = (id) => {
+    let curr = [...notifications];
+    let index = curr.findIndex(obj => obj.messageId === id);
+
+    let currMessages = [...messages];
+    let indexMsgs = currMessages.findIndex(obj => obj.id === id);
+
+    if (indexMsgs >= 0) {
+      currMessages.splice(indexMsgs, 1);
+      setMessages(currMessages)
+    }
+
+    axios.post('/message/delete', { id: id })
+    .then(res => {
+      ctx.setAlert(res.data.msg, 'success')
+      if (index >= 0) {
+        if (res.data.data != null) {
+            curr[index] = res.data.data;
+        } else {
+          
+            curr.splice(index, 1);
+        }
+
+        setNotifications(curr);
+      }
+    })
+    .catch(err => {
+      ctx.setAlert(err.response.data.error, 'error')
+    })
+
+    
   }
 
   const reset = () => {
@@ -82,28 +154,44 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     }
   }
 
-  const updateNotifications = (data: string, id = null) => {
-    // handle update
-    if (id != null) {
-      let curr = [...notifications];
-      let index = curr.findIndex(obj => obj.messageId === id);
+  const updateNotifications = (data, isUpdate = false) => {
+    console.log("UPDATING...", data)
+    let curr = [...notifications];
+
+    if (isUpdate) {
+      
+      let index = curr.findIndex(obj => obj.messageId === data.id);
 
       if (index >= 0) {
-        let currObj = curr[index];
-
-        currObj.body = data;
-        setNotifications(curr);
+        curr[index].body = data.body;
       }
 
     } else {
-      //handle insert
-      let curr = [...notifications];
       let index = curr.findIndex(obj => obj.id === messageThread.id);
-      let currObj = curr[index];
 
-      currObj.body = data;
-      setNotifications(curr);
+      if (index >= 0) {
+        curr[index].body = data.body;
+        curr[index].messageId = data.id;
+      } else {
+        let newMsg: MessageNotification = {
+            id: messageThread.id,
+            firstName: messageThread.firstName,
+            lastName: messageThread.lastName,
+            profile: messageThread.profile,
+            messageId: data.id,
+            from: data.from,
+            to: data.to,
+            body: data.body,
+            created_at: data.created_at,
+            opened: true,
+          }
+        
+        curr.unshift(newMsg);
+      }
+
     }
+
+    setNotifications(curr);
   }
 
   const handleSubmit = () => {
@@ -126,7 +214,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
                 setNotifications(curr);
               }
 
-              updateNotifications(res.data.data.body, res.data.data.id);
+              updateNotifications(res.data.data, true);
               reset();
             })
             .catch(err => {
@@ -149,12 +237,14 @@ export default function MessageComponent({ messageThread, minimize, close }) {
               curr.push(res.data.data);
 
               setMessages(curr);
-              updateNotifications(body);
+              updateNotifications(res.data.data);
+              console.log('ADDED NEW')
+              console.log(curr, res.data.data)
 
               reset();
             })
             .catch(err => {
-              ctx.setAlert(err.response.data.error, 'error')
+              ctx.setAlert(err?.response?.data?.error, 'error')
             })
         })
         .catch(err => {
@@ -164,30 +254,136 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     }
   };
 
+  const handleAdd = (payload) => {
+    let curr = [...messages];
+    let msg = payload.message;
+    if (messageThread.isOpen) {
+      markAsRead([msg.id], false, payload.notification)
+      msg.opened = true;
+      curr.push(msg);
+    } else {
+      curr.push(msg);
+    }
+
+    setMessages(curr);
+
+  }
+
+  const handleDelte = (payload) => {
+    let curr = [...messages];
+    let index = curr.findIndex(obj => obj.id === payload.id);
+    
+    if (index > -1) {
+      curr.splice(index, 1);
+      setMessages(curr)
+    }
+  }
+
+  const handleUpdate = (payload) => {
+    let curr = [...messages];
+    let index = curr.findIndex(obj => obj.id === payload.message.id);
+
+    console.log("TRIGGER UPDATE")
+    console.log(payload)
+    console.log(index);
+
+    if (index > -1) {
+      let msg = curr[index];
+      msg.body = payload.message.body;
+      msg.opened = payload.message.opened;
+      setMessages(curr)
+    }
+  }
+
+  useSocket({
+      channel: `${ChannelList.newMessage.channel}${claims?.id}`,
+      event: ChannelList.newMessage.listen,
+      isPrivate: false,
+      callBack: (payload) => {
+          handleAdd(payload);
+      },
+  })
+
+  useSocket({
+      channel: `${ChannelList.messageDeleted.channel}${claims?.id}`,
+      event: ChannelList.messageDeleted.listen,
+      isPrivate: false,
+      callBack: (payload) => {
+        handleDelte(payload);
+      },
+  })
+
+  useSocket({
+    channel: `${ChannelList.messageUpdated.channel}${claims?.id}`,
+    event: ChannelList.messageUpdated.listen,
+    isPrivate: false,
+    callBack: (payload) => {
+      handleUpdate(payload);
+    },
+  })
+
   React.useEffect(() => {
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          let curr = [...activeMessages];
+          let index = curr.findIndex(obj => obj.id === messageThread.id);
+
+          if (index >= 0) {
+            curr.splice(index, 1)
+            setActiveMessages(curr);
+          }
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1.0,
+      }
+    );
+
+    observer.observe(ref?.current);
     
     const loadData = () => {
       console.log(nextPage);
-      if (nextPage >= 0) {
-        axios.get(`/message/show/${messageThread.id}?page=${nextPage}`)
-          .then(res => {
-            console.log('setting messages', res)
-            setMessages(prevState => [...prevState, ...res.data.data]);
-            setIsLoading(false);
-  
-            if (res.data.next_page_url === null) {
-              setNextPage(-1);
-            }
-  
-            let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-            console.log(lastIndex)
-            setNextPage(lastIndex);
-          })
-          .catch(err => {
-            
-          })
-      } else {
-        refBody?.current?.removeEventListener('wheel', loadData);
+      if (!isLoading || nextPage >= 0) {
+        if (nextPage >= 0) {
+          axios.get(`/message/show/${messageThread.id}?page=${nextPage}`)
+            .then(res => {
+              console.log('setting messages', res)
+
+              let data = res.data.data;
+              let ids = [];
+
+              data.forEach(obj => {
+                if (obj.to == claims?.id && !obj.opened) {
+                  obj.opened = true;
+                  ids.push(obj.id);
+                }
+              });
+              console.log("******************")
+              console.log(data, ids);
+
+              markAsRead(ids, true);
+
+              setMessages(prevState => [...prevState, ...data]);
+              setIsLoading(false);
+    
+              if (res.data.next_page_url === null) {
+                setNextPage(-1);
+              }
+    
+              let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
+              console.log(lastIndex)
+              setNextPage(lastIndex);
+            })
+            .catch(err => {
+              
+            })
+        } else {
+          refBody?.current?.removeEventListener('wheel', loadData);
+        }
       }
     }
 
@@ -202,13 +398,17 @@ export default function MessageComponent({ messageThread, minimize, close }) {
 
     return () => {
       refBody?.current?.removeEventListener('wheel', loadData);
+      if (ref?.current) {
+        observer.unobserve(ref.current);
+      }
     }
-  }, [messageThread.id, messages.length, nextPage])
+  }, [activeMessages, claims?.id, isLoading, markAsRead, messageThread.id, messages.length, nextPage, setActiveMessages])
+
   
 
   
   return (
-    <div className="message-component">
+    <div ref={ref} className="message-component">
       <div className="outline">
         <div className="header">
           <Link href={`/user/${messageThread.id}`}>
@@ -222,24 +422,25 @@ export default function MessageComponent({ messageThread, minimize, close }) {
         </div>
         <div className={ messageThread.isOpen ? "body active" : "body" }>
           <div ref={refBody} className="messages">
-            {isLoading ? (
-                <>
-                  <MessageItemLoader />
-                  <MessageItemLoader />
-                  <MessageItemLoader />
-                </>
-              ): (
-                <>
-                  {messages.length ? (
-                    messages.map((item, i) => (
-                      <div key={i} className={item.from == claims?.id ? "bubble right" : "bubble"} dangerouslySetInnerHTML={{ __html: item.body }}>
-                       
-                      </div>
-                    ))
-                  ): null}
+            {isLoading && (
+              <>
+                <MessageItemLoader />
+                <MessageItemLoader />
+                <MessageItemLoader />
               </>
             )}
-            
+            {messages.length ? (
+              messages.map((item, i) => (
+                <MessageItem
+                  key={i}
+                  opened={item.opened}
+                  owner={item.from == claims?.id}
+                  body={item.body}
+                  deleteCallback={() => handleMessageDelete(item.id)}
+                  editCallback={() => openEdit(item)}
+                />
+              ))
+            ) : null}
           </div>
           <form onSubmit={e => {
               e.preventDefault();

@@ -3,6 +3,10 @@ import React from 'react'
 import MessageItem from './MessageItem';
 import MessageLoader from '../../loaders/MessageLoader';
 import Context from '../../../context/context';
+import { useSocket } from '../../../helpers/broadcasting';
+import { ChannelList } from '../../../helpers/channels';
+import { getClaims } from '../../../helpers/helpers';
+import { MessageDto, MessageNotification } from '../../../types/types';
 
 export default function MessageNotifications() {
 
@@ -10,6 +14,12 @@ export default function MessageNotifications() {
 
     const messages = ctx.messageNotifications;
     const setMessages = ctx.setMessageNotifications;
+    const count = ctx.count;
+    const setCount = ctx.setCount;
+    const activeMessages = ctx.activeMessages;
+    const setActiveMessages = ctx.setActiveMessages;
+
+    const claims = getClaims();
    
     const [open, setOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -49,6 +59,107 @@ export default function MessageNotifications() {
         setOpen(false);
 
     }
+
+    const handleAdd = (payload: MessageDto) => {
+        let currActive = [...activeMessages];
+        let indexActive = currActive.findIndex(obj => obj.id === payload.notification.id);
+
+        console.log("ADD TRIGGERED", indexActive, payload.notification);
+    
+        if (indexActive >= 0) {
+            let activeMsg = currActive[indexActive];
+            if (!activeMsg.isOpen) {
+                setCount(prevCount => prevCount + 1);
+                updateNotifications(payload.notification)
+            }
+        } else {
+            setCount(prevCount => prevCount + 1);
+            updateNotifications(payload.notification)
+            
+        }
+    }
+
+    const updateNotifications = (msg: MessageNotification) => {
+        let curr = [...messages];
+        let index = curr.findIndex(obj => obj.id == msg.id);
+
+        console.log('updateNotifications', index)
+        console.log('updateNotifications', curr)
+        console.log('updateNotifications', msg)
+        if (index >= 0) {
+            curr[index] = msg;
+        } else {
+            curr.unshift(msg);
+        }
+
+        setMessages(curr)
+        
+    }
+    
+      const handleDelte = (payload) => {
+        console.log('MESSAGE DELETED', payload)
+        let curr = [...messages];
+        let index = curr.findIndex(obj => obj.messageId === payload.message.id);
+        console.log("messageId", index)
+        
+        if(index >= 0){
+            let id = curr[index].id;
+            axios.get(`/message/latest/${id}`)
+                .then(res => {
+                    console.log('RES DELETING', res.data)
+                    if (res.data.message != null) {
+                        curr[index] = res.data;
+                    } else {
+                        curr.splice(index, 1);
+                    }
+
+                    setMessages(curr);
+                })
+                .catch(err => { });
+        }
+          
+        if (!payload.message.opened && payload.message.to == claims?.id) {
+            setCount(prevCount => prevCount > 0 ? prevCount - 1 : 0);
+        }
+        
+      }
+    
+    const handleUpdate = (payload) => {
+        let curr = [...messages];
+        let index = curr.findIndex(obj => obj.messageId === payload.message.id);
+        if (index >= 0) {
+            let msg = curr[index];
+            msg.body = payload.message.body;
+            setMessages(curr);
+        }
+    }
+    
+      useSocket({
+          channel: `${ChannelList.newMessage.channel}${claims?.id}`,
+          event: ChannelList.newMessage.listen,
+          isPrivate: false,
+          callBack: (payload) => {
+              handleAdd(payload);
+          },
+      })
+    
+      useSocket({
+          channel: `${ChannelList.messageDeleted.channel}${claims?.id}`,
+          event: ChannelList.messageDeleted.listen,
+          isPrivate: false,
+          callBack: (payload) => {
+              handleDelte(payload);
+          },
+      })
+    
+      useSocket({
+        channel: `${ChannelList.messageUpdated.channel}${claims?.id}`,
+        event: ChannelList.messageUpdated.listen,
+        isPrivate: false,
+        callBack: (payload) => {
+            handleUpdate(payload);
+        },
+      })
 
     const loadData = React.useCallback(() => {
         if (search.length) {
@@ -111,8 +222,13 @@ export default function MessageNotifications() {
 
         if (!messages.length) {
             console.log('re-render messages');
+            axios.get('/message/unreadCount')
+                .then(res => {
+                    setCount(res.data);
+                })
+                .catch(err => { })
             loadData();
-          }
+        }
 
         document.addEventListener("mousedown", toggleNavOption);
 
@@ -128,7 +244,9 @@ export default function MessageNotifications() {
   return (
     <div ref={ refOption} className='item friend-notifications-container'>
           <i className='fas fa-envelope-square' onClick={e => setOpen(!open)}>
-              <span>10</span>
+            {!!count  && (
+              <span>{count < 100 ? count : '99+'}</span>
+            )}
           </i>
           <div ref={refDropdown} className={open ? 'dropdown active' : 'dropdown'}>
               
@@ -154,6 +272,7 @@ export default function MessageNotifications() {
                                     name={item.firstName}
                                     surname={item.lastName}
                                     message={item.body}
+                                    opened={item.opened}
                                     openMessage={() => openMessage(item)}
                                 /> 
                             ))
@@ -169,6 +288,7 @@ export default function MessageNotifications() {
                                     name={item.firstName}
                                     surname={item.lastName}
                                     message={item.body}
+                                    opened={item.opened}
                                     openMessage={() => openMessage(item)}
                                 /> 
                             ))
