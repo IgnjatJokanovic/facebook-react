@@ -60,9 +60,9 @@ export default function UserProfile() {
       case 'friends':
         return <Friends userId={userId} />;
       case 'photos':
-          return  <Photos userId={userId} />;
+        return <Photos userId={userId} owner={claims?.id == userId} />;
       default:
-        return <Home userId={userId} setNavigationOption={setNavigationOption} />;
+        return <Home userId={userId} setNavigationOption={setNavigationOption} owner={claims?.id == userId} />;
     }
   }, [claims?.id, navigationOption, user.birthday, user.firstName, user.lastName, userId])
 
