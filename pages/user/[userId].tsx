@@ -13,6 +13,7 @@ import ImageModal from '../../components/ImageModal'
 import DefaultPrefixImage from '../../components/DefaultPrefixImage'
 import Link from 'next/link'
 import Posts from '../../components/userProfile/posts/Posts'
+import moment from 'moment'
 
 export default function UserProfile() {
   const ctx = React.useContext(Context);
@@ -55,15 +56,15 @@ export default function UserProfile() {
     console.log(`rendering${navigationOption},`, userId)
     switch(navigationOption) {
       case 'info':
-        return <Information userId={userId} />;
+        return <Information firstName={user.firstName} lastName={user.lastName} birthDay={moment(user.birthday).format("D MMM Y")} showEdit={claims?.id == userId} />;
       case 'friends':
         return <Friends userId={userId} />;
       case 'photos':
-          return  <Photos userId={userId} />;
+        return <Photos userId={userId} owner={claims?.id == userId} />;
       default:
-        return <Home userId={userId} setNavigationOption={setNavigationOption} />;
+        return <Home userId={userId} setNavigationOption={setNavigationOption} owner={claims?.id == userId} />;
     }
-  }, [navigationOption, userId])
+  }, [claims?.id, navigationOption, user.birthday, user.firstName, user.lastName, userId])
 
   const addFriend = () => {
     validateActiveUser()

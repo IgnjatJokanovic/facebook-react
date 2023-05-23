@@ -2,7 +2,7 @@
     margin: auto;
     display: flex;
     position: fixed;
-    width: 97%;
+    width: 99%;
     height: auto;
     padding: 1rem;
     background-color: $grey;
@@ -16,7 +16,7 @@
         align-self: flex-start;
         position: relative;
         img{
-            width: 10vw;
+            width: 30vh;
         }
         input{
             background-color: $white;

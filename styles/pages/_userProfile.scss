@@ -137,10 +137,54 @@
                 border-radius: 5px;
                 width: calc(16.555% - 12px);
                 height: 12rem;
+                position: relative;
 
                 img{
                     width: 100%;
                     height: 100%;
+                }
+
+                .actions{
+                    text-align: right;
+                    font-weight: bold;
+                    position: absolute;
+                    z-index: 5;
+                    color: $white;
+                    top: 5px;
+                    right: 10px;
+
+                    i{
+                        cursor: pointer;
+                        font-size: 1.3rem;
+                        box-shadow: 0px 0px 10px 1px rgb(8, 8, 255);
+                    }
+
+                    .dropdown{
+                        display: none;
+                        position: absolute;
+                        top: 0;
+                        top: 1.1rem;
+                        background-color: $grey;
+                        color: $white;
+                        padding: 0.6rem;
+                        text-align: center;
+                       
+                        border-radius: 5px;
+                        .dropdown-item{
+                            background-color: $blue;
+                            cursor: pointer;
+                            border: 1px solid $white;
+                            border-radius: 5px;
+                            padding: 0.4rem;
+                            margin-top: 0.4rem;
+                            &:nth-of-type(1){
+                                margin-top: 0;
+                            }
+                        }
+                        &.active{
+                            display: block;
+                        }
+                    }
                 }
             }
         }
@@ -205,7 +249,6 @@
                             // flex-grow: 1;
                             width: calc(33.33% - 12px);
                             height: 12rem;
-                            border: 2px solid $white;
                             border-radius: 5px;
                             text-decoration: none;
                         }
@@ -233,7 +276,57 @@
                     }
 
                     &.photos-container{
-
+                       .item{
+                        width: calc(33.33% - 12px);
+                        height: 12rem;
+                        border: 2px solid $white;
+                        border-radius: 5px;
+                        text-decoration: none;
+                        position: relative;
+                        padding: unset;
+                        .actions{
+                            text-align: right;
+                            font-weight: bold;
+                            position: absolute;
+                            z-index: 5;
+                            color: $white;
+                            top: 5px;
+                            right: 10px;
+        
+                            i{
+                                cursor: pointer;
+                                font-size: 1.3rem;
+                                box-shadow: 0px 0px 10px 1px rgb(8, 8, 255);
+                            }
+        
+                            .dropdown{
+                                display: none;
+                                position: absolute;
+                                top: 0;
+                                top: 1.1rem;
+                                background-color: $grey;
+                                color: $white;
+                                padding: 0.6rem;
+                                text-align: center;
+                               
+                                border-radius: 5px;
+                                .dropdown-item{
+                                    background-color: $blue;
+                                    cursor: pointer;
+                                    border: 1px solid $white;
+                                    border-radius: 5px;
+                                    padding: 0.4rem;
+                                    margin-top: 0.4rem;
+                                    &:nth-of-type(1){
+                                        margin-top: 0;
+                                    }
+                                }
+                                &.active{
+                                    display: block;
+                                }
+                            }
+                        }
+                       }
                     }
                 }
                 
@@ -253,6 +346,83 @@
                     border-radius: 5px;
                     font-weight: bold;
                 }
+            }
+        }
+
+        .friends-section{
+          
+            background-color: $darkGrey;
+            padding: 10px;
+            border-radius: 5px;
+            padding-bottom: 3rem;
+            &.loading{
+                .item{
+                    @extend .loading-animation;
+                }
+            }
+            .search{
+                text-align: right;
+                margin: 1rem 0;
+                .input-text{
+                    height: 2rem;
+                    border-radius: 5px;
+                    padding: 0.3rem;
+                    outline: none;
+                    border: none;
+                }
+            }
+            .content{
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                .not-found{
+                    color: $white;
+                    font-weight: bold;
+                    margin: auto
+                }
+               
+                .item{
+                    height: 12rem;
+                    border: 2px solid $white;
+                    border-radius: 5px;
+                    width: calc(16.555% - 12px);
+                    height: 12rem;
+                    text-align: center;
+                    
+                    a{
+                        text-decoration: none;
+                        color: $white;
+                        font-weight: bold;
+                        font-size: 1.3rem;
+                    }
+    
+                    img{
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+
+        .information-container{
+            background-color: $darkGrey;
+            border-radius: 5px;
+            padding: 1rem;
+            color: $white;
+            .content{
+                .item{
+                    font-size: 1.5rem;
+                    margin-top: 1rem;
+                    
+                    .btn{
+                        width: calc(100% - 2rem);
+                        display: block;
+                        text-align: center;
+                        margin-top: 1rem;
+                        text-decoration: none;
+                    }
+                }
+                
             }
         }
     }

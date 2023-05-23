@@ -2,12 +2,14 @@ import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import DefaultPrefixImage from '../../DefaultPrefixImage';
+import Item from './Item';
 
 type props = {
   userId?: number
+  owner?: boolean
 }
 
-export default function Photos({ userId }:props) {
+export default function Photos({ userId, owner }:props) {
   const [isLoading, setIsLoading] = useState(true);
   const [photos, setPhotos] = useState([]);
   const [nextPage, setNextPage] = React.useState(0);
@@ -67,9 +69,12 @@ export default function Photos({ userId }:props) {
           {photos.length ? (
 
             photos.map((item, i) => (
-              <Link className='item' key={i} href={`/post/${item.id}`}>
-                <DefaultPrefixImage src={item.image.src} alt="" />  
-              </Link>
+              <div key={i} className="item">
+                <Item
+                  item={item}
+                  owner={owner}
+                />
+              </div>
             ))
           ): (
             <div className='not-found'>User has no photos</div>

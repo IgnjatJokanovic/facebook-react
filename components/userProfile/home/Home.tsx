@@ -5,8 +5,9 @@ import Context from '../../../context/context';
 import DefaultPrefixImage from '../../DefaultPrefixImage';
 import NewPost from '../../posts/NewPost';
 import Posts from './Posts';
+import Item from '../photos/Item';
 
-export default function Home({ userId, setNavigationOption }) {
+export default function Home({ userId, setNavigationOption, owner }) {
   const ctx = React.useContext(Context)
 
   const [photos, setPhotos] = useState([])
@@ -75,9 +76,12 @@ export default function Home({ userId, setNavigationOption }) {
                   {photos.length ? (
         
                     photos.map((item, i) => (
-                      <Link key={i} href={`/post/${item.id}`}>
-                        <DefaultPrefixImage src={item.image.src} alt="" />  
-                      </Link>
+                      <div key={i} className="item">
+                        <Item
+                          item={item}
+                          owner={owner}
+                        />
+                      </div>
                     ))
                   ): (
                     <div className='not-found'>User has no photos</div>
