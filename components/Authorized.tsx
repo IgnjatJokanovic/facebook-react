@@ -65,22 +65,22 @@ export default function Authorized() {
   return (
     <div className='home-container'>
       <RecomendedFriends />
-      <NewPost owner={claims?.id} url={'create'} />
       <div className="posts-container">
-      {isLoading ? (
-            <PostLoader />
-          ): (
-            <>
-              {posts.length ? (
-    
-                posts.map((item, i) => (
-                  <PostItem key={i} post={item} deleteCallback={() => handleDelete(i, item.id)} />
-                ))
-              ): (
-                <div className='not-found'>No posts yet</div>
-              )}
-          </>
-        )}
+        <NewPost owner={claims?.id} url={'create'} />
+        {isLoading ? (
+              <PostLoader />
+            ): (
+              <>
+                {posts.length ? (
+      
+                  posts.map((item, i) => (
+                    <PostItem key={i} post={item} deleteCallback={() => handleDelete(i, item.id)} />
+                  ))
+                ): (
+                  <div className='not-found'>No posts yet</div>
+                )}
+            </>
+          )}
       </div>
     </div>
   )

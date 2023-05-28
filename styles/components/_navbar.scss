@@ -2,21 +2,28 @@
     margin: auto;
     display: flex;
     position: fixed;
-    width: 99%;
+    width: 100%;
     height: auto;
-    padding: 1rem;
     background-color: $grey;
     align-items: center;
     margin-top: -10px;
     justify-content: space-between;
     z-index: 2;
+    flex-wrap: wrap;
 
     .logo-container{
         display: flex;
         align-self: flex-start;
         position: relative;
-        img{
-            width: 30vh;
+        gap: 1rem;
+        padding: 1.2rem;
+        .logo{
+            text-decoration: none;
+            color: $blue;
+            font-style: italic;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px rgb(8, 8, 255);
         }
         input{
             background-color: $white;
@@ -29,7 +36,7 @@
             // min-height: 100px;
             background-color: $darkGrey;
             position: absolute;
-            top: 2.5rem;
+            top: 3.9rem;
             right: 0;
             border-radius: 10px;
             display: none;
@@ -86,6 +93,8 @@
         gap: 2rem;
         padding: 0.5rem;
         position: relative;
+        padding: 1.2rem;
+        margin-left: auto;
         i{
             font-size: 2.5em;
             cursor: pointer;
@@ -310,8 +319,8 @@
     }
 
     
-    @media only screen and (max-width: 600px) {
-        flex-direction: column;
-    }
+    // @media only screen and (max-width: 767px) {
+    //     flex-direction: column;
+    // }
 
 }

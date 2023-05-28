@@ -76,11 +76,15 @@ export default function MessageComponent({ messageThread, minimize, close }) {
   }
 
   const markAsRead = React.useCallback((ids, set = false, msg = null) => {
+    console.log("markAsRead", ids)
     if (ids.length) {
-      axios.post('/message/markAsRead', {ids: ids})
-        .then(res => {
+      axios.post('/message/markAsRead', {
+        ids: ids,
+        related: messageThread.id
+      })
+      .then(res => {
           let curr = [...notifications];
-          let index = curr.findIndex(obj => obj.id === messageThread.id);
+          let index = curr.findIndex(obj => obj.id == messageThread.id);
 
           if (index >= 0) {
             if (msg != null) {
@@ -114,10 +118,10 @@ export default function MessageComponent({ messageThread, minimize, close }) {
 
   const handleMessageDelete = (id) => {
     let curr = [...notifications];
-    let index = curr.findIndex(obj => obj.messageId === id);
+    let index = curr.findIndex(obj => obj.messageId == id);
 
     let currMessages = [...messages];
-    let indexMsgs = currMessages.findIndex(obj => obj.id === id);
+    let indexMsgs = currMessages.findIndex(obj => obj.id == id);
 
     if (indexMsgs >= 0) {
       currMessages.splice(indexMsgs, 1);
@@ -160,14 +164,14 @@ export default function MessageComponent({ messageThread, minimize, close }) {
 
     if (isUpdate) {
       
-      let index = curr.findIndex(obj => obj.messageId === data.id);
+      let index = curr.findIndex(obj => obj.messageId == data.id);
 
       if (index >= 0) {
         curr[index].body = data.body;
       }
 
     } else {
-      let index = curr.findIndex(obj => obj.id === messageThread.id);
+      let index = curr.findIndex(obj => obj.id == messageThread.id);
 
       if (index >= 0) {
         curr[index].body = data.body;
@@ -205,7 +209,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
               let id = res.data.data.id;
 
               let curr = [...messages];
-              let index = curr.findIndex(obj => obj.id === id);
+              let index = curr.findIndex(obj => obj.id == id);
         
               if (index >= 0) {
                 let currObj = curr[index];
@@ -255,6 +259,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
   };
 
   const handleAdd = (payload) => {
+    console.log("ADDED NEW MESSAGE ITEM")
     let curr = [...messages];
     let msg = payload.message;
     if (messageThread.isOpen) {
@@ -271,7 +276,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
 
   const handleDelte = (payload) => {
     let curr = [...messages];
-    let index = curr.findIndex(obj => obj.id === payload.id);
+    let index = curr.findIndex(obj => obj.id == payload.id);
     
     if (index > -1) {
       curr.splice(index, 1);
@@ -281,7 +286,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
 
   const handleUpdate = (payload) => {
     let curr = [...messages];
-    let index = curr.findIndex(obj => obj.id === payload.message.id);
+    let index = curr.findIndex(obj => obj.id == payload.message.id);
 
     console.log("TRIGGER UPDATE")
     console.log(payload)
@@ -323,12 +328,22 @@ export default function MessageComponent({ messageThread, minimize, close }) {
   })
 
   React.useEffect(() => {
+    if (messageThread.isOpen) {
+      let unreads = messages.filter(msg => msg.opened == false);
+      if (unreads.length) {
+        markAsRead(unreads.map(obj => obj.id), true);
+      }
+    }
+  }, [ messageThread.isOpen])
+  
+
+  React.useEffect(() => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) {
           let curr = [...activeMessages];
-          let index = curr.findIndex(obj => obj.id === messageThread.id);
+          let index = curr.findIndex(obj => obj.id == messageThread.id);
 
           if (index >= 0) {
             curr.splice(index, 1)
@@ -370,7 +385,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
               setMessages(prevState => [...prevState, ...data]);
               setIsLoading(false);
     
-              if (res.data.next_page_url === null) {
+              if (res.data.next_page_url == null) {
                 setNextPage(-1);
               }
     

@@ -20,17 +20,23 @@
 
 body{
     margin: unset;
+    font-family: Helvetica, Arial, Sans-Serif;
 }
 
-.page-container{
-    padding-top: 5rem;
-    width: 80%;
-    margin: auto;
-    height: 100vh;
-
-    @media only screen and (max-width: 602px) {
-        width: 100%;
-        padding-top: 8rem;
+.main-container{
+    background: url('/bg.jpg') no-repeat center;
+    background-size: cover;
+    .page-container{
+        padding-top: 5rem;
+        width: 80%;
+        margin: auto;
+        height: 110vh;
+       
+    
+        @media only screen and (max-width: 602px) {
+            width: 100%;
+            padding-top: 8rem;
+        }
     }
 }
 

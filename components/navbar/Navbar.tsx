@@ -13,8 +13,8 @@ export default function Navbar() {
   return (
     <div className="navbar-container">
       <div className="logo-container">
-        <Link href="/">
-          <img src="/logo.png" alt="facebook-logo" />
+        <Link className='logo' href="/">
+          IgnjatBook
         </Link>
         { ctx.authenticated ?  ( <Search />) : ''}
       </div>

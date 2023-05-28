@@ -14,7 +14,7 @@ export default function MessagesContainer({ activeMessages, setActiveMessages, m
   
   const minimize = (id: number) => {
     let curr: ActiveMessage[] = [...activeMessages];
-    let index = curr.findIndex(obj => obj.id === id);
+    let index = curr.findIndex(obj => obj.id == id);
     let currObj = curr[index];
 
     currObj.isOpen = !currObj.isOpen;
@@ -23,7 +23,7 @@ export default function MessagesContainer({ activeMessages, setActiveMessages, m
 
   const close = (id: number) => {
     let curr: ActiveMessage[] = [...activeMessages];
-    let index = curr.findIndex(obj => obj.id === id);
+    let index = curr.findIndex(obj => obj.id == id);
     
     curr.splice(index, 1)
     setActiveMessages(curr);

@@ -16,7 +16,7 @@ export default function FriendItem({ profile, img, name, surname, id, opened = f
       axios.post('friend/markAsRead', {id: id})
         .then(res => {
           let curr = [...friendRequests];
-          let index = curr.findIndex(obj => obj.id === id);
+          let index = curr.findIndex(obj => obj.id == id);
           curr[index].opened = true;
           setFriendRequests(curr);
           router.push(profile);
@@ -33,7 +33,7 @@ export default function FriendItem({ profile, img, name, surname, id, opened = f
     axios.post('friend/accept', {id: id})
       .then(res => {
         let curr = [...friendRequests];
-        let index = curr.findIndex(obj => obj.id === id);
+        let index = curr.findIndex(obj => obj.id == id);
 
         if (!curr[index].opened) {
           setCount(prevCount => prevCount > 0 ? prevCount - 1 : 0);
@@ -53,7 +53,7 @@ export default function FriendItem({ profile, img, name, surname, id, opened = f
     axios.post('friend/decline', {id: id})
       .then(res => {
         let curr = [...friendRequests];
-        let index = curr.findIndex(obj => obj.id === id);
+        let index = curr.findIndex(obj => obj.id == id);
         
         curr.splice(index, 1);
 

@@ -62,7 +62,7 @@ export default function MessageNotifications() {
 
     const handleAdd = (payload: MessageDto) => {
         let currActive = [...activeMessages];
-        let indexActive = currActive.findIndex(obj => obj.id === payload.notification.id);
+        let indexActive = currActive.findIndex(obj => obj.id == payload.notification.id);
 
         console.log("ADD TRIGGERED", indexActive, payload.notification);
     
@@ -99,7 +99,7 @@ export default function MessageNotifications() {
       const handleDelte = (payload) => {
         console.log('MESSAGE DELETED', payload)
         let curr = [...messages];
-        let index = curr.findIndex(obj => obj.messageId === payload.message.id);
+        let index = curr.findIndex(obj => obj.messageId == payload.message.id);
         console.log("messageId", index)
         
         if(index >= 0){
@@ -126,7 +126,7 @@ export default function MessageNotifications() {
     
     const handleUpdate = (payload) => {
         let curr = [...messages];
-        let index = curr.findIndex(obj => obj.messageId === payload.message.id);
+        let index = curr.findIndex(obj => obj.messageId == payload.message.id);
         if (index >= 0) {
             let msg = curr[index];
             msg.body = payload.message.body;

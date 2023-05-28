@@ -17,7 +17,7 @@ export default function NotificationItem({ url, img, name, surname, id, text, op
       axios.post('notification/markAsRead', {id: id})
         .then(res => {
           let curr = [...notifications];
-          let index = curr.findIndex(obj => obj.id === id);
+          let index = curr.findIndex(obj => obj.id == id);
           curr[index].opened = true;
           setNotifications(curr);
           router.push(url);

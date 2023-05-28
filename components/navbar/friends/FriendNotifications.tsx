@@ -38,7 +38,7 @@ export default function FriendNotifications() {
     
     const handleCancel = (payload) => {
       let curr = [...friendRequests];
-      let index = curr.findIndex(obj => obj.id === payload.id);
+      let index = curr.findIndex(obj => obj.id == payload.id);
     
       if (index > -1) {
         curr.splice(index, 1);

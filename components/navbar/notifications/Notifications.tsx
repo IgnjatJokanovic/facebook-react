@@ -57,7 +57,7 @@ export default function Notifications() {
     const handleCancel = (payload) => {
         console.log(payload);
         let curr = [...notifications];
-        let index = curr.findIndex(obj => obj.id === payload.id);
+        let index = curr.findIndex(obj => obj.id == payload.id);
       
         if (index > -1) {
           curr.splice(index, 1);

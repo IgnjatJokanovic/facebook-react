@@ -265,9 +265,12 @@ export default function App({ Component, pageProps }: AppProps) {
           setCount,
         }}>
           <Navbar />
-          <div className="page-container">
-            <Component {...pageProps} className='main-container' />
+          <div className="main-container">
+            <div className="page-container">
+              <Component {...pageProps} className='main-container' />
+            </div>
           </div>
+          
           {!!authenticated && (
             <MessagesContainer
               activeMessages={activeMessages}
