@@ -54,27 +54,29 @@ export default function RecomendedFriends() {
     
   return (
     <div ref={refSlider} className='recomended'>
-        <div className="text-left"><span>Recomended friends</span></div>
-        {isLoading ? (
-            <div className='loading-slider'>
-                <UserLoader />
-                <UserLoader />
-                <UserLoader />
-            </div>
-        ): (
-            users.length ? (
-                <div className="slider">
-                    {users.map((item, i) => (
-                        <Link className='item' key={i} href={`/user/${item.id}`}>
-                            <DefaultPrefixImage src={item.profile} alt={`${item.firstName} ${item.lastName}`} />
-                            <span>{item.firstName} {item.lastName}</span>
-                        </Link>
-                    ))}
+        <div className="fixed">
+            <div className="text-left"><span>Recomended friends</span></div>
+            {isLoading ? (
+                <div className='loading-slider'>
+                    <UserLoader />
+                    <UserLoader />
+                    <UserLoader />
                 </div>
             ): (
-                <div className='not-found'>No recomendations try adding some friends</div>
-            )
-        )}
+                users.length ? (
+                    <div className="slider">
+                        {users.map((item, i) => (
+                            <Link className='item' key={i} href={`/user/${item.id}`}>
+                                <DefaultPrefixImage src={item.profile} alt={`${item.firstName} ${item.lastName}`} />
+                                <span>{item.firstName} {item.lastName}</span>
+                            </Link>
+                        ))}
+                    </div>
+                ): (
+                    <div className='not-found'>No recomendations try adding some friends</div>
+                )
+            )}
+        </div>
     </div>
   )
 }

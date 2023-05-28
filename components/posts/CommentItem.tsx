@@ -84,7 +84,7 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
 
         let updated = res.data.data;
         let curr = [...comments];
-        let index = curr.findIndex(obj => obj.id === updated.id);
+        let index = curr.findIndex(obj => obj.id == updated.id);
         
         curr[index].body = updated.body;
 
@@ -151,7 +151,7 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
       axios.get(url)
       .then(res => {
         setChildren([...children, ...res.data.data]);
-        if (res.data.next_page_url === null) {
+        if (res.data.next_page_url == null) {
           setNextPage(-1);
         } else {
           let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
