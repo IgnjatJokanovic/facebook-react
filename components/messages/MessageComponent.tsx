@@ -48,6 +48,15 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     setEdit({ ...edit, body: e.target.value })
   }
 
+  const invalidate = () => {
+    setMessages([]);
+    close();
+  }
+
+  const handleMinimize = () => {
+    minimize();
+  }
+
   const setBody = (body) => {
     if (Object.keys(edit).length) {
 
@@ -99,7 +108,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
           }
 
           if (set) {
-            setCount(prevCount => prevCount > 0 ? prevCount - res.data.count : 0);
+            setCount(prevCount => prevCount - res.data.count < 0 ? 0 :  prevCount - res.data.count);
             
           }
       })
@@ -329,10 +338,13 @@ export default function MessageComponent({ messageThread, minimize, close }) {
 
   React.useEffect(() => {
     if (messageThread.isOpen) {
+      const curr = [...messages];
       let unreads = messages.filter(msg => msg.opened == false);
       if (unreads.length) {
         markAsRead(unreads.map(obj => obj.id), true);
       }
+      curr.map(obj => obj.opened = true);
+      setMessages(curr);
     }
   }, [ messageThread.isOpen])
   
@@ -348,6 +360,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
           if (index >= 0) {
             curr.splice(index, 1)
             setActiveMessages(curr);
+            setMessages([]);
           }
         }
       },
@@ -359,10 +372,11 @@ export default function MessageComponent({ messageThread, minimize, close }) {
     );
 
     observer.observe(ref?.current);
-    
+
     const loadData = () => {
       console.log(nextPage);
-      if (!isLoading || nextPage >= 0) {
+      console.log("KTIAAA", refBody.current.scrollTop < refBody.current.lastScrollTop)
+      if (!isLoading || nextPage == 0) {
         if (nextPage >= 0) {
           axios.get(`/message/show/${messageThread.id}?page=${nextPage}`)
             .then(res => {
@@ -397,7 +411,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
               
             })
         } else {
-          refBody?.current?.removeEventListener('wheel', loadData);
+          // refBody?.current?.removeEventListener('wheel', loadData);
         }
       }
     }
@@ -416,6 +430,8 @@ export default function MessageComponent({ messageThread, minimize, close }) {
       if (ref?.current) {
         observer.unobserve(ref.current);
       }
+
+      
     }
   }, [activeMessages, claims?.id, isLoading, markAsRead, messageThread.id, messages.length, nextPage, setActiveMessages])
 
@@ -431,8 +447,8 @@ export default function MessageComponent({ messageThread, minimize, close }) {
               <div>{messageThread.firstName} {messageThread.lastName}</div>
           </Link>
           <div className="navigation">
-            <i className="fa fa-window-minimize" aria-hidden="true" onClick={minimize}></i>
-            <i className="fa fa-window-close" aria-hidden="true" onClick={close}></i>
+            <i className="fa fa-window-minimize" aria-hidden="true" onClick={handleMinimize}></i>
+            <i className="fa fa-window-close" aria-hidden="true" onClick={invalidate}></i>
           </div>  
         </div>
         <div className={ messageThread.isOpen ? "body active" : "body" }>
@@ -450,6 +466,7 @@ export default function MessageComponent({ messageThread, minimize, close }) {
                   key={i}
                   opened={item.opened}
                   owner={item.from == claims?.id}
+                  created_at={item.created_at}
                   body={item.body}
                   deleteCallback={() => handleMessageDelete(item.id)}
                   editCallback={() => openEdit(item)}

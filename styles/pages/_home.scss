@@ -109,8 +109,11 @@
     .recomended{
        
         flex: 1;
+        position: sticky;
+        top: 5rem;
+        height: 100%;
+
         .fixed{
-            position: fixed;
             background-color: $darkGrey;
             margin-bottom: 1rem;
             border-radius: 5px;

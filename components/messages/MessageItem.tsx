@@ -1,9 +1,25 @@
+import moment from 'moment';
 import React, { useEffect } from 'react'
 
-export default function MessageItem({opened, body, owner, deleteCallback, editCallback}) {
+export default function MessageItem({opened, body, owner, created_at, deleteCallback, editCallback}) {
     const [open, setOpen] = React.useState(false)
 
     const refOpen = React.useRef();
+    const now = moment();
+
+    const calcDate = () => {
+        let created = moment(created_at);
+        let diff = now.diff(created, 'days');
+        
+        if (now.isSame(created, 'day')) {
+            return created.format('HH:mm');
+        } else if (diff < 6) {
+            return created.format('dddd HH:mm');
+        }
+
+        return created.format('D. MMM, YYYY HH:mm')
+
+    }
 
     const toggleOpen = e => {
         if (refOpen?.current?.contains(e.target)) {
@@ -37,8 +53,11 @@ export default function MessageItem({opened, body, owner, deleteCallback, editCa
             </div>
         )}
         <div className={owner ? "bubble right" : "bubble"}>
-        <div className="txt" dangerouslySetInnerHTML={{ __html: body }}></div>
-        <div className="read" dangerouslySetInnerHTML={{ __html: opened ? '&check;&check;' : '&check;' }}></div>
+            <div className="txt" dangerouslySetInnerHTML={{ __html: body }}></div>
+            <div className="info">
+                <div>{calcDate()}</div>
+                <div className="read" dangerouslySetInnerHTML={{ __html: opened ? '&check;&check;' : '&check;' }}></div>
+            </div>
         </div>
     </div>
   )

@@ -69,11 +69,11 @@
                
                 overflow: hidden;
                 margin: 5px;
-                max-height: 0;
-                transition: max-height 0.25s ease-out;
+                height: 0;
+                transition: height 0.25s ease-out;
                 &.active{
-                    max-height: 20rem;
-                    transition: max-height 0.25s ease-in;
+                    height: 22rem;
+                    transition: height 0.25s ease-in;
                 }
     
                 .messages{
@@ -124,19 +124,31 @@
                             }
                         }
                         .bubble{
-                            padding: 5px;
+                            padding: 10px;
                             border-radius: 5px;
                             background-color: $grey;
                             text-align: left;
                            
                             flex: 1;
-                            .read{
+                            .info{
                                 margin-top: 0.5rem;
+                                display: flex;
+                                justify-content: space-between;
+                                flex-direction: row;
+
+                                text-shadow: 2px 2px 8px $blue;
+                                color: $blue;
                             }
                             &.right{
                                 background-color: $blue;
                                 color: $white;
                                 text-align: right;
+
+                                .info{
+                                    flex-direction: row-reverse;
+                                    text-shadow: 2px 2px 8px $white;
+                                    color: $white;
+                                }
                             }
                         }
                     }

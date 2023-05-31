@@ -24,13 +24,14 @@ body{
 }
 
 .main-container{
-    background: url('/bg.jpg') no-repeat center;
+    background: url('/bg.jpg') no-repeat fixed;
     background-size: cover;
     .page-container{
         padding-top: 5rem;
         width: 80%;
         margin: auto;
-        height: 110vh;
+        min-height: 110vh;
+        padding-bottom: 5rem;
        
     
         @media only screen and (max-width: 602px) {
