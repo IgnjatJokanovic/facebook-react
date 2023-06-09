@@ -130,6 +130,13 @@
                             text-align: left;
                            
                             flex: 1;
+                            .txt{
+                                background-color: unset !important;
+                                & > * {
+                                    background-color: unset !important;
+                                }
+                            }
+
                             .info{
                                 margin-top: 0.5rem;
                                 display: flex;

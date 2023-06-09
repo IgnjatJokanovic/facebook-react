@@ -173,14 +173,16 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
                       <div className='item' onClick={() => handlePhotoChange(false, post.id)}>Set cover photo</div>
                     </>
                   ) : null}
-                  {linkable ? (
+                  {linkable &&  post.creator.id == claims?.id  ? (
                      <div className="item">
                       <Link className='linkable' href={`/post/${post.id}`}>
                         Edit
                       </Link>
                      </div>
                   ) : (
-                    <div className='item' onClick={setEditArticle}>Edit</div>
+                    post.creator.id == claims?.id && (
+                      <div className='item' onClick={setEditArticle}>Edit</div>
+                    )
                   )}
                   <div className='item' onClick={deletePost}>Delete</div>
                 </>
