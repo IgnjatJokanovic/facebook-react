@@ -165,22 +165,24 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
          post.owner.id === claims?.id || post.creator.id === claims?.id ? (
           <div className="post-actions" ref={refEdit}>
             <div className={activeEdit ? 'dropdown active' : 'dropdown'}>
-              {post.owner.id === claims.id || post.creator.id === claims.id ? (
+              {post.owner.id == claims.id || post.creator.id == claims.id ? (
                 <>
-                  {post.creator.id === claims?.id && post.image ? (
+                  {post.creator.id == claims?.id && post.image ? (
                     <>
                       <div className='item' onClick={() => handlePhotoChange(true, post.id)}>Set profile photo</div>
                       <div className='item' onClick={() => handlePhotoChange(false, post.id)}>Set cover photo</div>
                     </>
                   ) : null}
-                  {linkable ? (
+                  {linkable &&  post.creator.id == claims?.id  ? (
                      <div className="item">
                       <Link className='linkable' href={`/post/${post.id}`}>
                         Edit
                       </Link>
                      </div>
                   ) : (
-                    <div className='item' onClick={setEditArticle}>Edit</div>
+                    post.creator.id == claims?.id && (
+                      <div className='item' onClick={setEditArticle}>Edit</div>
+                    )
                   )}
                   <div className='item' onClick={deletePost}>Delete</div>
                 </>
@@ -299,12 +301,12 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
             </div>
           )}
         {currentUserReaction === null ? (
-          <span>React</span>
+          <div className='btn'>React</div>
         ): (
           <span onClick={() => handleReact(currentUserReaction.emotion.id) }><span dangerouslySetInnerHTML={{ __html: currentUserReaction.emotion.code }}></span> {currentUserReaction.emotion.description}</span>
         )}
         </div>
-        <div className="Comment item" onClick={() => setOpenComment(true)}>
+        <div className="btn comment item" onClick={() => setOpenComment(true)}>
           Comment {!!post.commentCount && (
             <span>({post.commentCount})</span>
           )}

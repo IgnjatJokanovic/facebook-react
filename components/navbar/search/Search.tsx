@@ -69,6 +69,7 @@ export default function Search() {
         setParam('');
         setOpen(false);
         setNextPage(0);
+        setUsers([]);
     }
 
     const openDropdown = () => {
@@ -85,7 +86,7 @@ export default function Search() {
 
         return () => {
             document.removeEventListener("mousedown", toggleNavOption);
-            refOption.current.removeEventListener('wheel', handleSearch);
+            refOption?.current?.removeEventListener('wheel', handleSearch);
         };
     }, [handleSearch, open])
 
@@ -101,12 +102,19 @@ export default function Search() {
             }}
             type="text"
             placeholder="Search..."
+            value={param}
             onClick={openDropdown}
         />
         <div className={open ? 'results active' : 'results'}>
             {users.length ? (
                 users.map((item, i) => (
-                    <SearchItem key={i} name={item.firstName} surname={item.lastName} url={`/user/${item.id}`} profile={item.profile_photo?.image.src} />
+                    <SearchItem
+                        key={i}
+                        name={item.firstName}
+                        surname={item.lastName}
+                        reset={reset}
+                        url={`/user/${item.id}`}
+                        profile={item.profile_photo?.image.src} />
                 ))
             ) : (
                 param.length != 0 && !isLoading ? (

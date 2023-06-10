@@ -122,6 +122,8 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   const openMessage = (item) => {
+
+    
     let curr: ActiveMessage[] = [...activeMessages];
     let index = curr.findIndex(obj => obj.id === item.id);
 
@@ -133,6 +135,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
     } else {
         // handle adding new item
+        console.log('handle adding new item')
         let newObj: ActiveMessage = {
             isOpen: true,
             id: item.id,
@@ -140,6 +143,13 @@ export default function App({ Component, pageProps }: AppProps) {
             lastName: item.lastName,
             profile: item.profile,
             messages: [],
+            isLoading: true,
+            nextPage: 0,
+            dontTriggerIntersect: false,
+            newMessage: {
+              to: item.id,
+              body: ''
+            },
         };
 
         console.log('setting', newObj);
@@ -273,8 +283,8 @@ export default function App({ Component, pageProps }: AppProps) {
           
           {!!authenticated && (
             <MessagesContainer
-              activeMessages={activeMessages}
-              setActiveMessages={setActiveMessages}
+              messageThreads={activeMessages}
+              setMessageThreads={setActiveMessages}
               messageNotifications={messageNotifications}
               setMessageNotifications={setMessageNotifications}
               setCount={setCount}

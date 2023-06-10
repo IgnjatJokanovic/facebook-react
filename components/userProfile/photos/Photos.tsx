@@ -59,9 +59,7 @@ export default function Photos({ userId, owner }:props) {
     <div className={isLoading ? "photos-section loading" : 'photos-section'}>
       {isLoading ? (
         <>
-          <div className="item"></div>
-          <div className="item"></div>
-          <div className="item"></div>
+          <div className="item loader"></div>
           
         </>
       ): (

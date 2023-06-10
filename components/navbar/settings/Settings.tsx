@@ -62,21 +62,21 @@ export default function Settings() {
                    
                     <div>
                         <Link href='/user/update'>
-                            Update basic info
+                        <i className="fas fa-edit"></i>  &nbsp; Update basic info
                         </Link>
                     </div>
                     <div>
                         <Link href='/password/update'>
-                            Change password
+                            <i className="fas fa-edit"></i> &nbsp; Change password
                         </Link>
                     </div>
                     {!claims?.active ? (
                         <div className="logout" onClick={handleSendMail}>
-                            Resend activation email
+                            <i className="fa fa-envelope" aria-hidden="true"></i> &nbsp;  Resend activation email
                         </div>
                     ): null}
                     <div className='logout' onClick={handleLogout}>
-                        Logout
+                        <i className="fas fa-sign-out-alt"></i>  &nbsp; Logout
                     </div>
                 </div>
           </div>

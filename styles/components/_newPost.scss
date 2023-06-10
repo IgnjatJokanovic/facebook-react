@@ -163,11 +163,15 @@
         display: flex;
         gap: 1rem;
         white-space: nowrap;
+        align-items: center;
         a{
             display: flex;
             gap: 10px;
             color: $white;
             text-decoration: none;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
         }
         .image-container{
             border: none;
@@ -259,7 +263,7 @@
         }
         .emoji-holder{
             text-align: center;
-            
+            width: 5%;
             i{
                 font-size: 1.4rem;
                 cursor: pointer;

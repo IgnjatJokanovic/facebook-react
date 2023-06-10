@@ -141,7 +141,7 @@ export default function Notifications() {
           </i>
           <div ref={refDropdown} className={ open ? 'dropdown active' : 'dropdown' }>
           {!!count  && (
-              <div className="link" onClick={markAllAsRead}>Mark all as read</div>
+              <div className="btn link" onClick={markAllAsRead}>Mark all as read</div>
           )}
           {isLoading ? (
                  <MessageLoader />

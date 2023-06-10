@@ -59,6 +59,8 @@ export type ActiveMessage = {
     lastName: string,
     profile: string|null,
     messages: Message[],
+    isLoading: boolean,
+    nextPage: number,
 }
 
 export type MessageNotification = {

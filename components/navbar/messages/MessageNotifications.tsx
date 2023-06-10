@@ -55,8 +55,10 @@ export default function MessageNotifications() {
     };
 
     const openMessage = (item) => {
+        console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa', item)
         ctx.openMessage(item);
         setOpen(false);
+        setSearch('');
 
     }
 
@@ -257,6 +259,7 @@ export default function MessageNotifications() {
                       }}
                       type="text" 
                       placeholder='Search messages'
+                      value={search}
                   />
                 </form>
               
