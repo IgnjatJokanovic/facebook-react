@@ -99,7 +99,7 @@ export default function Friends({ userId }) {
   
   return (
     <div className={isLoading ? "friends-section loading" : 'friends-section'}>
-      {friends.length && (
+      {friends.length > 0 && (
         <div className="search">
           <div className="input">
             <input
@@ -115,16 +115,11 @@ export default function Friends({ userId }) {
       )}
       <div className="content">
         {isLoading ? (
-          <>
-            <div className="item"></div>
-            <div className="item"></div>
-            <div className="item"></div>
-            
-          </>
+          <div className="item loader"></div>
         ): (
           <>
             {search.length > 0 ? (
-              searchData.length ? (
+              searchData.length > 0 ? (
                 searchData.map((item, i) => (
                   <div key={i} className="item">
                     <Link  href={`/user/${item.id}`}>
@@ -137,7 +132,7 @@ export default function Friends({ userId }) {
                   <div className="not-found">No results found</div>
               )      
             ): (
-              friends.length ? (
+              friends.length > 0 ? (
               
                 friends.map((item, i) => (
                   <div key={i} className="item">

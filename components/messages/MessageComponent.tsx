@@ -314,7 +314,7 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
           let curr = [...activeMessages];
           let index = curr.findIndex(obj => obj.id == messageThread.id);
 
-          if (index >= 0 && messageThread.dontTriggerIntersect) {
+          if (index >= 0 && !messageThread.dontTriggerIntersect) {
             console.log('KURCINAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
             curr.splice(index, 1)
             setActiveMessages(curr);

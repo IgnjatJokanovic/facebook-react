@@ -86,7 +86,7 @@ export default function Search() {
 
         return () => {
             document.removeEventListener("mousedown", toggleNavOption);
-            refOption.current.removeEventListener('wheel', handleSearch);
+            refOption?.current?.removeEventListener('wheel', handleSearch);
         };
     }, [handleSearch, open])
 
