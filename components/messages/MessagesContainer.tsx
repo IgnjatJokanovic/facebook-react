@@ -214,7 +214,7 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
 
   return (
     <div className="messages-container">
-        {messageThreads.length && (
+        {messageThreads.length > 0 && (
           messageThreads.map((item, i) => (
             <MessageComponent
               key={i}

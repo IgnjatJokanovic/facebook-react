@@ -68,7 +68,7 @@ export default function RecomendedFriends() {
                         {users.map((item, i) => (
                             <Link className='item' key={i} href={`/user/${item.id}`}>
                                 <DefaultPrefixImage src={item.profile} alt={`${item.firstName} ${item.lastName}`} />
-                                <span>{item.firstName} {item.lastName}</span>
+                                <div className='credentials'>{item.firstName} {item.lastName}</div>
                             </Link>
                         ))}
                     </div>

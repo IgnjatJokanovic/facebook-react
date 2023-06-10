@@ -354,10 +354,11 @@
                     position: absolute;
                     z-index: 1;
                     background-color: $grey;
-                    padding: 0.5rem;
+                    padding: 0.7rem;
                     border-radius: 5px;
+                    right: 0;
                     .btn{
-                        width: 60%;
+                        width: 70%;
                         text-align: center;
                         &:nth-of-type(1){
                             margin-bottom: 1rem;

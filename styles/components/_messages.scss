@@ -15,7 +15,7 @@
         border-radius: 5px;
     
         display: inline-block;
-        width: 24.4%;
+        width: calc(100%/4 - 10px);
 
         .outline{
             border: 2px solid rgb(63, 63, 63);
@@ -72,13 +72,13 @@
                 height: 0;
                 transition: height 0.25s ease-out;
                 &.active{
-                    height: 22rem;
+                    height: 25rem;
                     transition: height 0.25s ease-in;
                 }
     
                 .messages{
                     overflow-y: scroll;
-                    max-height: 25vh;
+                    height: 19rem;
                     background-color: $white;
                     padding: 5px;
                     border-radius: 5px;
@@ -170,7 +170,7 @@
                     display: flex;
                     height: 4rem;
                     .txt{
-                        flex: 1;
+                        width: 95%;
                         height: 4rem;
                         background-color: #ffffff;
                         overflow-y: scroll;
@@ -231,8 +231,8 @@
             }
         }
 
-        @media only screen and (max-width: 1240px) {
-            width: 49%;
+        @media only screen and (max-width: 1540px) {
+            width: calc(100%/3 - 10px);
         }
     
         @media only screen and (max-width: 480px) {
