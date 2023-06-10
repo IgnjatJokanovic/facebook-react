@@ -36,7 +36,6 @@ export default function CommentComponnent({ postId, owner }) {
       }
       else {
         var newValue = comment.body + body;
-        console.log(1, comment.body, newValue)
         setComment({ ...comment, body: newValue })
       }
     }
@@ -53,7 +52,6 @@ export default function CommentComponnent({ postId, owner }) {
               setComment({...comment, body: ''})
             })
             .catch(err => {
-              console.log(err)
               ctx.setAlert(err.response.data.err, 'error');
             });
         })
@@ -72,10 +70,8 @@ export default function CommentComponnent({ postId, owner }) {
             setNextPage(-1);
           } else {
             let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-            console.log(lastIndex)
             setNextPage(lastIndex);
           }
-          console.log(res.data.data)
           setComments(prevComments => [...prevComments, ...res.data.data]);
         })
         .catch(err => {

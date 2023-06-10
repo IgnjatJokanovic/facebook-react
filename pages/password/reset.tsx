@@ -16,7 +16,6 @@ export default function Reset() {
   const { register, handleSubmit, formState: { errors } } = useForm<PasswordResetUpdateRequest>();
   
   const onSubmit = (data:PasswordResetUpdateRequest) => {
-    console.log(data)
     data.token = token;
 
     axios.post('/password/change', data)

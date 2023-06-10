@@ -29,7 +29,6 @@ export default function FriendNotifications() {
     };
   
     const handleChanChange = (payload) => {
-      console.log("payload", payload);
       let curr = [...friendRequests];
       curr.unshift(payload.user);
       setFriendRequests(curr);
@@ -88,7 +87,6 @@ export default function FriendNotifications() {
         document.addEventListener("mousedown", toggleNavOption);
       
         const loadData = () => {
-          console.log("first")
           if (nextPage >= 0) {
             axios.get(`/friend/pending?page=${nextPage}`)
             .then(res => {
@@ -98,7 +96,6 @@ export default function FriendNotifications() {
                 setNextPage(-1);
               }
               let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-              console.log(lastIndex)
               setNextPage(lastIndex);
             })
             .catch(err => {

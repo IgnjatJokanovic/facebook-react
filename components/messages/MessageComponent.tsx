@@ -68,7 +68,6 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
       }
       else {
         var newValue = edit.body + body;
-        console.log(1, edit.body, newValue)
         setEdit({ ...edit, body: newValue });
       }
 
@@ -79,7 +78,6 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
       }
       else {
         var newValue = messageThread.newMessage.body + body;
-        console.log(1, messageThread.newMessage.body, newValue)
         updateNewMessageState(newValue)
       }
 
@@ -96,20 +94,17 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
 
   const handleMessageDelete = (id) => {
     let curr = [...notifications];
-    console.log(id)
     let index = curr.findIndex(obj => obj.messageId == id);
 
     axios.post('/message/delete', { id: id })
     .then(res => {
       ctx.setAlert(res.data.msg, 'success')
-      console.log(res.data)
       if (index >= 0) {
         if (res.data.data != null) {
             curr[index] = res.data.data;
         } else {
           curr.splice(index, 1);
         }
-        console.log('CALLING HANDLE DELETE MESSAGE')
        
         setNotifications(curr);
       }
@@ -124,8 +119,6 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
   }
 
   const reset = () => {
-
-    console.log('RESET TRIGGERED')
     
     if (Object.keys(edit).length) {
       setEdit({});
@@ -135,7 +128,6 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
   }
 
   const updateNotifications = (data, isUpdate = false) => {
-    console.log("UPDATING...", data)
     let curr = [...notifications];
 
     if (isUpdate) {
@@ -200,7 +192,6 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
       })
     } else {
       let msg = getNewMessageObj();
-      console.log('MSG OBJ ', msg)
       validateMessage(msg.body)
         .then(() => {
           axios.post('/message/create', msg)
@@ -210,7 +201,6 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
               let data = res.data.data;
 
               reset();
-              console.log('triggering add message submit')
               handleAddMessage(messageThread.id, [data])
               updateNotifications(data);
 
@@ -249,12 +239,10 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
 
 
     const loadData = () => {
-      console.log('LOADING DATADADATDAD', messageThread.isLoading, messageThread.nextPage)
       if (!messageThread.isLoading || messageThread.nextPage == 0) {
         if (messageThread.nextPage >= 0) {
           axios.get(`/message/show/${messageThread.id}?page=${messageThread.nextPage}`)
             .then(res => {
-              console.log('setting messages', res.data.data)
 
               let data = res.data.data;
               let ids = [];
@@ -290,7 +278,6 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
     }
 
     if (messageThread.messages.length == 0) {
-      console.log('DEBUG', messageThread.id, messageThread.messages);
       loadData();
     }
     
@@ -315,7 +302,6 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
           let index = curr.findIndex(obj => obj.id == messageThread.id);
 
           if (index >= 0 && !messageThread.dontTriggerIntersect) {
-            console.log('KURCINAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
             curr.splice(index, 1)
             setActiveMessages(curr);
           }

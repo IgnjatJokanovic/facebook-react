@@ -33,8 +33,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
   const close = (id: number) => {
     let curr: ActiveMessage[] = [...messageThreads];
     let index = curr.findIndex(obj => obj.id == id);
-
-    console.log('CLOSE', id, index, curr)
     
     if (index != -1) {
       curr[index].dontTriggerIntersect = true;
@@ -45,7 +43,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
   }
 
   const markAsRead = (ids, related, set = false, msg = null) => {
-    console.log("markAsRead", ids)
     if (ids.length) {
       axios.post('/message/markAsRead', {
         ids: ids,
@@ -82,7 +79,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     let curr = [...messageThreads];
     let index = curr.findIndex(obj => obj.id == id);
 
-    console.log('handleAddMessage TTTTTTTTTTTTTTTTTTTTTTTT', messages, id, index)
     if (index > -1) {
       let old = curr[index].messages;
 
@@ -112,13 +108,10 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     let curr = [...messageThreads];
     let index = curr.findIndex(obj => obj.id == id);
 
-    console.log('TRIGGERIGN DELETE')
     if (index > -1) {
       let msgIndex = curr[index].messages.findIndex(obj => obj.id == messageId);
-      console.log('index', index)
       
       if (msgIndex > -1) {
-        console.log('msgIndex', msgIndex)
         curr[index].messages.splice(msgIndex, 1);
         setMessageThreads(curr);
       }

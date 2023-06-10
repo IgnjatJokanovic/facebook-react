@@ -42,7 +42,6 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
     }
     else {
       var newValue = edit.body + body;
-      console.log(1, edit.body, newValue)
       setEdit({ ...edit, body: newValue });
     }
   }
@@ -58,7 +57,6 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
     }
     else {
       var newValue = newComment.body + body;
-      console.log(1, newComment.body, newValue)
       setNewComment({ ...newComment, body: newValue });
     }
   }
@@ -116,7 +114,6 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
      
       })
       .catch(err => {
-        console.log('err', err)
         ctx.setAlert(err.response.data.error, 'error');
       })
   }
@@ -145,7 +142,6 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
 
   const loadChildren = () => {
     setOpenNew(true);
-    console.log("CUM");
     let url = `/comment/postRelated/${comment.post_id}/${comment.id}?page=${nextPage}`;
     if (nextPage >= 0 && comment.repliesCount > 0) {
       axios.get(url)
@@ -155,7 +151,6 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
           setNextPage(-1);
         } else {
           let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-          console.log(lastIndex)
           setNextPage(lastIndex);
         }
      

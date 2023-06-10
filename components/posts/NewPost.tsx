@@ -44,7 +44,6 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
 
     const updateImage = (image) => {
         let imageObj = article.image;
-        console.log(imageObj);
 
         if (imageObj === null) {
             imageObj = {
@@ -64,14 +63,8 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
         }
         else {
             var newValue = article.body + body;
-            console.log(1, article.body, newValue)
             setArticle({...article, body: newValue});
         }
-
-        console.log(body);
-       
-        
-       
     }
 
     const handleBodyChange = evt => {

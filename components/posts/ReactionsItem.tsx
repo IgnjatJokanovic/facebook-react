@@ -26,18 +26,15 @@ export default function ReactionsItem({ reactions, isOpen, activeReaction, setAc
 
   const loadUsersReaction = React.useCallback(() => {
     // Load paginated users
-    console.log(nextPage);
     if (nextPage >= 0) {
       axios.get(`/reaction/users/${postId}/${activeReaction}?page=${nextPage}`)
       .then(res => {
-        console.log(res.data)
         setUsersReaction([...usersReaction, ...res.data.data]);
         if (res.data.next_page_url === null) {
           refOpen.current.removeEventListener('wheel', loadUsersReaction);
           setNextPage(-1);
         } else {
           let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-          console.log(lastIndex)
           setNextPage(lastIndex);
         }
         

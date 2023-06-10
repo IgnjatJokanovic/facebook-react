@@ -20,7 +20,6 @@ export default function Reset() {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<UpdateUserRequest>();
   
   const onSubmit = (data:UpdateUserRequest) => {
-    console.log(data)
 
     axios.post('/user/update', data)
       .then(async res => {

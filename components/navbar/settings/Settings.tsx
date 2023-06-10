@@ -39,11 +39,11 @@ export default function Settings() {
 
     React.useEffect(() => {
         document.addEventListener("mousedown", toggleNavOption);
-        console.log(claims)
         return () => {
             document.removeEventListener("mousedown", toggleNavOption);
         };
     }, []);
+    
   return (
     <div ref={ refOption} className='friend-notifications-container'>
           <i className='fa fa-cogs' onClick={e => setOpen(!open)}></i>

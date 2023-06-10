@@ -24,7 +24,6 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
 
     const removeFriend = (index) => {
         let curr = [...article.taged];
-        console.log('removing', index)
         curr.splice(index, 1);
         setArticle({...article, taged: curr});
     }
@@ -38,17 +37,14 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
     }
 
     const search = React.useCallback(() => {
-        console.log(nextPage);
         if (nextPage >= 0 && searchParam.length) {
             axios.get(`/friend/searchCurrentUser?search=${searchParam}&exlude=${owner}&page=${nextPage}`)
             .then(res => {
                 setFound([...found, ...res.data.data]);
                 if (res.data.next_page_url === null) {
-                    console.log('setting next page')
                     setNextPage(-1);
                 }
                 let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-                console.log(lastIndex)
                 setNextPage(lastIndex);
             })
             .catch(err => {

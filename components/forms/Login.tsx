@@ -16,7 +16,6 @@ export default function Login({ setActiveForm }) {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>();
   
   const onSubmit = (data:LoginRequest) => {
-    console.log(data)
 
     axios.post('/auth/login', data )
       .then(res => {

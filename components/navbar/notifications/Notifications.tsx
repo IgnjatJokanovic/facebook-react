@@ -47,7 +47,6 @@ export default function Notifications() {
     }
 
     const handleChanChange = (payload) => {
-        console.log("PAYLOAD", payload.notification);
         let curr = [...notifications];
         curr.unshift(payload.notification);
         setNotifications(curr);
@@ -55,7 +54,6 @@ export default function Notifications() {
     }
       
     const handleCancel = (payload) => {
-        console.log(payload);
         let curr = [...notifications];
         let index = curr.findIndex(obj => obj.id == payload.id);
       
@@ -90,7 +88,6 @@ export default function Notifications() {
         document.addEventListener("mousedown", toggleNavOption);
       
         const loadData = () => {
-          console.log("first")
           if (nextPage >= 0) {
             axios.get(`/notification?page=${nextPage}`)
             .then(res => {
@@ -100,7 +97,6 @@ export default function Notifications() {
                 setNextPage(-1);
               }
               let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-              console.log(lastIndex)
               setNextPage(lastIndex);
             })
             .catch(err => {

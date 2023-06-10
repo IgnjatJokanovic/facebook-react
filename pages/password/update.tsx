@@ -11,7 +11,6 @@ export default function Update() {
   const { register, handleSubmit, formState: { errors } } = useForm<UpdatePasswordRequest>();
   
   const onSubmit = (data:UpdatePasswordRequest) => {
-    console.log(data)
 
     axios.post('/password/update', data)
       .then(res => {

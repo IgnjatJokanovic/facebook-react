@@ -35,14 +35,12 @@ export default function Friends({ userId }) {
         .then((res) => {
             setSearchData((prevState) => [...prevState, ...res.data.data]);
             setIsLoading(false);
-            console.log('SRCH', res.data.data);
     
             const nextPageUrl = res.data.next_page_url;
             if (nextPageUrl === null) {
                 setNextPageSearch(-1);
             } else {
                 const lastIndex = parseInt(nextPageUrl.slice(-1), 10);
-                console.log(lastIndex);
                 setNextPageSearch(lastIndex);
             }
         })
@@ -52,7 +50,6 @@ export default function Friends({ userId }) {
       }
     } else {
       // Load paginated iamges
-      console.log(nextPage);
       if (nextPage >= 0) {
         axios.get(`/friend/userFriends/${userId}?page=${nextPage}`)
         .then(res => {
@@ -62,7 +59,6 @@ export default function Friends({ userId }) {
             setNextPage(-1);
           }
           let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-          console.log(lastIndex)
           setNextPage(lastIndex);
         })
         .catch(err => {
@@ -88,7 +84,6 @@ export default function Friends({ userId }) {
     document.addEventListener('wheel', loadData);
     
     if (!friends.length) {
-      console.log('re-render');
       loadData();
     }
 

@@ -30,28 +30,6 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.withCredentials = true;
 
-
-// axios.interceptors.request.use(request => {
-//       if (
-//           request.method == 'post' ||
-//           request.method == 'put' ||
-//           request.method == 'delete'
-//       ){ 
-//           axios.get('/sanctum/csrf-cookie')
-//             .then(res => {
-//               console.log(res);
-              
-//               let csrf = getCookie('XSRF-TOKEN')
-//               axios.defaults.headers.common['X-XSRF-TOKEN'] = csrf
-//               console.log(csrf);
-//             })
-//             .catch(err => console.log(err));
-//       }
-      
-//       return request;
-    
-//   })
-
 export default function App({ Component, pageProps }: AppProps) {
 
   const router = useRouter();
@@ -135,7 +113,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
     } else {
         // handle adding new item
-        console.log('handle adding new item')
         let newObj: ActiveMessage = {
             isOpen: true,
             id: item.id,
@@ -151,8 +128,6 @@ export default function App({ Component, pageProps }: AppProps) {
               body: ''
             },
         };
-
-        console.log('setting', newObj);
 
         curr.unshift(newObj);
     }
@@ -171,24 +146,6 @@ export default function App({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
     const isLoggedIn = isAuthenticated();
     setauthenticated(isLoggedIn);
-
-    const SCREEN_SIZES = {
-      small: 480,
-      medium: 768,
-      large: 1024,
-    };
-    
-    
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < SCREEN_SIZES.small) {
-        console.log('small');
-      } else if (width < SCREEN_SIZES.medium) {
-        console.log('medium');
-      } else {
-        console.log('large');
-      }
-    };
 
     if (isLoggedIn) {
 
@@ -211,12 +168,7 @@ export default function App({ Component, pageProps }: AppProps) {
         }).catch(err => {
           console.log(err);
         });
-
-      window.addEventListener('resize', handleResize);
       
-      
-
-      // console.log(echo)
     }
 
     var echo = new Echo({
@@ -229,14 +181,6 @@ export default function App({ Component, pageProps }: AppProps) {
     setEcho(
       echo
     )
-
-    
-
-    return () => window.removeEventListener('resize', handleResize);
-
-    // console.log('app', echo.options.auth);
-
-   
     
   }, [authenticated])
   

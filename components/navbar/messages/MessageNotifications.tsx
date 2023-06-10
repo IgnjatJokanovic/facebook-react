@@ -55,7 +55,6 @@ export default function MessageNotifications() {
     };
 
     const openMessage = (item) => {
-        console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa', item)
         ctx.openMessage(item);
         setOpen(false);
         setSearch('');
@@ -65,8 +64,6 @@ export default function MessageNotifications() {
     const handleAdd = (payload: MessageDto) => {
         let currActive = [...activeMessages];
         let indexActive = currActive.findIndex(obj => obj.id == payload.notification.id);
-
-        console.log("ADD TRIGGERED", indexActive, payload.notification);
     
         if (indexActive >= 0) {
             let activeMsg = currActive[indexActive];
@@ -85,9 +82,6 @@ export default function MessageNotifications() {
         let curr = [...messages];
         let index = curr.findIndex(obj => obj.id == msg.id);
 
-        console.log('updateNotifications', index)
-        console.log('updateNotifications', curr)
-        console.log('updateNotifications', msg)
         if (index >= 0) {
             curr[index] = msg;
         } else {
@@ -99,16 +93,13 @@ export default function MessageNotifications() {
     }
     
       const handleDelte = (payload) => {
-        console.log('MESSAGE DELETED', payload)
         let curr = [...messages];
         let index = curr.findIndex(obj => obj.messageId == payload.message.id);
-        console.log("messageId", index)
         
         if(index >= 0){
             let id = curr[index].id;
             axios.get(`/message/latest/${id}`)
                 .then(res => {
-                    console.log('RES DELETING', res.data)
                     if (res.data.message != null) {
                         curr[index] = res.data;
                     } else {
@@ -171,14 +162,12 @@ export default function MessageNotifications() {
                 .then((res) => {
                     setSearchData((prevState) => [...prevState, ...res.data.data]);
                     setIsLoading(false);
-                    console.log('SRCH', res.data.data);
             
                     const nextPageUrl = res.data.next_page_url;
                     if (nextPageUrl === null) {
                         setNextPageSearch(-1);
                     } else {
                         const lastIndex = parseInt(nextPageUrl.slice(-1), 10);
-                        console.log(lastIndex);
                         setNextPageSearch(lastIndex);
                     }
                 })
@@ -193,14 +182,12 @@ export default function MessageNotifications() {
                 .then((res) => {
                     setMessages((prevState) => [...prevState, ...res.data.data]);
                     setIsLoading(false);
-                    console.log('setting false');
             
                     const nextPageUrl = res.data.next_page_url;
                     if (nextPageUrl === null) {
                     setNextPage(-1);
                     } else {
                         const lastIndex = parseInt(nextPageUrl.slice(-1), 10);
-                        console.log(lastIndex);
                         setNextPage(lastIndex);
                     }
                 })
@@ -223,7 +210,6 @@ export default function MessageNotifications() {
         
 
         if (!messages.length) {
-            console.log('re-render messages');
             axios.get('/message/unreadCount')
                 .then(res => {
                     setCount(res.data);

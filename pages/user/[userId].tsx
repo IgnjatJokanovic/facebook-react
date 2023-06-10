@@ -53,7 +53,6 @@ export default function UserProfile() {
   };
 
   const renderContent = React.useCallback(() => {
-    console.log(`rendering${navigationOption},`, userId)
     switch(navigationOption) {
       case 'info':
         return <Information firstName={user.firstName} lastName={user.lastName} birthDay={moment(user.birthday).format("D MMM Y")} showEdit={claims?.id == userId} />;
@@ -86,7 +85,6 @@ export default function UserProfile() {
   const removeFriend = (msg = "Removed friend") => {
     axios.post('/friend/decline', { id: user.id })
       .then(res => {
-        console.log(1, msg)
         setUser({ ...user, isFriends: null })
         ctx.setAlert(msg, 'success')
       })
@@ -176,11 +174,9 @@ export default function UserProfile() {
     }
 
     if (Object.keys(user).length === 0 || user.id != parseInt(userId)) {
-      console.log('rendering user')
       axios.get(`/user/show/${userId}`)
         .then(res => {
           setUser(res.data);
-          console.log("data", res.data)
         })
         .catch(err => {
           router.push('/404/user')
@@ -190,7 +186,6 @@ export default function UserProfile() {
    
 
     renderContent()
-    console.log('userId', userId)
     document.addEventListener("mousedown", toggleOpen);
 
     return () => {

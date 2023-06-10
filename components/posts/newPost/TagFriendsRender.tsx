@@ -2,7 +2,6 @@ import Link from 'next/link';
 import React from 'react'
 
 export default function TagFriendsRender({ taged }) {
-    console.log(taged.length)
     if (taged.length > 3) {
         let firstBatch = taged.slice(0, 3);
         let lastBatch = taged.slice(3, taged.length + 1)

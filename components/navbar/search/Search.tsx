@@ -29,22 +29,18 @@ export default function Search() {
     }
 
     const handleSearch = React.useCallback(() => {
-        console.log('LOADING', param)
         if (param != "") {
 
             // Load paginated iamges
-            console.log(nextPage);
             if (nextPage >= 0) {
                 axios.post(`/user/search?page=${nextPage}`, { search: param })
                     .then(res => {
-                        console.log('fetching')
                         setUsers(prevUsers => [...prevUsers, ...res.data.data]);
                         
                         if (res.data.next_page_url === null) {
                             setNextPage(-1);
                         } else {
                             let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-                            console.log(lastIndex)
                             setNextPage(lastIndex);
                             setOpen(true);
                         }
@@ -52,7 +48,6 @@ export default function Search() {
                         
                     })
                     .catch(err => {
-                        console.log(err)
                         setUsers([]);
                     })
             }

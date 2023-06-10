@@ -20,8 +20,6 @@ export default function Post() {
         if (!postId) {
             return;
         }
-
-        console.log(postId);
        
         axios.get(`/post/show/${postId}`)
             .then(res => {
