@@ -82,6 +82,8 @@
                     background-color: $white;
                     padding: 5px;
                     border-radius: 5px;
+                    display: flex;
+                    flex-direction: column-reverse;
                     .message-item{
                         display: flex;
                         margin: 10px 5px;

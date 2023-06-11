@@ -218,7 +218,7 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
   };
 
   const handleScroll = () => {
-    refBody?.current?.lastElementChild?.scrollIntoView({
+    refBody?.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });

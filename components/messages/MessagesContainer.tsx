@@ -83,7 +83,7 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
       let old = curr[index].messages;
 
       if (messages.length == 1) {
-        old.push(messages[0]);
+        old.unshift(messages[0]);
       } else if(messages.length >= 1)  {
         old = old.concat(messages);
       }
@@ -124,13 +124,15 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     let id = msg.from;
     let index = curr.findIndex(obj => obj.id == id);
 
+    console.log('handleChanAdd')
+
     if (index >= 0) {
       if (curr[index].isOpen) {
         markAsRead([msg.id], id, false, payload.notification)
         msg.opened = true;
-        curr[index].messages.push(msg);
+        curr[index].messages.unshift(msg);
       } else {
-        curr[index].messages.push(msg);
+        curr[index].messages.unshift(msg);
       }
   
       setMessageThreads(curr);
@@ -151,7 +153,9 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
   const handleChanDelete = (payload) => {
     let curr = [...messageThreads];
     let msg = payload.message;
-    let indexThread = curr.findIndex(obj => obj.id == msg.from);
+    let indexThread = curr.findIndex(obj =>  obj.id == msg.from || obj.id == msg.to);
+
+    console.log('delete', msg)
     
     if (indexThread > -1) {
       let messageIndex = curr[indexThread].messages.findIndex(obj => obj.id == msg.id);
@@ -165,11 +169,13 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
   const handleChanUpdate = (payload) => {
     let curr = [...messageThreads];
     let msg = payload.message;
-    let indexThread = curr.findIndex(obj => obj.id == msg.from);
+    let indexThread = curr.findIndex(obj => obj.id == msg.from || obj.id == msg.to);
+
+    console.log('handleChanUpdate', payload)
 
     if (indexThread > -1) {
       let index = curr[indexThread].messages.findIndex(obj => obj.id == msg.id);
-
+      console.log(index)
       if (index > -1) {
         curr[indexThread].messages[index].body = msg.body;
         curr[indexThread].messages[index].opened = msg.opened;
