@@ -22,12 +22,24 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
 
   const prevMessagesLengthRef = React.useRef(messageThread.messages.length);
 
-  const ref = React.useRef();
+  
 
   const notifications  = ctx.messageNotifications;
   const setNotifications = ctx.setMessageNotifications;
 
-  const refBody = React.useRef();
+  const refArray = React.useRef([])
+
+
+   // Function to create a new ref
+   const createRef = () => {
+    const newRef = React.useRef();
+    refArray.current.push(newRef);
+    return newRef;
+  };
+
+  const refBody = createRef();
+
+  const ref = createRef();
 
   const [openEmoji, setOpenEmoji] = React.useState(false);
 
@@ -221,6 +233,7 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
     refBody?.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
+      passive: true
     });
   }
 
@@ -291,42 +304,36 @@ export default function MessageComponent({ messageThread, markAsRead, handleAddM
   
   
 
-  React.useEffect(() => {
+  // React.useEffect(() => {
 
    
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) {
-          let curr = [...activeMessages];
-          let index = curr.findIndex(obj => obj.id == messageThread.id);
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (!entry.isIntersecting) {
+  //         close(messageThread.id)
+  //       }
+  //     },
+  //     {
+  //       root: null,
+  //       rootMargin: "0px",
+  //       threshold: 1.0,
+  //     }
+  //   );
 
-          if (index >= 0 && !messageThread.dontTriggerIntersect) {
-            curr.splice(index, 1)
-            setActiveMessages(curr);
-          }
-        }
-      },
-      {
-        root: null,
-        rootMargin: "0px",
-        threshold: 1.0,
-      }
-    );
-
-    observer.observe(ref?.current);
+  //   observer.observe(ref?.current);
 
     
   
 
-    return () => {
-      if (ref?.current) {
-        observer.unobserve(ref.current);
-      }
+  //   return () => {
+  //     if (ref?.current) {
+  //       observer.unobserve(ref.current);
+  //     }
 
       
-    }
-  }, [activeMessages, messageThread.id, setActiveMessages])
+  //   }
+  // }, [activeMessages, close, messageThread.dontTriggerIntersect, messageThread.id, ref, setActiveMessages])
 
   
 

@@ -8,6 +8,7 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
     const [searchParam, setSearchParam] = React.useState('');
     const [nextPage, setNextPage] = React.useState(0);
     const [found, setFound] = React.useState([]);
+    const [isLoading, setIsloading] = React.useState(false);
 
     const toggleNavOption = e => {
         if (refOption.current.contains(e.target)) {

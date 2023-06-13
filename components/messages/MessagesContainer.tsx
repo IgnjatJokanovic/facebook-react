@@ -30,17 +30,17 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     setMessageThreads(curr);
   }
 
-  const close = (id: number) => {
+  const close = React.useCallback((id: number) => {
     let curr: ActiveMessage[] = [...messageThreads];
     let index = curr.findIndex(obj => obj.id == id);
+
+    curr.map(obj => obj.dontTriggerIntersect = true);
     
     if (index != -1) {
-      curr[index].dontTriggerIntersect = true;
-      setMessageThreads(curr);
       curr.splice(index, 1)
       setMessageThreads(curr);
     }
-  }
+  }, [messageThreads, setMessageThreads])
 
   const markAsRead = (ids, related, set = false, msg = null) => {
     if (ids.length) {
@@ -210,6 +210,44 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
       handleChanUpdate(payload);
     },
   })
+
+  const SCREEN_SIZES = {
+    small: 490,
+    medium: 1550,
+  };
+
+  const handleResize = React.useCallback(() => {
+    console.log('handleResize')
+    const width = window.innerWidth;
+    let msgLenght = messageThreads.length;
+    let curr = [...messageThreads];
+    console.log('width', width)
+    if (width < SCREEN_SIZES.small && msgLenght > 1) {
+      curr.splice(0, msgLenght - 1)
+      console.log('curr.slice(0, 3)')
+      setMessageThreads(curr)
+    } else if (width < SCREEN_SIZES.medium && msgLenght > 3) {
+      curr.splice(msgLenght - 1, 1)
+      console.log('curr.slice(0, 3)')
+      setMessageThreads(curr)
+    }
+  }, [SCREEN_SIZES.medium, SCREEN_SIZES.small, messageThreads, setMessageThreads]);
+
+  React.useEffect(() => {
+    console.log("USE EFFECT")
+    console.log(messageThreads)
+   
+    
+    
+   
+
+    window.addEventListener('resize', handleResize);
+  
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    }
+  }, [handleResize, messageThreads, setMessageThreads])
+  
 
   return (
     <div className="messages-container">

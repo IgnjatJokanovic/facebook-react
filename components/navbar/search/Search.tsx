@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React from 'react'
 import SearchItem from './SearchItem';
+import UserLoader from '../../loaders/UserLoader';
+import MessageLoader from '../../loaders/MessageLoader';
+import DefaultUserLoader from '../../loaders/DefaultUserLoader';
 
 export default function Search() {
     const refOption = React.useRef();
@@ -45,6 +48,7 @@ export default function Search() {
                             setOpen(true);
                         }
 
+                        setIsloading(false);
                         
                     })
                     .catch(err => {
@@ -54,9 +58,8 @@ export default function Search() {
            
         } else {
             setOpen(false);
+            setIsloading(false);
         }
-
-        setIsloading(false);
 
     }, [nextPage, param])
 
@@ -101,6 +104,9 @@ export default function Search() {
             onClick={openDropdown}
         />
         <div className={open ? 'results active' : 'results'}>
+            {isLoading && (
+                <DefaultUserLoader />
+            )}
             {users.length ? (
                 users.map((item, i) => (
                     <SearchItem

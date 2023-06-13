@@ -128,6 +128,10 @@ export default function App({ Component, pageProps }: AppProps) {
               body: ''
             },
         };
+      
+        if(activeMessages.length == 4){
+          curr.splice(3, 1);
+        }
 
         curr.unshift(newObj);
     }
@@ -146,6 +150,29 @@ export default function App({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
     const isLoggedIn = isAuthenticated();
     setauthenticated(isLoggedIn);
+
+    // const SCREEN_SIZES = {
+    //   small: 480,
+    //   medium: 1540,
+    // };
+    
+    
+    // const handleResize = () => {
+    //   const width = window.innerWidth;
+    //   let msgLenght = activeMessages.length;
+    //   let curr = [...activeMessages];
+
+    //   if (width <= SCREEN_SIZES.small && msgLenght > 1) {
+    //     curr.slice(0, 3)
+    //     setActiveMessages(curr)
+    //   } else if (width <= SCREEN_SIZES.medium && msgLenght > 3) {
+    //     curr.slice(0, 1)
+    //     setActiveMessages(curr)
+    //   }
+    // };
+
+    // window.addEventListener('resize', handleResize);
+
 
     if (isLoggedIn) {
 
@@ -181,8 +208,10 @@ export default function App({ Component, pageProps }: AppProps) {
     setEcho(
       echo
     )
+
+    // return () => window.removeEventListener('resize', handleResize);
     
-  }, [authenticated])
+  }, [activeMessages.length, authenticated])
   
 
 
