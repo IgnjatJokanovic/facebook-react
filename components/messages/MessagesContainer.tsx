@@ -2,8 +2,8 @@ import React from "react";
 import Context from "../../context/context";
 import { useSocket } from "../../helpers/broadcasting";
 import { ChannelList } from "../../helpers/channels";
-import { getClaims } from "../../helpers/helpers";
-import { ActiveMessage } from "../../types/types";
+import { getClaims, validateMessage } from "../../helpers/helpers";
+import { ActiveMessage, MessageNotification } from "../../types/types";
 import MessageComponent from "./MessageComponent";
 import axios from "axios";
 import Test from "./Test";
@@ -42,7 +42,7 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     }
   }, [messageThreads, setMessageThreads])
 
-  const markAsRead = (ids, related, set = false, msg = null) => {
+  const markAsRead = React.useCallback((ids, related, set = false, msg = null) => {
     if (ids.length) {
       axios.post('/message/markAsRead', {
         ids: ids,
@@ -73,50 +73,7 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
         
       })
     }
-  }
-
-  const handleAddMessage = (id, messages) => {
-    let curr = [...messageThreads];
-    let index = curr.findIndex(obj => obj.id == id);
-
-    if (index > -1) {
-      let old = curr[index].messages;
-
-      if (messages.length == 1) {
-        old.unshift(messages[0]);
-      } else if(messages.length >= 1)  {
-        old = old.concat(messages);
-      }
-      curr[index].messages = old;
-      setMessageThreads(curr);
-    }
-  }
-
-  const handleUpdateMessage = (id, message) => {
-    let curr = [...messageThreads];
-    let index = curr.findIndex(obj => obj.id == id);
-    if (index > -1) {
-      let msgIndex = curr[index].messages.findIndex(obj => obj.id == message.id);
-      if (msgIndex > -1) {
-        curr[index].messages[msgIndex].body = message.body;
-        setMessageThreads(curr);
-      }
-    }
-  }
-
-  const handleDeleteMessage = (id, messageId) => {
-    let curr = [...messageThreads];
-    let index = curr.findIndex(obj => obj.id == id);
-
-    if (index > -1) {
-      let msgIndex = curr[index].messages.findIndex(obj => obj.id == messageId);
-      
-      if (msgIndex > -1) {
-        curr[index].messages.splice(msgIndex, 1);
-        setMessageThreads(curr);
-      }
-    }
-  }
+  }, [messageNotifications, setCount, setMessageNotifications])
 
   const handleChanAdd = (payload) => {
     let curr = [...messageThreads];
@@ -138,16 +95,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
       setMessageThreads(curr);
     }
 
-  }
-
-  const handleAfterload = (id, isLoading, nextPage) => {
-    let curr = [...messageThreads];
-    let index = curr.findIndex(obj => obj.id == id);
-    if (index > -1) {
-      curr[index].isLoading = isLoading;
-      curr[index].nextPage = nextPage;
-      setMessageThreads(curr);
-    }
   }
 
   const handleChanDelete = (payload) => {
@@ -211,6 +158,303 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     },
   })
 
+  const updateNotifications = (data, isUpdate = false) => {
+    let curr = [...messageNotifications];
+
+    if (isUpdate) {
+      
+      let index = curr.findIndex(obj => obj.messageId == data.id);
+
+      if (index >= 0) {
+        curr[index].body = data.body;
+      }
+
+    } else {
+      let index = curr.findIndex(obj => obj.id == data.id);
+
+      if (index >= 0) {
+        curr[index].body = data.body;
+      } else {
+        let newMsg: MessageNotification = {
+          id: data.id,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          profile: data.profile,
+          messageId: data.messageId,
+          from: data.from,
+          to: data.to,
+          body: data.body,
+          created_at: data.created_at,
+          opened: true,
+        }
+        
+        curr.unshift(newMsg);
+      }
+
+    }
+
+    setMessageNotifications(curr);
+  }
+
+  const handleSubmit = (id: number) => {
+    let curr = [...messageThreads];
+    let index = curr.findIndex(obj => obj.id == id);
+
+    if (index > -1) {
+      let msgThread: ActiveMessage = curr[index];
+
+      if (Object.keys(msgThread.editMessage).length) {
+        validateMessage(msgThread.editMessage.body)
+          .then(() => {
+            axios.post('/message/update', msgThread.editMessage)
+              .then(res => {
+                ctx.setAlert(res.data.msg, 'success');
+                let data = res.data.data;
+                let msgIndex = msgThread.messages.findIndex(obj => obj.id == msgThread.editMessage.id);
+                msgThread.messages[msgIndex].body = data.body;
+               
+                msgThread.editMessage = {};
+                msgThread.newMessage.body = "";
+
+                curr[index] = msgThread;
+                setMessageThreads(curr)
+
+                updateNotifications(data, true);
+  
+                
+              })
+              .catch(err => {
+                ctx.setAlert(err.response.data.error, 'error')
+              })
+          })
+          .catch(err => {
+            ctx.setAlert(err, 'error');
+          })
+      } else {
+        let newMsg = msgThread.newMessage;
+        validateMessage(newMsg.body)
+          .then(() => {
+            axios.post('/message/create', newMsg)
+              .then(res => {
+                ctx.setAlert(res.data.msg, 'success');
+  
+                let data = res.data.data;
+                let msgId = data.id;
+                data.firstName = msgThread.firstName;
+                data.firstName = msgThread.firstName;
+                data.id = msgThread.id;
+                data.messageId = msgId;
+                data.profile = msgThread.profile;
+
+                msgThread.messages.unshift(data);
+             
+
+                msgThread.editMessage = {};
+                msgThread.newMessage.body = "";
+                
+                curr[index] = msgThread;
+                setMessageThreads(curr)
+                updateNotifications(data);
+              })
+              .catch(err => {
+                ctx.setAlert(err?.response?.data?.error, 'error')
+              })
+          })
+          .catch(err => {
+            ctx.setAlert(err, 'error');
+          })
+    
+      }
+
+    }
+  };
+
+  const setBody = (id:number, body: string) => {
+    let curr = [...messageThreads];
+    let index = curr.findIndex(obj => obj.id == id);
+    if (index > -1) {
+      let msgThread :ActiveMessage = curr[index];
+      if (Object.keys(msgThread.editMessage).length) {
+
+        if (msgThread.editMessage.body === null) {
+          msgThread.editMessage.body = body;
+        }
+        else {
+          var newValue = msgThread.editMessage.body + body;
+          msgThread.editMessage.body = newValue;
+        }
+  
+      } else {
+  
+        if (msgThread.newMessage.body === null) {
+          msgThread.newMessage.body = body;
+        }
+        else {
+          var newValue = msgThread.newMessage.body + body;
+          msgThread.newMessage.body = newValue;
+        }
+  
+      }
+
+      curr[index] = msgThread;
+      setMessageThreads(curr);
+    }
+  }
+
+  const openEdit = (id:number, item) => {
+    let curr = [...messageThreads];
+    let index = curr.findIndex(obj => obj.id == id);
+
+    if (index > -1) {
+      let msgThread: ActiveMessage = curr[index];
+      msgThread.editMessage = {
+        id: item.id,
+        body: item.body
+      }
+
+      curr[index] = msgThread;
+      setMessageThreads(curr);
+    }
+  }
+
+  const handleMessageDelete = (id:number, msgId:number) => {
+    let notifications = [...messageNotifications];
+    let notificationIndex = notifications.findIndex(obj => obj.messageId == msgId);
+
+    let curr = [...messageThreads];
+    let index = curr.findIndex(obj => obj.id == id);
+
+    axios.post('/message/delete', { id: msgId })
+      .then(res => {
+        ctx.setAlert(res.data.msg, 'success')
+        if (notificationIndex >= 0) {
+          if (res.data.data != null) {
+            notifications[notificationIndex] = res.data.data;
+          } else {
+            notifications.splice(notificationIndex, 1);
+          }
+
+          if (index > -1) {
+            let msgThread: ActiveMessage = curr[index];
+            let msgIndex = msgThread.messages.findIndex(obj => obj.id == msgId);
+            
+            if (msgIndex > -1) {
+              msgThread.messages = msgThread.messages.splice(msgIndex, 1);
+            }
+
+            if (msgThread.editMessage?.id == msgId) {
+              msgThread.editMessage = {};
+            }
+
+            curr[index] = msgThread;
+          }
+       
+          setMessageNotifications(notifications);
+          setMessageThreads(curr);
+        }
+      })
+      .catch(err => {
+        ctx.setAlert(err.response.data.error, 'error')
+      })
+
+    
+  }
+
+  const reset = (id:number) => {
+    let curr = [...messageThreads];
+    let index = curr.findIndex(obj => obj.id == id);
+
+    if (index > -1) {
+      let msgThread: ActiveMessage = curr[index];
+      msgThread.editMessage = {};
+      curr[index] = msgThread;
+      setMessageThreads(curr)
+    }
+  }
+
+  const handleChange = (id: number, isUpdate: boolean, value: string) => {
+    let curr = [...messageThreads];
+    let index = curr.findIndex(obj => obj.id == id);
+
+    if (index > -1) {
+      let msg: ActiveMessage = curr[index];
+      if (isUpdate) {
+        msg.editMessage.body = value;
+      } else {
+        msg.newMessage.body = value;
+      }
+      curr[index] = msg;
+
+      setMessageThreads(curr);
+    }
+  }
+
+  const loadData = React.useCallback((id: number) => {
+    let curr = [...messageThreads];
+    let index = curr.findIndex(obj => obj.id == id);
+    console.log('XXXXXXXXXXXXXXXX', index, id)
+    if (index > -1) {
+      let msgThread: ActiveMessage = curr[index];
+
+      if (!msgThread.isLoading) {
+        msgThread.isLoading = true;
+        curr[index] = msgThread;
+        // setMessageThreads(curr);
+
+        console.log('USAO NOT LOADING')
+
+        if (msgThread.nextPage >= 0) {
+
+          console.log('USAO NEXT PAGE')
+          axios.get(`/message/show/${msgThread.id}?page=${msgThread.nextPage}`)
+            .then(res => {
+  
+              let data = res.data.data;
+              let ids = [];
+  
+              data.forEach(obj => {
+                if (obj.to != msgThread.id && !obj.opened) {
+                  obj.opened = true;
+                  ids.push(obj.id);
+                }
+              });
+
+              msgThread.messages = msgThread.messages.concat(data);
+  
+              markAsRead(ids, msgThread.id, true);
+  
+              let nextPage = msgThread.nextPage;
+    
+              if (res.data.next_page_url == null) {
+                nextPage = -1;
+              } else {
+                nextPage = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
+              }
+
+              msgThread.isLoading = false;
+              msgThread.nextPage = nextPage;
+              curr[index] = msgThread;
+              setMessageThreads(curr);
+              
+             
+            })
+            .catch(err => {
+              
+            })
+        } else {
+          msgThread.isLoading = false;
+          curr[index] = msgThread;
+          setMessageThreads(curr);
+        }
+      } else {
+        msgThread.isLoading = false;
+        curr[index] = msgThread;
+        setMessageThreads(curr);
+      }
+    }
+  }, [markAsRead, messageThreads, setMessageThreads])
+
+
   const SCREEN_SIZES = {
     small: 490,
     medium: 1550,
@@ -256,13 +500,16 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
             <MessageComponent
               key={i}
               messageThread={item}
-              markAsRead={markAsRead}
-              handleAfterload={handleAfterload}
-              handleAddMessage={handleAddMessage}
-              handleUpdateMessage={handleUpdateMessage}
-              handleDeleteMessage={handleDeleteMessage}
+              isLoading={item.isLoading}
+              loadData={loadData}
               minimize={toggleMinimize}
               close={close}
+              handleChange={handleChange}
+              reset={reset}
+              handleMessageDelete={handleMessageDelete}
+              openEdit={openEdit}
+              setBody={setBody}
+              handleSubmit={handleSubmit}
             />
           ))
         )}

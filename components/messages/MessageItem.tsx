@@ -21,6 +21,11 @@ export default function MessageItem({opened, body, owner, created_at, deleteCall
 
     }
 
+    const triggerCallable = (callback) => {
+        setOpen(false);
+        callback();
+    }
+
     const toggleOpen = e => {
         if (refOpen?.current?.contains(e.target)) {
           return;
@@ -43,10 +48,10 @@ export default function MessageItem({opened, body, owner, created_at, deleteCall
             <div className="actions" ref={refOpen}>
                 <i className="fa fa-ellipsis-v" onClick={() => setOpen(!open)}></i>
                 <div className={open ? 'dropdown active' : 'dropdown'}>
-                    <div className="item" onClick={editCallback}>
+                    <div className="item" onClick={() => triggerCallable(editCallback)}>
                         Edit
                     </div>
-                    <div className="item" onClick={deleteCallback}>
+                    <div className="item" onClick={() => triggerCallable(deleteCallback)}>
                         Delete
                     </div>
                 </div>

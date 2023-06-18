@@ -120,13 +120,13 @@ export default function App({ Component, pageProps }: AppProps) {
             lastName: item.lastName,
             profile: item.profile,
             messages: [],
-            isLoading: true,
+            isLoading: false,
             nextPage: 0,
-            dontTriggerIntersect: false,
             newMessage: {
               to: item.id,
               body: ''
             },
+            editMessage: {}
         };
       
         if(activeMessages.length == 4){

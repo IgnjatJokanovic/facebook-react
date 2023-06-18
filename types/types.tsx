@@ -61,6 +61,8 @@ export type ActiveMessage = {
     messages: Message[],
     isLoading: boolean,
     nextPage: number,
+    newMessage: {},
+    editMessage: {}
 }
 
 export type MessageNotification = {
