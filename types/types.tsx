@@ -100,10 +100,12 @@ export type PasswordResetRequest = {
 export type PasswordResetUpdateRequest = {
     token: string,
     password: string,
+    repeatPassword: string;
 }
 
 export type UpdatePasswordRequest = {
     password: string,
+    repeatPassword: string;
 }
 
 export type UpdateUserRequest = {
@@ -119,5 +121,6 @@ export type RegisterRequest = {
     birthday: string;
     email: string;
     password: string;
+    repeatPassword: string;
   }
 

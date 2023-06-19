@@ -146,9 +146,13 @@
     .body{
         color: $white;
         font-weight: bold;
-        font-size: 1.5rem;
+        font-size: 0.8rem;
         margin-bottom: 10px;
         overflow-wrap: break-word;
+
+        & > * {
+            font-size: 0.8rem;  
+        }
     }
 
     .image{
@@ -160,9 +164,10 @@
     }
 
     .created{
-        color: $white;
+        color: $grey;
         margin: 10px 0;
         text-align: right;
+        font-style: italic;
     }
 
     .info-container{
@@ -338,8 +343,15 @@
                     gap: 1rem;
                     margin-top: 0.2rem;
                     margin-bottom: 0.2rem;
+                    justify-content: space-between;
+                    font-weight: 100;
+                    .createdAt{
+                        font-style: italic;
+                        color: $grey;
+                    }
                     .link{
                         cursor: pointer;
+                        font-weight: bold;
                     }
                 }
                }

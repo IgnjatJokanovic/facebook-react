@@ -207,11 +207,10 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
               </div>
           )}
           <div className="actions">
-            <div>{createdAt}</div>
             {parent == null && ctx.authenticated ? (
               <div className='link' onClick={() => setOpenNew(!openNew)}>Reply</div>
             ) : null}
-            
+            <div className='createdAt'>{createdAt}</div>
           </div>
           <div className="children">
             {!!children.length && (
