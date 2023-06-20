@@ -114,6 +114,8 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
   }
 
   const handleChanUpdate = (payload) => {
+    console.log('UPDATE TRIGGERED');
+    console.log(payload)
     let curr = [...messageThreads];
     let msg = payload.message;
     let indexThread = curr.findIndex(obj => obj.id == msg.from || obj.id == msg.to);
@@ -121,8 +123,9 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     console.log('handleChanUpdate', payload)
 
     if (indexThread > -1) {
-      let index = curr[indexThread].messages.findIndex(obj => obj.id == msg.id);
-      console.log(index)
+      let msgThread: ActiveMessage = curr[indexThread];
+      let index = msgThread.messages.findIndex(obj => obj.id == msg.id);
+      console.log(index, msg.id, msgThread.messages)
       if (index > -1) {
         curr[indexThread].messages[index].body = msg.body;
         curr[indexThread].messages[index].opened = msg.opened;
@@ -239,12 +242,18 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
                 ctx.setAlert(res.data.msg, 'success');
   
                 let data = res.data.data;
-                let msgId = data.id;
-                data.firstName = msgThread.firstName;
-                data.firstName = msgThread.firstName;
-                data.id = msgThread.id;
-                data.messageId = msgId;
-                data.profile = msgThread.profile;
+                let notification: MessageNotification = {
+                  id: msgThread.id,
+                  firstName: data.user.firstName,
+                  lastName: data.user.lastName,
+                  profile: msgThread.profile,
+                  messageId: data.id,
+                  from: data.from,
+                  to: data.to,
+                  body: data.body,
+                  created_at: data.created_at,
+                  opened: true,
+                };
 
                 msgThread.messages.unshift(data);
              
@@ -254,7 +263,9 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
                 
                 curr[index] = msgThread;
                 setMessageThreads(curr)
-                updateNotifications(data);
+                updateNotifications(notification);
+
+                console.log('adding')
               })
               .catch(err => {
                 ctx.setAlert(err?.response?.data?.error, 'error')
@@ -334,22 +345,26 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
             notifications.splice(notificationIndex, 1);
           }
 
-          if (index > -1) {
-            let msgThread: ActiveMessage = curr[index];
-            let msgIndex = msgThread.messages.findIndex(obj => obj.id == msgId);
-            
-            if (msgIndex > -1) {
-              msgThread.messages = msgThread.messages.splice(msgIndex, 1);
-            }
-
-            if (msgThread.editMessage?.id == msgId) {
-              msgThread.editMessage = {};
-            }
-
-            curr[index] = msgThread;
-          }
+          console.log(index, 'delete')
        
           setMessageNotifications(notifications);
+          
+        }
+
+        if (index > -1) {
+          let msgThread: ActiveMessage = curr[index];
+          let msgIndex = msgThread.messages.findIndex(obj => obj.id == msgId);
+          console.log('msgIndex', msgIndex)
+          if (msgIndex > -1) {
+            msgThread.messages.splice(msgIndex, 1);
+          }
+
+          if (msgThread.editMessage?.id == msgId) {
+            msgThread.editMessage = {};
+          }
+
+          curr[index] = msgThread;
+
           setMessageThreads(curr);
         }
       })
