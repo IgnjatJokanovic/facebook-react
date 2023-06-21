@@ -174,9 +174,15 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
 
     } else {
       let index = curr.findIndex(obj => obj.id == data.id);
-
+      console.log(index, data)
       if (index >= 0) {
         curr[index].body = data.body;
+        curr[index].firstName = data.firstName;
+        curr[index].lastName = data.lastName;
+        curr[index].profile = data.profile;
+        curr[index].messageId = data.messageId;
+        curr[index].from = data.from;
+        curr[index].to = data.to;
       } else {
         let newMsg: MessageNotification = {
           id: data.id,
@@ -254,6 +260,8 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
                   created_at: data.created_at,
                   opened: true,
                 };
+
+                console.log('addTriggered')
 
                 msgThread.messages.unshift(data);
              
@@ -338,11 +346,13 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     axios.post('/message/delete', { id: msgId })
       .then(res => {
         ctx.setAlert(res.data.msg, 'success')
+        console.log(res.data.data, notificationIndex, notifications, msgId, curr)
         if (notificationIndex >= 0) {
-          if (res.data.data != null) {
-            notifications[notificationIndex] = res.data.data;
-          } else {
+          let notification = res.data.data;
+          if (notification == null || notification === undefined) {
             notifications.splice(notificationIndex, 1);
+          } else {
+            notifications[notificationIndex] = notification;
           }
 
           console.log(index, 'delete')

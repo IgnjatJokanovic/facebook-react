@@ -92,16 +92,17 @@ export default function MessageNotifications() {
         
     }
     
-      const handleDelte = (payload) => {
+      const handleDelete = (payload) => {
         let curr = [...messages];
         let index = curr.findIndex(obj => obj.messageId == payload.message.id);
-        
+        console.log(payload)
         if(index >= 0){
             let id = curr[index].id;
             axios.get(`/message/latest/${id}`)
                 .then(res => {
-                    if (res.data.message != null) {
-                        curr[index] = res.data;
+                    let message = res.data.message;
+                    if (message != null) {
+                        curr[index] = message;
                     } else {
                         curr.splice(index, 1);
                     }
@@ -141,7 +142,7 @@ export default function MessageNotifications() {
           event: ChannelList.messageDeleted.listen,
           isPrivate: false,
           callBack: (payload) => {
-              handleDelte(payload);
+              handleDelete(payload);
           },
       })
     
