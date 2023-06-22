@@ -51,7 +51,10 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
   };
 
   const setEditArticle = () => {
-    var article = structuredClone(post);
+    let article = structuredClone(post);
+    article.taged.map(obj => {
+      obj.profile = obj.profile_photo?.image?.src;
+    })
     setArticle(article);
   }
 

@@ -11,11 +11,14 @@ import { getClaims, refreshToken, validateActiveUser } from '../../helpers/helpe
 import { Article } from '../../types/types';
 import TagFriendsRender from './newPost/TagFriendsRender';
 import DefaultPrefixImage from '../DefaultPrefixImage';
+import { useRouter } from 'next/router';
 
 export default function NewPost({ owner, url, editArticle = null, setOriginalPost = (post) => { }, close = (post) => {} }) {
 
     const ctx = React.useContext(Context);
     const emojies = ctx.emojiList;
+
+    const router = useRouter();
 
     const claims = getClaims();
 
@@ -24,16 +27,16 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
     const [openEmotions, setOpenEmotions] = React.useState(false)
 
     const [article, setArticle] = React.useState<Article>({
-        id: null,
+        id: editArticle != null ? editArticle.id : null,
         owner: parseInt(owner),
         creator: claims?.id,
-        body: '',
+        body:  editArticle != null && editArticle.body != null ? editArticle.body : '',
         image: {
-          id: null,
-          src: null
+            id: editArticle != null && editArticle.image != null ? editArticle.image.id : null,
+            src: editArticle != null && editArticle.image != null ? editArticle.image.src : null,
         },
-        emotion: null,
-        taged: [],
+        emotion: editArticle != null ? editArticle.emotion : null,
+        taged: editArticle != null ? editArticle.taged : [],
     });
 
     // Image handle
@@ -76,13 +79,7 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
             .then(() => {
                 axios.post(`/post/${url}`, article)
                 .then(async res => {
-                    ctx.setAlert(res.data.msg, 'success', `/post/${res.data.data.id}`);
-                    if (url == 'update') {
-                        if (claims?.profile?.id == article.id) {
-                            await refreshToken();
-                        }
-                        setOriginalPost(res.data.post);
-                    }
+                    ctx.setAlert(res.data.msg, 'success');
                     setArticle({
                         id: null,
                         owner: null,
@@ -96,9 +93,19 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
                         taged: [],
                     });
                     close({})
+
+                    if (url == 'update') {
+                        if (claims?.profile?.id == article.id) {
+                            await refreshToken();
+                        }
+                        setOriginalPost(res.data.post);
+                       
+                    } else {
+                        router.push(`/post/${res.data.data.id}`)
+                    }
                 })
                 .catch(err => {
-                    ctx.setAlert(err.response.data.error, 'error')
+                    ctx.setAlert(err.response?.data?.error, 'error')
                 });
             })
             .catch(err => {
@@ -106,16 +113,6 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
             })
         
     }
-
-
-    React.useEffect(() => {
-
-        if (editArticle !== null) {
-            setArticle(editArticle);
-        }
-    
-      
-    }, [editArticle])
     
 
   return (

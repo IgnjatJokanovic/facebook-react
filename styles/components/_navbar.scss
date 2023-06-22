@@ -164,6 +164,7 @@
                 padding: 0.5rem;
                 cursor: pointer;
                 margin-left: auto;
+                
             }
 
             img{
@@ -257,6 +258,10 @@
                     .actions{
                         display: flex;
                         gap: 1rem;
+                    }
+
+                    .link{
+                        margin: unset;
                     }
                 }
                 &.unread{

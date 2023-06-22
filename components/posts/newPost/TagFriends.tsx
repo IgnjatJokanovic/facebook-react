@@ -43,6 +43,12 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
        
     }
 
+    React.useEffect(() => {
+        if (searchParam == '') {
+            setFound([])
+        }
+    }, [searchParam])
+
     const search = React.useCallback(() => {
         if (nextPage >= 0 && searchParam.length) {
             axios.get(`/friend/searchCurrentUser?search=${searchParam}&exlude=${owner}&page=${nextPage}`)
@@ -103,19 +109,18 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
                         <div  className="not-found">Friend not found</div>
                     ) : null 
                 )}
-                
+                {article.taged.length > 0 && (
+                    <hr />
+                )}
                 {!!article.taged && article.taged.map((item, i) => (
-                    <>
-                        <hr />
-                        <div key={i} className="item">
-                            <Link href={`/user/${item.id}`}>
-                                <DefaultPrefixImage src={item.profile} />
-                                <div>{item.firstName} {item.lastName}</div>
-                            </Link>
+                    <div key={i} className="item">
+                        <Link href={`/user/${item.id}`}>
+                            <DefaultPrefixImage src={item.profile} />
+                            <div>{item.firstName} {item.lastName}</div>
+                        </Link>
 
-                            <div className='btn' onClick={() => removeFriend(i)}>Remove</div>
-                        </div>
-                    </>
+                        <div className='btn' onClick={() => removeFriend(i)}>Remove</div>
+                    </div>
                 ))}   
             </div>  
         </div>  
