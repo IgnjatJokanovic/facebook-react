@@ -6,7 +6,6 @@ import { getClaims, validateMessage } from "../../helpers/helpers";
 import { ActiveMessage, MessageNotification } from "../../types/types";
 import MessageComponent from "./MessageComponent";
 import axios from "axios";
-import Test from "./Test";
 
 
 export default function MessagesContainer({ messageThreads, setMessageThreads, messageNotifications, setMessageNotifications, setCount  }) {
@@ -81,8 +80,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     let id = msg.from;
     let index = curr.findIndex(obj => obj.id == id);
 
-    console.log('handleChanAdd')
-
     if (index >= 0) {
       if (curr[index].isOpen) {
         markAsRead([msg.id], id, false, payload.notification)
@@ -102,7 +99,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     let msg = payload.message;
     let indexThread = curr.findIndex(obj =>  obj.id == msg.from || obj.id == msg.to);
 
-    console.log('delete', msg)
     
     if (indexThread > -1) {
       let messageIndex = curr[indexThread].messages.findIndex(obj => obj.id == msg.id);
@@ -114,18 +110,14 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
   }
 
   const handleChanUpdate = (payload) => {
-    console.log('UPDATE TRIGGERED');
-    console.log(payload)
     let curr = [...messageThreads];
     let msg = payload.message;
     let indexThread = curr.findIndex(obj => obj.id == msg.from || obj.id == msg.to);
 
-    console.log('handleChanUpdate', payload)
-
     if (indexThread > -1) {
       let msgThread: ActiveMessage = curr[indexThread];
       let index = msgThread.messages.findIndex(obj => obj.id == msg.id);
-      console.log(index, msg.id, msgThread.messages)
+
       if (index > -1) {
         curr[indexThread].messages[index].body = msg.body;
         curr[indexThread].messages[index].opened = msg.opened;
@@ -174,7 +166,7 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
 
     } else {
       let index = curr.findIndex(obj => obj.id == data.id);
-      console.log(index, data)
+    
       if (index >= 0) {
         curr[index].body = data.body;
         curr[index].firstName = data.firstName;
@@ -261,8 +253,7 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
                   opened: true,
                 };
 
-                console.log('addTriggered')
-
+        
                 msgThread.messages.unshift(data);
              
 
@@ -273,7 +264,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
                 setMessageThreads(curr)
                 updateNotifications(notification);
 
-                console.log('adding')
               })
               .catch(err => {
                 ctx.setAlert(err?.response?.data?.error, 'error')
@@ -346,7 +336,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     axios.post('/message/delete', { id: msgId })
       .then(res => {
         ctx.setAlert(res.data.msg, 'success')
-        console.log(res.data.data, notificationIndex, notifications, msgId, curr)
         if (notificationIndex >= 0) {
           let notification = res.data.data;
           if (notification == null || notification === undefined) {
@@ -355,7 +344,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
             notifications[notificationIndex] = notification;
           }
 
-          console.log(index, 'delete')
        
           setMessageNotifications(notifications);
           
@@ -364,7 +352,7 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
         if (index > -1) {
           let msgThread: ActiveMessage = curr[index];
           let msgIndex = msgThread.messages.findIndex(obj => obj.id == msgId);
-          console.log('msgIndex', msgIndex)
+    
           if (msgIndex > -1) {
             msgThread.messages.splice(msgIndex, 1);
           }
@@ -414,23 +402,30 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     }
   }
 
+  const setLoading = (id: number, val: boolean) => {
+    let curr = [...messageThreads];
+    let index = curr.findIndex(obj => obj.id == id);
+    let msgThread: ActiveMessage = curr[index];
+    msgThread.isLoading = true;
+    curr[index] = msgThread;
+    setMessageThreads(curr);
+  }
+
   const loadData = React.useCallback((id: number) => {
     let curr = [...messageThreads];
     let index = curr.findIndex(obj => obj.id == id);
-    console.log('XXXXXXXXXXXXXXXX', index, id)
+    
     if (index > -1) {
       let msgThread: ActiveMessage = curr[index];
 
       if (!msgThread.isLoading) {
-        msgThread.isLoading = true;
-        curr[index] = msgThread;
+        // msgThread.isLoading = true;
+        // curr[index] = msgThread;
         // setMessageThreads(curr);
-
-        console.log('USAO NOT LOADING')
+        setLoading(id, true);
 
         if (msgThread.nextPage >= 0) {
 
-          console.log('USAO NEXT PAGE')
           axios.get(`/message/show/${msgThread.id}?page=${msgThread.nextPage}`)
             .then(res => {
   
@@ -486,30 +481,21 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
   };
 
   const handleResize = React.useCallback(() => {
-    console.log('handleResize')
     const width = window.innerWidth;
     let msgLenght = messageThreads.length;
     let curr = [...messageThreads];
-    console.log('width', width)
+  
     if (width < SCREEN_SIZES.small && msgLenght > 1) {
-      curr.splice(0, msgLenght - 1)
-      console.log('curr.slice(0, 3)')
+      curr.splice(0, msgLenght - 1) 
       setMessageThreads(curr)
     } else if (width < SCREEN_SIZES.medium && msgLenght > 3) {
       curr.splice(msgLenght - 1, 1)
-      console.log('curr.slice(0, 3)')
       setMessageThreads(curr)
     }
   }, [SCREEN_SIZES.medium, SCREEN_SIZES.small, messageThreads, setMessageThreads]);
 
   React.useEffect(() => {
-    console.log("USE EFFECT")
-    console.log(messageThreads)
-   
     
-    
-   
-
     window.addEventListener('resize', handleResize);
   
     return () => {

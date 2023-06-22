@@ -33,7 +33,7 @@ export default function RecomendedFriends() {
                         
                     })
                     .catch(err => {
-                        console.log(err);
+                      
                     })
             }
         }

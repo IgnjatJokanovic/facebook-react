@@ -68,11 +68,9 @@ axios.interceptors.request.use(request => {
       ){ 
           axios.get('/sanctum/csrf-cookie')
             .then(res => {
-              console.log(res);
-              
+             
               let csrf = getCookie('XSRF-TOKEN')
               axios.defaults.headers.common['X-XSRF-TOKEN'] = csrf
-              console.log(csrf);
             })
             .catch(err => console.log(err));
       }

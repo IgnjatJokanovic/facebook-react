@@ -95,7 +95,6 @@ export default function MessageNotifications() {
       const handleDelete = (payload) => {
         let curr = [...messages];
         let index = curr.findIndex(obj => obj.messageId == payload.message.id);
-        console.log(payload)
         if(index >= 0){
             let id = curr[index].id;
             axios.get(`/message/latest/${id}`)
