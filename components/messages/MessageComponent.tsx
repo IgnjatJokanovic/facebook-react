@@ -29,31 +29,11 @@ export default function MessageComponent({
   const ctx = React.useContext(Context)
   const emojies = ctx.emojiList;
   const claims = getClaims();
-  const activeMessages = ctx.activeMessages;
-  const setActiveMessages = ctx.setActiveMessages;
 
   const prevMessagesLengthRef = React.useRef(messageThread.messages.length);
-  const prevScrollValue = React.useRef(0);
 
-
-  
-
-  const notifications = ctx.messageNotifications;
-  const setNotifications = ctx.setMessageNotifications;
-
-  const refArray = React.useRef([])
-
-
-  // Function to create a new ref
-  const createRef = () => {
-    const newRef = React.useRef();
-    refArray.current.push(newRef);
-    return newRef;
-  };
-
-  const refBody = createRef();
-
-  const ref = createRef();
+  const refBody = React.useRef();
+  const ref = React.useRef();
 
   const [openEmoji, setOpenEmoji] = React.useState(false);
 
