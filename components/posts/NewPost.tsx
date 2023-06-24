@@ -186,7 +186,7 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
                 </div>
                
             </div>
-            <button className='submit'>Post</button>  
+            <button className='submit'>{editArticle != null ? "Update" : "Post"}</button>  
         </form>      
     </div>
   )

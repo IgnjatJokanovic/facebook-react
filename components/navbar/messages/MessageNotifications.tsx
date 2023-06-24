@@ -236,7 +236,7 @@ export default function MessageNotifications() {
               <span>{count < 100 ? count : '99+'}</span>
             )}
           </i>
-          <div ref={refDropdown} className={open ? 'dropdown active' : 'dropdown'}>
+          <div ref={refDropdown} className={open ? 'dropdown messages active' : 'dropdown messages'}>
               
                 <form>
                   <input

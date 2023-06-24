@@ -169,9 +169,6 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
     
       if (index >= 0) {
         curr[index].body = data.body;
-        curr[index].firstName = data.firstName;
-        curr[index].lastName = data.lastName;
-        curr[index].profile = data.profile;
         curr[index].messageId = data.messageId;
         curr[index].from = data.from;
         curr[index].to = data.to;
@@ -242,8 +239,8 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
                 let data = res.data.data;
                 let notification: MessageNotification = {
                   id: msgThread.id,
-                  firstName: data.user.firstName,
-                  lastName: data.user.lastName,
+                  firstName: msgThread.firstName,
+                  lastName: msgThread.lastName,
                   profile: msgThread.profile,
                   messageId: data.id,
                   from: data.from,
