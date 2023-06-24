@@ -31,7 +31,6 @@ const fetchCookie = () => {
 const refreshToken = async () => {
     axios.get('/auth/refreshToken')
         .then(res => {
-            console.log('token', res.data);
             setAuth(res.data);
             login(res.data);
         })

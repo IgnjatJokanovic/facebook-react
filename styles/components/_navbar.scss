@@ -51,6 +51,10 @@
             overflow-y: scroll;
             max-height: 40vh;
 
+            .message-loader{
+                margin-bottom: 1rem;
+            }
+
             .not-found{
                 font-size: 1.2rem;
                 text-align: center;
@@ -120,12 +124,22 @@
             position: absolute;
             background-color: $darkGrey;
             // height: 100px;
-            max-height: 27rem;
             width: 130%;
             border-radius: 5px;
             right: 0;
             padding: 10px;
             overflow-y: scroll;
+            max-height: 27rem;
+
+            &.messages{
+                max-height: 28.9rem;
+            }
+
+            .not-found{
+                color: $white;
+                text-align: center;
+                font-size: 1rem;
+            }
 
             @media only screen and (max-width: 370px) {
                 width: 95%;
@@ -154,6 +168,7 @@
                 padding: 0.5rem;
                 cursor: pointer;
                 margin-left: auto;
+                
             }
 
             img{
@@ -247,6 +262,10 @@
                     .actions{
                         display: flex;
                         gap: 1rem;
+                    }
+
+                    .link{
+                        margin: unset;
                     }
                 }
                 &.unread{

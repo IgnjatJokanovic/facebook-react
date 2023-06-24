@@ -61,6 +61,8 @@ export type ActiveMessage = {
     messages: Message[],
     isLoading: boolean,
     nextPage: number,
+    newMessage: {},
+    editMessage: {}
 }
 
 export type MessageNotification = {
@@ -98,10 +100,12 @@ export type PasswordResetRequest = {
 export type PasswordResetUpdateRequest = {
     token: string,
     password: string,
+    repeatPassword: string;
 }
 
 export type UpdatePasswordRequest = {
     password: string,
+    repeatPassword: string;
 }
 
 export type UpdateUserRequest = {
@@ -117,5 +121,6 @@ export type RegisterRequest = {
     birthday: string;
     email: string;
     password: string;
+    repeatPassword: string;
   }
 

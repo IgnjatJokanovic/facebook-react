@@ -16,7 +16,6 @@ export default function Photos({ userId, owner }:props) {
 
   const loadData = React.useCallback(() => {
     // Load paginated iamges
-    console.log(nextPage);
     if (nextPage >= 0) {
       axios.get(`/post/userRelated/photos/${userId}?page=${nextPage}`)
       .then(res => {
@@ -26,7 +25,6 @@ export default function Photos({ userId, owner }:props) {
           setNextPage(-1);
         }
         let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-        console.log(lastIndex)
         setNextPage(lastIndex);
       })
       .catch(err => {
@@ -46,7 +44,6 @@ export default function Photos({ userId, owner }:props) {
     document.addEventListener('wheel', loadData);
     
     if (!photos.length) {
-      console.log('re-render');
       loadData();
     }
 

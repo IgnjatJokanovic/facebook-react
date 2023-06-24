@@ -11,7 +11,6 @@ export default function Forgot() {
   const { register, handleSubmit, formState: { errors } } = useForm<PasswordResetRequest>();
   
   const onSubmit = (data:PasswordResetRequest) => {
-    console.log(data)
 
     axios.post('/password/reset', data)
       .then(res => {

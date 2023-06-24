@@ -20,7 +20,6 @@ export default function RecomendedFriends() {
             if (nextPage >= 0) {
                 axios.get(`/friend/recomended?page=${nextPage}`)
                     .then(res => {
-                        console.log('fetching')
                         setUsers(prevUsers => [...prevUsers, ...res.data.data]);
                         
                         setIsLoading(false);
@@ -28,14 +27,13 @@ export default function RecomendedFriends() {
                             setNextPage(-1);
                         } else {
                             let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-                            console.log(lastIndex)
                             setNextPage(lastIndex);
                         }
 
                         
                     })
                     .catch(err => {
-                        console.log(err);
+                      
                     })
             }
         }
@@ -43,7 +41,6 @@ export default function RecomendedFriends() {
         refSlider.current.addEventListener('scroll', loadData);
 
         if (!users.length) {
-            console.log('re-render');
             loadData();
         }
     

@@ -22,7 +22,7 @@ export default function DefaultPrefixImage({ className = '', src = null, url = '
       if (src === null) {
         setImage(defaultProfile);
       }
-      else if (src.includes("data:image")) {
+      else if (String(src)?.includes("data:image")) {
         setImage(src);
       } else {
         setImage(process.env.NEXT_PUBLIC_BACKEND_BASE_URL + src);

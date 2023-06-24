@@ -28,6 +28,17 @@ export default function Settings() {
 
     }
 
+    const handleDelete = () => {
+        axios.post('/user/delete')
+            .then(res => {
+                ctx.setAlert(res.data.msg, 'success')
+                handleLogout();
+            })
+            .catch(err => {
+                ctx.setAlert(err.response.data.error, 'error');
+            })
+    }
+
     const handleSendMail = () => {
         axios.post('/activation/resend')
             .then(res => {
@@ -39,11 +50,11 @@ export default function Settings() {
 
     React.useEffect(() => {
         document.addEventListener("mousedown", toggleNavOption);
-        console.log(claims)
         return () => {
             document.removeEventListener("mousedown", toggleNavOption);
         };
     }, []);
+    
   return (
     <div ref={ refOption} className='friend-notifications-container'>
           <i className='fa fa-cogs' onClick={e => setOpen(!open)}></i>
@@ -75,6 +86,9 @@ export default function Settings() {
                             <i className="fa fa-envelope" aria-hidden="true"></i> &nbsp;  Resend activation email
                         </div>
                     ): null}
+                    <div className='logout' onClick={handleDelete}>
+                        <i className="fa fa-trash" aria-hidden="true"></i>  &nbsp; Delete profile
+                    </div>
                     <div className='logout' onClick={handleLogout}>
                         <i className="fas fa-sign-out-alt"></i>  &nbsp; Logout
                     </div>

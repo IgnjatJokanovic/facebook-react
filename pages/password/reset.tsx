@@ -13,10 +13,9 @@ export default function Reset() {
 
   const ctx = React.useContext(Context);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<PasswordResetUpdateRequest>();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<PasswordResetUpdateRequest>();
   
   const onSubmit = (data:PasswordResetUpdateRequest) => {
-    console.log(data)
     data.token = token;
 
     axios.post('/password/change', data)
@@ -25,6 +24,11 @@ export default function Reset() {
       })
       .catch(err => ctx.setAlert(err.response.data.error, 'error'));
   }
+
+  const validatePasswordMatch = (value) => {
+    const password = watch('password', '');
+    return value === password || 'Passwords do not match';
+};
 
   React.useEffect(() => {
     if (!token) {
@@ -44,6 +48,15 @@ export default function Reset() {
             <h1>Reset password</h1>
             <input type="password" placeholder="New password" {...register("password", {required: "Password field is required",})} />
             { errors.password && <span className='error'>{ errors.password.message }</span> }
+            <input 
+              type="password"
+              placeholder="Repeat password"
+              {...register('repeatPassword', {
+                required: 'Repeat password field is required',
+                validate: validatePasswordMatch
+              })}
+            />
+            {errors.repeatPassword && <span className='error'>{errors.repeatPassword.message}</span>}
             <button>Reset</button>
         </form>
       </div>

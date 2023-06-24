@@ -15,7 +15,7 @@ export default function Register({ setActiveForm }) {
     const maxDate = moment();
     const minDate = moment().subtract(100, 'years');
 
-    const { register, handleSubmit, formState: { errors } } = useForm<RegisterRequest>();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterRequest>();
 
     const onSubmit = (data:RegisterRequest) => {
         axios.post('/user/create', data)
@@ -25,6 +25,12 @@ export default function Register({ setActiveForm }) {
                 ctx.setAlert(err.response.data.error, 'error');
             });
     }
+
+    const validatePasswordMatch = (value) => {
+        const password = watch('password', '');
+        return value === password || 'Passwords do not match';
+    };
+
   return (
         <div className="form-container register">
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -47,6 +53,15 @@ export default function Register({ setActiveForm }) {
                 { errors.email && <span className='error'>{ errors.email.message }</span> }
                 <input type="password" placeholder="Password" {...register("password", {required: "Password field is required",})} />
                 { errors.password && <span className='error'>{ errors.password.message }</span> }
+                <input 
+                  type="password"
+                  placeholder="Repeat password"
+                  {...register('repeatPassword', {
+                    required: 'Repeat password field is required',
+                    validate: validatePasswordMatch
+                  })}
+                />
+                {errors.repeatPassword && <span className='error'>{errors.repeatPassword.message}</span>}
                 <button>Sign Up</button>
             </form>
         </div>

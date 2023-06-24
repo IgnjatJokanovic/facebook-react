@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React from 'react'
 import SearchItem from './SearchItem';
+import UserLoader from '../../loaders/UserLoader';
+import MessageLoader from '../../loaders/MessageLoader';
+import DefaultUserLoader from '../../loaders/DefaultUserLoader';
 
 export default function Search() {
     const refOption = React.useRef();
@@ -29,39 +32,34 @@ export default function Search() {
     }
 
     const handleSearch = React.useCallback(() => {
-        console.log('LOADING', param)
         if (param != "") {
 
             // Load paginated iamges
-            console.log(nextPage);
             if (nextPage >= 0) {
                 axios.post(`/user/search?page=${nextPage}`, { search: param })
                     .then(res => {
-                        console.log('fetching')
                         setUsers(prevUsers => [...prevUsers, ...res.data.data]);
                         
                         if (res.data.next_page_url === null) {
                             setNextPage(-1);
                         } else {
                             let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-                            console.log(lastIndex)
                             setNextPage(lastIndex);
                             setOpen(true);
                         }
 
+                        setIsloading(false);
                         
                     })
                     .catch(err => {
-                        console.log(err)
                         setUsers([]);
                     })
             }
            
         } else {
             setOpen(false);
+            setIsloading(false);
         }
-
-        setIsloading(false);
 
     }, [nextPage, param])
 
@@ -106,6 +104,9 @@ export default function Search() {
             onClick={openDropdown}
         />
         <div className={open ? 'results active' : 'results'}>
+            {isLoading && (
+                <DefaultUserLoader />
+            )}
             {users.length ? (
                 users.map((item, i) => (
                     <SearchItem

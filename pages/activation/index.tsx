@@ -15,8 +15,6 @@ export default function Activation() {
     if (!token) {
       return;
     }
-
-    console.log("ACTIVATE")
     
     axios.post('/activation/activate', { token: token })
       .then(async res => {

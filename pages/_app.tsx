@@ -30,28 +30,6 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.withCredentials = true;
 
-
-// axios.interceptors.request.use(request => {
-//       if (
-//           request.method == 'post' ||
-//           request.method == 'put' ||
-//           request.method == 'delete'
-//       ){ 
-//           axios.get('/sanctum/csrf-cookie')
-//             .then(res => {
-//               console.log(res);
-              
-//               let csrf = getCookie('XSRF-TOKEN')
-//               axios.defaults.headers.common['X-XSRF-TOKEN'] = csrf
-//               console.log(csrf);
-//             })
-//             .catch(err => console.log(err));
-//       }
-      
-//       return request;
-    
-//   })
-
 export default function App({ Component, pageProps }: AppProps) {
 
   const router = useRouter();
@@ -135,7 +113,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
     } else {
         // handle adding new item
-        console.log('handle adding new item')
         let newObj: ActiveMessage = {
             isOpen: true,
             id: item.id,
@@ -143,16 +120,18 @@ export default function App({ Component, pageProps }: AppProps) {
             lastName: item.lastName,
             profile: item.profile,
             messages: [],
-            isLoading: true,
+            isLoading: false,
             nextPage: 0,
-            dontTriggerIntersect: false,
             newMessage: {
               to: item.id,
               body: ''
             },
+            editMessage: {}
         };
-
-        console.log('setting', newObj);
+      
+        if(activeMessages.length == 4){
+          curr.splice(3, 1);
+        }
 
         curr.unshift(newObj);
     }
@@ -172,23 +151,28 @@ export default function App({ Component, pageProps }: AppProps) {
     const isLoggedIn = isAuthenticated();
     setauthenticated(isLoggedIn);
 
-    const SCREEN_SIZES = {
-      small: 480,
-      medium: 768,
-      large: 1024,
-    };
+    // const SCREEN_SIZES = {
+    //   small: 480,
+    //   medium: 1540,
+    // };
     
     
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < SCREEN_SIZES.small) {
-        console.log('small');
-      } else if (width < SCREEN_SIZES.medium) {
-        console.log('medium');
-      } else {
-        console.log('large');
-      }
-    };
+    // const handleResize = () => {
+    //   const width = window.innerWidth;
+    //   let msgLenght = activeMessages.length;
+    //   let curr = [...activeMessages];
+
+    //   if (width <= SCREEN_SIZES.small && msgLenght > 1) {
+    //     curr.slice(0, 3)
+    //     setActiveMessages(curr)
+    //   } else if (width <= SCREEN_SIZES.medium && msgLenght > 3) {
+    //     curr.slice(0, 1)
+    //     setActiveMessages(curr)
+    //   }
+    // };
+
+    // window.addEventListener('resize', handleResize);
+
 
     if (isLoggedIn) {
 
@@ -211,12 +195,7 @@ export default function App({ Component, pageProps }: AppProps) {
         }).catch(err => {
           console.log(err);
         });
-
-      window.addEventListener('resize', handleResize);
       
-      
-
-      // console.log(echo)
     }
 
     var echo = new Echo({
@@ -230,15 +209,9 @@ export default function App({ Component, pageProps }: AppProps) {
       echo
     )
 
+    // return () => window.removeEventListener('resize', handleResize);
     
-
-    return () => window.removeEventListener('resize', handleResize);
-
-    // console.log('app', echo.options.auth);
-
-   
-    
-  }, [authenticated])
+  }, [activeMessages.length, authenticated])
   
 
 

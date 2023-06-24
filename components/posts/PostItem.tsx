@@ -51,7 +51,10 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
   };
 
   const setEditArticle = () => {
-    var article = structuredClone(post);
+    let article = structuredClone(post);
+    article.taged.map(obj => {
+      obj.profile = obj.profile_photo?.image?.src;
+    })
     setArticle(article);
   }
 
@@ -97,15 +100,12 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
   }
 
   const handleChanChange = (e: { reaction: { emotion: any; }; action: string; }) => {
-    console.log("NUKE", e);
     let curr = [...distinctReactions];
     let rtc = e.reaction.emotion;
     let index = curr.findIndex(obj => obj.id === rtc.id);
-    console.log(e, curr);
-    
+
     if (e.action === 'add') {
       let exists = curr.filter(item => item.id === rtc.id).length <= 0;
-      console.log('existingIndex', exists, curr, rtc.id);
       // Handle ADD
       if (exists) {
         rtc.reaction_count = 1;

@@ -82,6 +82,8 @@
                     background-color: $white;
                     padding: 5px;
                     border-radius: 5px;
+                    display: flex;
+                    flex-direction: column-reverse;
                     .message-item{
                         display: flex;
                         margin: 10px 5px;
@@ -99,8 +101,8 @@
                             .dropdown{
                                 display: none;
                                 position: absolute;
-                                top: 0;
-                                top: 1.1rem;
+                                top: -1rem;
+                                left: 0.8rem;
                                 background-color: $grey;
                                 color: $white;
                                 padding: 0.6rem;

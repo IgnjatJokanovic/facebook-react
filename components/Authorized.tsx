@@ -24,7 +24,6 @@ export default function Authorized() {
   React.useEffect(() => {
     
     const loadData = () => {
-      console.log(nextPage);
       if (nextPage >= 0) {
         axios.get(`/post?page=${nextPage}`)
           .then(res => {
@@ -36,7 +35,6 @@ export default function Authorized() {
             }
   
             let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-            console.log(lastIndex)
             setNextPage(lastIndex);
           })
           .catch(err => {
@@ -48,7 +46,6 @@ export default function Authorized() {
     }
 
     if (!posts.length) {
-      console.log('re-render');
       loadData();
     }
     

@@ -2,12 +2,14 @@ import axios from 'axios';
 import Link from 'next/link';
 import React from 'react'
 import DefaultPrefixImage from '../../DefaultPrefixImage';
+import DefaultUserLoader from '../../loaders/DefaultUserLoader';
 
 export default function TagFriends({owner, article, setArticle, openTagged, setOpenTagged }) {
     const refOption = React.useRef();
     const [searchParam, setSearchParam] = React.useState('');
     const [nextPage, setNextPage] = React.useState(0);
     const [found, setFound] = React.useState([]);
+    const [isLoading, setIsloading] = React.useState(false);
 
     const toggleNavOption = e => {
         if (refOption.current.contains(e.target)) {
@@ -24,7 +26,6 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
 
     const removeFriend = (index) => {
         let curr = [...article.taged];
-        console.log('removing', index)
         curr.splice(index, 1);
         setArticle({...article, taged: curr});
     }
@@ -34,21 +35,30 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
         setSearchParam(val);
         setNextPage(0);
         setFound([]);
+        if (val.length > 0) {
+            setIsloading(true); 
+        } else {
+            setIsloading(false);
+        }
        
     }
 
+    React.useEffect(() => {
+        if (searchParam == '') {
+            setFound([])
+        }
+    }, [searchParam])
+
     const search = React.useCallback(() => {
-        console.log(nextPage);
         if (nextPage >= 0 && searchParam.length) {
             axios.get(`/friend/searchCurrentUser?search=${searchParam}&exlude=${owner}&page=${nextPage}`)
             .then(res => {
                 setFound([...found, ...res.data.data]);
+                setIsloading(false);
                 if (res.data.next_page_url === null) {
-                    console.log('setting next page')
                     setNextPage(-1);
                 }
                 let lastIndex = parseInt(res.data.next_page_url[res.data.next_page_url.length - 1], 10);
-                console.log(lastIndex)
                 setNextPage(lastIndex);
             })
             .catch(err => {
@@ -76,6 +86,9 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
           <div className={ openTagged ? 'dropdown active' : 'dropdown' }>
               <input onChange={e => { handleSearch(e) }} onKeyUp={ search } value={searchParam} className='search' type="text" placeholder='Search friends' />
             <div className="friend-options">
+                {isLoading && (
+                    <DefaultUserLoader />
+                )}
                 {found.length ? (
                     found.map((item, i) => (
                         <div key={i} className="item">
@@ -92,11 +105,13 @@ export default function TagFriends({owner, article, setArticle, openTagged, setO
                         </div>
                     ))
                 ) : (
-                    !!searchParam.length && (
+                    searchParam.length != 0 && !isLoading ? (
                         <div  className="not-found">Friend not found</div>
-                    ) 
+                    ) : null 
                 )}
-                <hr />
+                {article.taged.length > 0 && (
+                    <hr />
+                )}
                 {!!article.taged && article.taged.map((item, i) => (
                     <div key={i} className="item">
                         <Link href={`/user/${item.id}`}>
