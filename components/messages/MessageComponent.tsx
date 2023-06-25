@@ -34,8 +34,16 @@ export default function MessageComponent({
 
   const refBody = React.useRef();
   const ref = React.useRef();
+  const refEmoji = React.useRef();
 
   const [openEmoji, setOpenEmoji] = React.useState(false);
+
+  const toggleEmoji = e => {
+    if (refEmoji?.current?.contains(e.target)) {
+        return;
+    }
+    setOpenEmoji(false);
+  };
 
   const handleScroll = () => {
     const firstChild = refBody?.current?.firstElementChild;
@@ -62,7 +70,16 @@ export default function MessageComponent({
       handleScroll();
     }
 
+    const handleToggleEmoji = e => toggleEmoji(e);
+
+    document.addEventListener("mousedown", handleToggleEmoji);
+
     prevMessagesLengthRef.current = messageThread.messages.length;
+
+    return () => {
+      document.removeEventListener("mousedown", handleToggleEmoji);
+    };
+
   }, [messageThread.messages.length]);
 
   React.useEffect(() => {
@@ -138,7 +155,7 @@ export default function MessageComponent({
                   <div className="emoji-holder">
                     <i onClick={e => setOpenEmoji(!openEmoji)} className="fas fa-smile-beam"></i>
                       <div className={ openEmoji ? 'dropdown active' : 'dropdown' }>
-                      <div className="flex hide-bar">
+                      <div ref={refEmoji} className="flex hide-bar">
                           {!!emojies && emojies.map((item, i) => (
                               <div className="emoji-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }} onClick={() => setBody(messageThread.id, item.code) }>
                               </div>

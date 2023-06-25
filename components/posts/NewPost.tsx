@@ -26,6 +26,15 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
     const [openEmoji, setOpenEmoji] = React.useState(false)
     const [openEmotions, setOpenEmotions] = React.useState(false)
 
+    const refEmoji = React.useRef();
+
+    const toggleEmoji = e => {
+        if (refEmoji?.current?.contains(e.target)) {
+            return;
+        }
+        setOpenEmoji(false);
+    };
+
     const [article, setArticle] = React.useState<Article>({
         id: editArticle != null ? editArticle.id : null,
         owner: parseInt(owner),
@@ -113,6 +122,16 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
             })
         
     }
+
+    React.useEffect(() => {
+        const handleToggleEmoji = e => toggleEmoji(e);
+    
+        document.addEventListener("mousedown", handleToggleEmoji);
+      
+        return () => {
+          document.removeEventListener("mousedown", handleToggleEmoji);
+        }
+    }, [])
     
 
   return (
@@ -153,7 +172,7 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
                 <div className="emoji-holder">
                 <i onClick={e => setOpenEmoji(!openEmoji)} className="fas fa-smile-beam"></i>
                       <div className={ openEmoji ? 'dropdown active' : 'dropdown' }>
-                        <div className="flex hide-bar">
+                        <div ref={refEmoji} className="flex hide-bar">
                             {!!emojies && emojies.map((item, i) => (
                                 <div className="emoji-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }} onClick={() => setBody(item.code) }>
                                 </div>

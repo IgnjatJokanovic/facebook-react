@@ -8,6 +8,26 @@ export default function CommentForm({comment, handleChangeCallback, setBodyCallb
 
   const [openEmoji, setOpenEmoji] = React.useState(false)
 
+  const refEmoji = React.useRef();
+
+  const toggleEmoji = e => {
+    if (refEmoji?.current?.contains(e.target)) {
+        return;
+    }
+    setOpenEmoji(false);
+  };
+
+  React.useEffect(() => {
+    const handleToggleEmoji = e => toggleEmoji(e);
+
+    document.addEventListener("mousedown", handleToggleEmoji);
+  
+    return () => {
+      document.removeEventListener("mousedown", handleToggleEmoji);
+    }
+  }, [])
+  
+
   return (
     <div className="input-comment">
       <ContentEditable
@@ -20,7 +40,7 @@ export default function CommentForm({comment, handleChangeCallback, setBodyCallb
       <div className="emoji-holder">
         <i onClick={e => setOpenEmoji(!openEmoji)} className="fas fa-smile-beam"></i>
           <div className={ openEmoji ? 'dropdown active' : 'dropdown' }>
-          <div className="flex hide-bar">
+          <div ref={refEmoji} className="flex hide-bar">
               {!!emojies && emojies.map((item, i) => (
                   <div className="emoji-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }} onClick={() => setBodyCallback(item.code) }>
                   </div>
