@@ -5,7 +5,7 @@ import Context from '../../../context/context';
 import axios from 'axios';
 import DefaultPrefixImage from '../../DefaultPrefixImage';
 
-export default function NotificationItem({ url, img, name, surname, id, text, opened, setNotifications, notifications, setCount }) {
+export default function NotificationItem({ url, img, name, surname, id, text, opened, setNotifications, notifications, setCount, setOpen }) {
   
   const router = useRouter();
   const ctx = React.useContext(Context);
@@ -13,6 +13,7 @@ export default function NotificationItem({ url, img, name, surname, id, text, op
   const markAsRead = () => {
     if (opened) {
       router.push(url);
+      setOpen(false);
     } else {
       axios.post('notification/markAsRead', {id: id})
         .then(res => {
@@ -22,6 +23,7 @@ export default function NotificationItem({ url, img, name, surname, id, text, op
           setNotifications(curr);
           router.push(url);
           setCount(prevCount => prevCount > 0 ? prevCount - 1 : 0);
+          setOpen(false);
         })
         .catch(err => {
           ctx.setAlert(err.response.data, 'error');

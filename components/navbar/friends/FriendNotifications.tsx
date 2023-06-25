@@ -154,6 +154,7 @@ export default function FriendNotifications() {
                     setFriendRequests={setFriendRequests}
                     friendRequests={friendRequests}
                     setCount={setCount}
+                    setOpen={setOpen}
                   />
                 )) : (
                   <div className='zero-notifications'>No new notifications</div>

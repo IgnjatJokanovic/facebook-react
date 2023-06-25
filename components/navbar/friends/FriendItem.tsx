@@ -5,13 +5,14 @@ import axios from 'axios'
 import { useRouter } from 'next/router';
 import Context from '../../../context/context';
 
-export default function FriendItem({ profile, img, name, surname, id, opened = false, setFriendRequests, friendRequests, setCount }) {
+export default function FriendItem({ profile, img, name, surname, id, opened = false, setFriendRequests, friendRequests, setCount, setOpen }) {
   const router = useRouter();
   const ctx = React.useContext(Context);
 
   const markAsRead = () => {
     if (opened) {
       router.push(profile);
+      setOpen(false);
     } else {
       axios.post('friend/markAsRead', {id: id})
         .then(res => {
@@ -21,9 +22,10 @@ export default function FriendItem({ profile, img, name, surname, id, opened = f
           setFriendRequests(curr);
           router.push(profile);
           setCount(prevCount => prevCount > 0 ? prevCount - 1 : 0);
+          setOpen(false);
         })
         .catch(err => {
-          ctx.setAlert(err.response.data, 'error');
+          // ctx.setAlert(err.response.data, 'error');
         });
     }
     

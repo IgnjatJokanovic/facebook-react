@@ -156,6 +156,7 @@ export default function Notifications() {
                             setNotifications={setNotifications}
                             notifications={notifications}
                             setCount={setCount}
+                            setOpen={setOpen}
                           />
                         ))
                     ): (
