@@ -207,12 +207,14 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
                 <div className="btn" onClick={handleUpdate}>Update</div>
               </div>
           )}
-          <div className="actions">
-            {parent == null && ctx.authenticated ? (
-              <div className='btn' onClick={() => setOpenNew(!openNew)}>Reply</div>
-            ) : null}
-            <div className='createdAt'>{createdAt}</div>
-          </div>
+          {Object.keys(edit).length == 0 && (
+            <div className="actions">
+              {parent == null && ctx.authenticated ? (
+                <div className='btn' onClick={() => setOpenNew(!openNew)}>Reply</div>
+              ) : null}
+              <div className='createdAt'>{createdAt}</div>
+            </div>
+          )}
           <div className="children">
             {!!children.length && (
               children.map((item, i) => (
