@@ -152,10 +152,10 @@ export default function MessageComponent({
                   />
                 )}
                 <div className="controlls">
-                  <div className="emoji-holder">
+                  <div ref={refEmoji} className="emoji-holder">
                     <i onClick={e => setOpenEmoji(!openEmoji)} className="fas fa-smile-beam"></i>
                       <div className={ openEmoji ? 'dropdown active' : 'dropdown' }>
-                      <div ref={refEmoji} className="flex hide-bar">
+                      <div className="flex hide-bar">
                           {!!emojies && emojies.map((item, i) => (
                               <div className="emoji-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }} onClick={() => setBody(messageThread.id, item.code) }>
                               </div>
