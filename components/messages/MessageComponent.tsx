@@ -38,12 +38,15 @@ export default function MessageComponent({
   const [openEmoji, setOpenEmoji] = React.useState(false);
 
   const handleScroll = () => {
-    refBody?.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-      passive: true
-    });
-  }
+    const firstChild = refBody?.current?.firstElementChild;
+    if (firstChild) {
+      firstChild.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        passive: true
+      });
+    }
+  };
 
   const triggerLoad = (e) => {
     if (e.deltaY < 0) {
