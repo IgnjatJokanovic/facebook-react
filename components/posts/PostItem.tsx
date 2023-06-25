@@ -56,6 +56,7 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
       obj.profile = obj.profile_photo?.image?.src;
     })
     setArticle(article);
+    setActiveEdit(false);
   }
 
   const handleReact = (id) => {
@@ -143,19 +144,23 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
 
 
     React.useEffect(() => {
+      
+        const handleToggleOpen = e => toggleOpen(e);
+        const handleToggleEdit = e => toggleEdit(e);
+        
         if (ctx.authenticated && post.owner.id === claims?.id || post.creator.id === claims?.id) {
-          document.addEventListener("mousedown", toggleEdit);
+          document.addEventListener("mousedown", handleToggleEdit);
         }
       
       
       
         if(post.distinct_reactions.length){
-          document.addEventListener("mousedown", toggleOpen);
+          document.addEventListener("mousedown", handleToggleOpen);
         }
 
         return () => {
-            document.removeEventListener("mousedown", toggleEdit);
-            document.removeEventListener("mousedown", toggleOpen);
+            document.removeEventListener("mousedown", handleToggleEdit);
+            document.removeEventListener("mousedown", handleToggleOpen);
         };
     }, [claims?.id, ctx.authenticated, ctx.echo, post.owner.id, post.creator.id, post.id, distinctReactions, post.distinct_reactions.length]);
   
