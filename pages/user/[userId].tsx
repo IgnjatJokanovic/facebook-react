@@ -72,6 +72,7 @@ export default function UserProfile() {
           .then(res => {
             setUser({ ...user, isFriends: res.data.data })
             ctx.setAlert(res.data.msg, 'success')
+            setOpen(false);
           })
           .catch(err => {
             ctx.setAlert(err.response.data, 'error');
@@ -87,6 +88,7 @@ export default function UserProfile() {
       .then(res => {
         setUser({ ...user, isFriends: null })
         ctx.setAlert(msg, 'success')
+        setOpen(false);
       })
       .catch(err => {
         ctx.setAlert(err.response.data, 'error');
@@ -100,6 +102,7 @@ export default function UserProfile() {
         isFriends.accepted = true;
         setUser({...user, isFriends: isFriends})
         ctx.setAlert(res.data, 'success')
+        setOpen(false);
       })
       .catch(err => {
         ctx.setAlert(err.response.data, 'error');
@@ -139,6 +142,7 @@ export default function UserProfile() {
         }
 
         handleCancel();
+        setOpen(false);
 
         await refreshToken();
       })
