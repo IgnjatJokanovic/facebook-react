@@ -63,7 +63,8 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
 
   const openEdit = () => {
     let curr = structuredClone(comment);
-    setEdit(curr)
+    setEdit(curr);
+    setOpen(false);
   }
 
   const toggleOpen = e => {
@@ -208,7 +209,7 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
           )}
           <div className="actions">
             {parent == null && ctx.authenticated ? (
-              <div className='link' onClick={() => setOpenNew(!openNew)}>Reply</div>
+              <div className='btn' onClick={() => setOpenNew(!openNew)}>Reply</div>
             ) : null}
             <div className='createdAt'>{createdAt}</div>
           </div>
