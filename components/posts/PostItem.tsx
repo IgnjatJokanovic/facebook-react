@@ -296,7 +296,7 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
       <div className="actions-container">
         <div className="react item">
           {!!ctx.authenticated && (
-            <div className="dropdown">
+            <div className={currentUserReaction === null ? "dropdown" : "dropdown reacted"}>
               <div className="container">
                 {!!reactions && reactions.map((item, i) => (
                     <div className="emoji-item" key={i} dangerouslySetInnerHTML={{ __html: item.code }} onClick={() => handleReact(item.id) }>

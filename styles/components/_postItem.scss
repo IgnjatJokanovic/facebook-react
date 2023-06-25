@@ -149,6 +149,7 @@
         font-size: 1rem;
         margin-bottom: 10px;
         overflow-wrap: break-word;
+        padding: 1rem;
 
         & > * {
             font-size: 1rem;  
@@ -247,6 +248,7 @@
         border-bottom: 2px solid $white;
         padding: 0.7rem;
         position: relative;
+        align-items: center;
         .react{
             &:hover{
                 .dropdown{
@@ -261,6 +263,10 @@
                 border-radius: 5px;
                 top: -2.3rem;
                 left: 0;
+
+                &.reacted{
+                    top: -1.5rem;
+                }
 
                 .container{
                     display: flex;
