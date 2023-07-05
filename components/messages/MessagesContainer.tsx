@@ -168,10 +168,14 @@ export default function MessagesContainer({ messageThreads, setMessageThreads, m
       let index = curr.findIndex(obj => obj.id == data.id);
     
       if (index >= 0) {
-        curr[index].body = data.body;
-        curr[index].messageId = data.messageId;
-        curr[index].from = data.from;
-        curr[index].to = data.to;
+        let currMsg = curr[index];
+        currMsg.body = data.body;
+        currMsg.messageId = data.messageId;
+        currMsg.from = data.from;
+        currMsg.to = data.to;
+
+        curr.splice(index, 1)
+        curr.unshift(currMsg);
       } else {
         let newMsg: MessageNotification = {
           id: data.id,

@@ -83,7 +83,8 @@ export default function MessageNotifications() {
         let index = curr.findIndex(obj => obj.id == msg.id);
 
         if (index >= 0) {
-            curr[index] = msg;
+            curr.splice(index, 1)
+            curr.unshift(msg);
         } else {
             curr.unshift(msg);
         }

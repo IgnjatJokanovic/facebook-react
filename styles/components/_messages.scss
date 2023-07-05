@@ -130,6 +130,9 @@
                             border-radius: 5px;
                             background-color: $grey;
                             text-align: left;
+
+                            overflow: hidden;
+                            white-space: normal;
                            
                             flex: 1;
                             .txt{
@@ -179,6 +182,9 @@
                         outline: none;
                         border: none;
                         text-align: left;
+
+                        overflow-x: hidden;
+                        white-space: normal;
                     }
 
                     .controlls{
