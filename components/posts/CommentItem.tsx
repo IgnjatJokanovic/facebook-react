@@ -243,7 +243,7 @@ export default function CommentItem({ comment, comments, setComments, postId, ow
               </div>
             )}
             {(comment.repliesCount > 0 && nextPage >= 0) && (
-              <div className="load-more" onClick={loadChildren}>
+              <div className="btn load-more" onClick={loadChildren}>
                 Load more replies
               </div>
             )}

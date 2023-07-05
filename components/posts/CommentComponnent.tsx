@@ -105,7 +105,7 @@ export default function CommentComponnent({ postId, owner }) {
             )): null}
 
             {nextPage >= 0 ? (
-              <div className='load-more' onClick={loadData}>Load more</div>
+              <div className='btn load-more' onClick={loadData}>Load more</div>
             ) : null}
             
             {ctx.authenticated  && (
