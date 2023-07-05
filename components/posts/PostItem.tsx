@@ -227,12 +227,12 @@ export default function PostItem({ post, isEditable = false, linkable = true, se
         </div>
         <div className="other">
           {post.emotion != null ? (
-              <div><div dangerouslySetInnerHTML={{ __html: post.emotion.code }}></div> is feeling <Link className='linkable bold pointer' href={`/post/${post.id}`}>{ post.emotion.description }</Link></div>
+              <span><span dangerouslySetInnerHTML={{ __html: post.emotion.code }}></span> is feeling <Link className='linkable bold pointer' href={`/post/${post.id}`}>{ post.emotion.description }</Link></span>
           ) : ''}
           {post.taged.length ? (
-              <div>
+              <span>
                   {post.emotion === null && ('is')} with <TagFriendsRender taged={post.taged} />
-              </div>
+              </span>
           ) : ''}  
         </div>
       </div>

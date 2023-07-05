@@ -22,7 +22,7 @@ export default function TagFriendsRender({ taged }) {
                         {lastBatch.map((item, i) => (
                             <div  key={i} className="item">
                                 <Link href={`/user/${item.id}`}>
-                                    {item.firstName} {item.lastName} {i != lastBatch.length - 1 ? ",":null}
+                                    {item.firstName} {item.lastName}
                                 </Link>
                             </div>
                         ))}

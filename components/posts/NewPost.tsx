@@ -150,12 +150,12 @@ export default function NewPost({ owner, url, editArticle = null, setOriginalPos
                 <div className="info">
                     
                     {article.emotion != null ? (
-                        <div><div dangerouslySetInnerHTML={{ __html: article.emotion.code }}></div> is feeling <div className='bold pointer' onClick={() => setOpenEmotions(!openEmotions)}>{ article.emotion.description }</div></div>
+                        <span><span dangerouslySetInnerHTML={{ __html: article.emotion.code }}></span> is feeling <span className='bold pointer' onClick={() => setOpenEmotions(!openEmotions)}>{ article.emotion.description }</span></span>
                     ) : ''}
                     {article.taged.length ? (
-                        <div>
+                        <span>
                             {article.emotion === null && ('is')} with <TagFriendsRender taged={article.taged} />
-                        </div>
+                        </span>
                     ) : ''}  
                    
                   
